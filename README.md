@@ -1,0 +1,1 @@
+Pixfinder is a JavaScript library for image analysis and feature extraction

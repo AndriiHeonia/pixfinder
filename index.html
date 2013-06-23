@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Pixfinder - a JavaScript library for image analysis and feature extraction</title>
+		<meta charset="utf-8" />
+		<script src="src/hex-rgb.js"></script>
+		<script src="src/pixfinder.js"></script>
+	</head>
+	<body>
+		<img id="img"></img>
+		<canvas id="canv" width="256" height="256" style="border:1px solid #d3d3d3;"></canvas>
+		<script>
+			window.onload = function () {
+				var img = document.getElementById('img');
+
+				img.onload = function () {
+					var objColors = [
+						'd4d4d4'
+						/*'dedac8',
+						'c5c2b4'*/
+					];
+					var b = PF.getFeatures(this, objColors);
+					console.log(b[0].length);
+
+					var c=document.getElementById("canv");
+					var ctx=c.getContext("2d");
+					for (var i = 0; i < b[0].length; i++) {
+						ctx.beginPath();
+						ctx.arc(b[0][i].x, b[0][i].y, 1, 0, 2*Math.PI);
+						ctx.stroke();
+					};
+				}
+
+				img.crossOrigin = "Anonymous";
+				img.src = 'http://tile1.local/tiles?x=95716&y=41469&z=17&v=1';
+			}
+		</script>
+	</body>
+</html>
