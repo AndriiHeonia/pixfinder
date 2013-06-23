@@ -14,9 +14,9 @@ var PF = {
 					nPxCols,
                     fPxs,
                     fPxsCols,
-                    isNewFeature = true;
+                    fIdx;
 
-				// skip if it's not a pixel of analyzed object
+				// skip if px is not a pixel of the feature
 				if (this._isColorInColors(pxCol, colors, this._areColorsEqual) === false) {
 					continue;
 				};
@@ -27,21 +27,19 @@ var PF = {
                 });
 				nPxCols = this._getPixelsColors(canv, nPxs);
 
-                // skip if it's not a boundary pixel of the feature
+                // skip if px is not a boundary pixel of the feature
                 if (this._areColorsEqualToColor(nPxCols, pxCol, this._areColorsEqual) === true) {
                     continue;
                 }
+
+                features[0].push(px);
 
                 /*for (var i = 0; i < features.length; i++) {
                     fPxs = features[i];
                     fPxsCols = this._getPixelsColors(canv, fPxs);
                     // check or pixel belongs to one of already processed features
-                    if (this._areColorsIntersects(fPxsCols, nPxCols, this._areColorsEqual) === true) {
-                        // we need only boundary pixels
-                        if (this._areColorsEqualToColor(nPxCols, pxCol, this._areColorsEqual) === false) {
-                */            features[0].push(px);
-                /*            isFeatureUpdated = true;
-                        };
+                    if (this._areColorsIntersects(this._areColorsEqual, fPxsCols, nPxCols) === true) {
+                        features[i].push(px);
                     };
                 };*/
 
@@ -111,7 +109,7 @@ var PF = {
 		return true;
     },
 
-    _areColorsIntersects: function (cols1, cols2, callback) { // (Array, Array, Function) -> Boolean
+    _areColorsIntersects: function (callback, cols1, cols2) { // (Function, Array, Array) -> Boolean
         for (var i = 0; i < cols1.length; i++) {
             for (var j = 0; j < cols2.length; j++) {
                 if (callback(cols1[i], cols2[j]) === true) {
@@ -158,5 +156,16 @@ var PF = {
         };
 
         return res;
+    },
+
+    _pushPixelToFeature: function (canvas, features, pixel, neighborPixelColors, callback) {
+        for (var i = 0; i < features.length; i++) {
+            fPxs = features[i];
+            fPxsCols = this._getPixelsColors(canv, fPxs);
+            // check or pixel belongs to one of already processed features
+            if (this._areColorsIntersects(fPxsCols, nPxCols, this._areColorsEqual) === true) {
+                features[i].push(px);
+            };
+        };
     }
 }
