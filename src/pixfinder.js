@@ -26,7 +26,7 @@ var PF = {
                     h: canv.height - 1
                 });
                 nPxCols = this._getPixelsColors(canv, nPxs);
-                
+
                 // skip if px is not a boundary pixel of the feature
                 if (this._areColorsEqualToColor(this._areColorsEqual, nPxCols, pxCol) === true) {
                     continue;
@@ -90,8 +90,8 @@ var PF = {
 
     _areColorsEqual: function (col1, col2) { // (Array, Array) -> Boolean
         var r = col1[0] === col2[0],
-           g = col1[1] === col2[1],
-           b = col1[2] === col2[2];
+            g = col1[1] === col2[1],
+            b = col1[2] === col2[2];
 
         return (r && g && b);
     },
