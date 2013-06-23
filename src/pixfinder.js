@@ -32,7 +32,7 @@ var PF = {
                     continue;
                 }
 
-                features[0].push(px);
+                features.map(curry(this._pushPixelToFeature, px));
 
                 /*for (var i = 0; i < features.length; i++) {
                     fPxs = features[i];
@@ -158,14 +158,7 @@ var PF = {
         return res;
     },
 
-    _pushPixelToFeature: function (canvas, features, pixel, neighborPixelColors, callback) {
-        for (var i = 0; i < features.length; i++) {
-            fPxs = features[i];
-            fPxsCols = this._getPixelsColors(canv, fPxs);
-            // check or pixel belongs to one of already processed features
-            if (this._areColorsIntersects(fPxsCols, nPxCols, this._areColorsEqual) === true) {
-                features[i].push(px);
-            };
-        };
+    _pushPixelToFeature: function (pixel, feature) {
+        feature.push(pixel);
     }
 }
