@@ -1,31 +1,31 @@
 var PF = {
 	
-	getFeatures: function (img, colors) { // (HTMLImageElement, Object) -> Object
-		var canv = this._wrapByCanvas(img),
-			colors = this._colorsToRgb(colors),
+    getFeatures: function (img, colors) { // (HTMLImageElement, Object) -> Object
+        var canv = this._wrapByCanvas(img),
+            colors = this._colorsToRgb(colors),
             features = [[]];
 
-		for (var x = 0; x < img.clientWidth; x++) {
-			for (var y = 0; y < img.clientHeight; y++) {
-				
-				var px = { x: x, y: y },
-					pxCol = this._getPixelColor(canv, px),
-					nPxs,
-					nPxCols,
+        for (var x = 0; x < img.clientWidth; x++) {
+            for (var y = 0; y < img.clientHeight; y++) {
+
+                var px = { x: x, y: y },
+                	pxCol = this._getPixelColor(canv, px),
+                	nPxs,
+                	nPxCols,
                     fPxs,
                     fPxsCols,
                     fIdx;
 
-				// skip if px is not a pixel of the feature
-				if (this._isColorInColors(this._areColorsEqual, pxCol, colors) === false) {
-					continue;
-				};
+                // skip if px is not a pixel of the feature
+                if (this._isColorInColors(this._areColorsEqual, pxCol, colors) === false) {
+                	continue;
+                };
 
-				nPxs = this._getNeighborPixels(px, {
+                nPxs = this._getNeighborPixels(px, {
                     w: canv.width - 1, 
                     h: canv.height - 1
                 });
-				nPxCols = this._getPixelsColors(canv, nPxs);
+                nPxCols = this._getPixelsColors(canv, nPxs);
 
                 // skip if px is not a boundary pixel of the feature
                 if (this._areColorsEqualToColor(this._areColorsEqual, nPxCols, pxCol) === true) {
@@ -56,13 +56,12 @@ var PF = {
                     features[features.length-1].push(px);
                 };*/
 
-			};
-		};
+            };
+        };
+        return features;
+    },
 
-		return features;
-	},
-
-	_wrapByCanvas: function (img) { // (HTMLImageElement) -> HTMLCanvasElement
+    _wrapByCanvas: function (img) { // (HTMLImageElement) -> HTMLCanvasElement
         var canv = document.createElement('canvas');
         canv.width = img.width;
         canv.height = img.height;
@@ -71,48 +70,48 @@ var PF = {
     },
 
     _colorsToRgb: function (cols) { // (Object) -> Object
-    	for (var i = 0; i < cols.length; i++) {
-  			cols[i] = toRGB(cols[i]);
-    	};
-    	return cols;
+        for (var i = 0; i < cols.length; i++) {
+        		cols[i] = toRGB(cols[i]);
+        };
+        return cols;
     },
 
     _getPixelColor: function (canvas, px) { // (HTMLCanvasElement, Object) -> Array
-    	return canvas.getContext('2d').getImageData(px.x, px.y, 1, 1).data;
+        return canvas.getContext('2d').getImageData(px.x, px.y, 1, 1).data;
     },
 
     _getPixelsColors: function (canvas, pxs) { // (HTMLCanvasElement, Array) -> Array
-    	var list = [];
-    	for (var i = 0; i < pxs.length; i++) {
-    		list.push(canvas.getContext('2d').getImageData(pxs[i].x, pxs[i].y, 1, 1).data);
-    	};
-    	return list;
+        var list = [];
+        for (var i = 0; i < pxs.length; i++) {
+        	list.push(canvas.getContext('2d').getImageData(pxs[i].x, pxs[i].y, 1, 1).data);
+        };
+        return list;
     },
 
- 	_areColorsEqual: function (col1, col2) { // (Array, Array) -> Boolean
-    	var r = col1[0] === col2[0],
-    		g = col1[1] === col2[1],
-    		b = col1[2] === col2[2];
+    _areColorsEqual: function (col1, col2) { // (Array, Array) -> Boolean
+        var r = col1[0] === col2[0],
+           g = col1[1] === col2[1],
+           b = col1[2] === col2[2];
 
-    	return (r && g && b);
+        return (r && g && b);
     },
 
     _isColorInColors: function (checkingFunc, col, cols) { // (Function, Array, Array) -> Boolean
-		for (var i = 0; i < cols.length; i++) {
-			if (checkingFunc(col, cols[i]) === true) {
-				return true;
-			};
-		};
-		return false;
+        for (var i = 0; i < cols.length; i++) {
+            if (checkingFunc(col, cols[i]) === true) {
+                return true;
+            };
+        };
+        return false;
     },
 
     _areColorsEqualToColor: function (checkingFunc, cols, col) { // (Function, Array, Array) -> Boolean
-		for (var i = 0; i < cols.length; i++) {
-			if (checkingFunc(col, cols[i]) === false) {
-				return false;
-			};
-		};
-		return true;
+        for (var i = 0; i < cols.length; i++) {
+            if (checkingFunc(col, cols[i]) === false) {
+                return false;
+            };
+        };
+        return true;
     },
 
     _areColorsIntersects: function (checkingFunc, cols1, cols2) { // (Function, Array, Array) -> Boolean
