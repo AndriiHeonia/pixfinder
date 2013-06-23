@@ -18,7 +18,7 @@ var PF = {
 
                 // skip if px is not a pixel of the feature
                 if (this._isColorInColors(this._areColorsEqual, pxCol, colors) === false) {
-                	continue;
+                    continue;
                 };
 
                 nPxs = this._getNeighborPixels(px, {
@@ -26,7 +26,7 @@ var PF = {
                     h: canv.height - 1
                 });
                 nPxCols = this._getPixelsColors(canv, nPxs);
-
+                
                 // skip if px is not a boundary pixel of the feature
                 if (this._areColorsEqualToColor(this._areColorsEqual, nPxCols, pxCol) === true) {
                     continue;
