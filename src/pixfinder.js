@@ -1,5 +1,7 @@
 var step = 1;
 var PF = {
+    // @todo refactor this ugly function to FP style, add step as argument
+    // @todo try to detect similar colors by main color
     getFeatures: function (img, colors) { // (HTMLImageElement, Object) -> Object
         var canv = this._wrapByCanvas(img),
             colors = this._colorsToRgb(colors),
