@@ -16,19 +16,33 @@
 
 				img.onload = function () {
 					var objColors = [
-						'd4d4d4'
+						'd4d4d4',
+						'b1b0b2',
+						'b6b6b7',
+						'b9b9ba',
+						'c5c4c0',
+						'a9a9ac',
+						'ffffff',
+						'ebebec'
 						/*'dedac8',
 						'c5c2b4'*/
 					];
 					var features = PF.getFeatures(this, objColors);
+					console.log(features.length);
 
 					var c=document.getElementById("canv");
 					var ctx=c.getContext("2d");
 					for (var i = 0; i < features.length; i++) {
-						for (var j = 0; j < features[i].length; i++) {
+						ctx.fillStyle = toHex (
+							Math.random() * 255,
+							Math.random() * 255,
+							Math.random() * 255);
+
+						for (var j = 0; j < features[i].length; j++) {
 							ctx.beginPath();
 							ctx.arc(features[i][j].x, features[i][j].y, 1, 0, 2*Math.PI);
-							ctx.stroke();
+							ctx.fill();
+							ctx.closePath();
 						};
 					};
 				}
