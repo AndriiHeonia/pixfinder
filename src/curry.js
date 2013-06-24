@@ -3,7 +3,7 @@ function curry (func) {
     var args = arguments, curryArgs = [];
  
     if (typeof func !== 'function') {
-        throw new Error('First argument should be a function!');
+        throw new Error('First argument is not a function');
     }
  
     for (var i = 1; i < args.length; i++) {

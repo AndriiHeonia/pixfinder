@@ -37,8 +37,7 @@ var PF = {
                 features.filter(function(feature) {
                     nColorIntersectCheckerFunc(pixelColorGetterFunc(feature));
                 });*/
-                var pushPxToFeatureFunc = curry(this._pushPixelToFeature, px);
-                features.map(pushPxToFeatureFunc);
+                features.map(curry(this._pushPixelToFeature, px));
 
                 /*for (var i = 0; i < features.length; i++) {
                     fPxs = features[i];
