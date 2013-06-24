@@ -1,11 +1,12 @@
+var step = 1;
 var PF = {
     getFeatures: function (img, colors) { // (HTMLImageElement, Object) -> Object
         var canv = this._wrapByCanvas(img),
             colors = this._colorsToRgb(colors),
             features = [];
 
-        for (var x = 0; x < img.clientWidth; x = x+1) {
-            for (var y = 0; y < img.clientHeight; y = y+1) {
+        for (var x = 0; x < img.clientWidth; x = x+step) {
+            for (var y = 0; y < img.clientHeight; y = y+step) {
 
                 var px = { x: x, y: y },
                 	pxCol = this._getPixelColor(canv, px),
@@ -19,8 +20,8 @@ var PF = {
                 }
 
                 nPxs = this._getNeighborPixels(px, {
-                    w: canv.width - 1, 
-                    h: canv.height - 1
+                    w: canv.width - step, 
+                    h: canv.height - step
                 });
                 nPxCols = this._getPixelsColors(canv, nPxs);
 
@@ -122,35 +123,35 @@ var PF = {
         var res = [];
         
         if (px.x > 0 && px.y > 0) {
-            res.push({ x: px.x-1, y: px.y-1 }); // tl
+            res.push({ x: px.x-step, y: px.y-step }); // tl
         };
 
         if (px.y > 0) {
-            res.push({ x: px.x,   y: px.y-1 }); // t
+            res.push({ x: px.x,   y: px.y-step }); // t
         };
 
         if (px.x < imgSize.w && px.y > 0) {
-            res.push({ x: px.x+1, y: px.y-1 }); // tr
+            res.push({ x: px.x+step, y: px.y-step }); // tr
         };
 
         if (px.x < imgSize.w) {
-            res.push({ x: px.x+1, y: px.y }); // r
+            res.push({ x: px.x+step, y: px.y }); // r
         };
 
         if (px.x < imgSize.w && px.y < imgSize.h) {
-            res.push({ x: px.x+1, y: px.y+1 }); // br
+            res.push({ x: px.x+step, y: px.y+step }); // br
         };
 
         if (px.y < imgSize.h) {
-            res.push({ x: px.x, y: px.y+1 }); // b
+            res.push({ x: px.x, y: px.y+step }); // b
         };
 
         if (px.x > 0 && px.y < imgSize.h) {
-            res.push({ x: px.x-1, y: px.y+1 }); // bl
+            res.push({ x: px.x-step, y: px.y+step }); // bl
         };
 
         if (px.x > 0) {
-            res.push({ x: px.x-1, y: px.y }); // l
+            res.push({ x: px.x-step, y: px.y }); // l
         };
 
         return res;
