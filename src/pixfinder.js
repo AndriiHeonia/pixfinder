@@ -1,15 +1,15 @@
 var PF = {
-	
     getFeatures: function (img, colors) { // (HTMLImageElement, Object) -> Object
         var canv = this._wrapByCanvas(img),
             colors = this._colorsToRgb(colors),
-            features = [[]];
+            features = [];
 
         for (var x = 0; x < img.clientWidth; x++) {
             for (var y = 0; y < img.clientHeight; y++) {
 
                 var px = { x: x, y: y },
                 	pxCol = this._getPixelColor(canv, px),
+                    isPxColEqualTo = curry(this._areColorsEqual, pxCol),
                 	nPxs,
                 	nPxCols,
                     fPxs,
@@ -17,7 +17,7 @@ var PF = {
                     fIdx;
 
                 // skip if px is not a pixel of the feature
-                if (this._isColorInColors(this._areColorsEqual, pxCol, colors) === false) {
+                if (!colors.some(isPxColEqualTo)) {
                     continue;
                 };
 
@@ -30,31 +30,39 @@ var PF = {
                 // skip if px is not a boundary pixel of the feature
                 if (this._areColorsEqualToColor(this._areColorsEqual, nPxCols, pxCol) === true) {
                     continue;
-                }
+                };
 
-                /*var pixelColorGetterFunc = curry(this._getPixelsColors, canv);
-                var nColorIntersectCheckerFunc = curry(this._areColorsIntersects, this._areColorsEqual, nPxCols);
-                features.filter(function(feature) {
-                    nColorIntersectCheckerFunc(pixelColorGetterFunc(feature));
-                });*/
-                features.map(curry(this._pushPixelToFeature, px));
+                var areNPxColorsIntersectsWith = curry(this._areColorsIntersects, this._areColorsEqual, nPxCols);
+                var getPixelsColors = curry(this._getPixelsColors, canv);
 
-                /*for (var i = 0; i < features.length; i++) {
-                    fPxs = features[i];
-                    fPxsCols = this._getPixelsColors(canv, fPxs);
-                    // check or pixel belongs to one of already processed features
-                    if (this._areColorsIntersects(this._areColorsEqual, fPxsCols, nPxCols) === true) {
+                if (features.length === 0) {
+                    features[0] = [px];
+                    console.log('first');
+                    continue;                   
+                };
+
+                for (var i = 0; i < features.length; i++) {
+                    if (this._arePixelsIntersects(features[i], nPxs)) {
                         features[i].push(px);
+                        console.log(true);
+                    }
+                    else {
+                        features[features.length] = [px];
+                        console.log(false);
+                    }
+                    break;
+                };
+
+                /*features.forEach(function(fPxs, fIdx, frs) {
+                    if (areNPxColorsIntersectsWith(getPixelsColors(fPxs))) {
+                        console.log(true);
+                    }
+                    else {
+                        console.log(false);   
                     };
-                };*/
-
-                // we need only boundary pixels & only if it does't belongs to exists features
-                /*if (isFeatureUpdated === false &&
-                    this._areColorsEqualToColor(this._areColorsEqual, nPxCols, pxCol) === false) {
-                    features[features.length] = [];
-                    features[features.length-1].push(px);
-                };*/
-
+                    console.log(frs.length);
+                    fPxs.push(px);
+                });*/
             };
         };
         return features;
@@ -95,15 +103,6 @@ var PF = {
         return (r && g && b);
     },
 
-    _isColorInColors: function (checkingFunc, col, cols) { // (Function, Array, Array) -> Boolean
-        for (var i = 0; i < cols.length; i++) {
-            if (checkingFunc(col, cols[i]) === true) {
-                return true;
-            };
-        };
-        return false;
-    },
-
     _areColorsEqualToColor: function (checkingFunc, cols, col) { // (Function, Array, Array) -> Boolean
         for (var i = 0; i < cols.length; i++) {
             if (checkingFunc(col, cols[i]) === false) {
@@ -111,6 +110,17 @@ var PF = {
             };
         };
         return true;
+    },
+
+    _arePixelsIntersects: function (pxs1, pxs2) { // (Array, Array) -> Boolean
+        for (var i = 0; i < pxs1.length; i++) {
+            for (var j = 0; j < pxs2.length; j++) {
+                if (pxs1[i].x === pxs2[j].x && pxs1[i].y ===pxs2[j].y) {
+                    return true;
+                };
+            };
+        };
+        return false;
     },
 
     _areColorsIntersects: function (checkingFunc, cols1, cols2) { // (Function, Array, Array) -> Boolean

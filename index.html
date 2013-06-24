@@ -20,15 +20,16 @@
 						/*'dedac8',
 						'c5c2b4'*/
 					];
-					var b = PF.getFeatures(this, objColors);
-					console.log(b[0].length);
+					var features = PF.getFeatures(this, objColors);
 
 					var c=document.getElementById("canv");
 					var ctx=c.getContext("2d");
-					for (var i = 0; i < b[0].length; i++) {
-						ctx.beginPath();
-						ctx.arc(b[0][i].x, b[0][i].y, 1, 0, 2*Math.PI);
-						ctx.stroke();
+					for (var i = 0; i < features.length; i++) {
+						for (var j = 0; j < features[i].length; i++) {
+							ctx.beginPath();
+							ctx.arc(features[i][j].x, features[i][j].y, 1, 0, 2*Math.PI);
+							ctx.stroke();
+						};
 					};
 				}
 
