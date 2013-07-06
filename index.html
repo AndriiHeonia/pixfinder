@@ -3,9 +3,9 @@
 	<head>
 		<title>Pixfinder - a JavaScript library for image analysis and feature extraction</title>
 		<meta charset="utf-8" />
+		<script src="src/pixfinder.js"></script>
 		<script src="src/hex-rgb.js"></script>
 		<script src="src/curry.js"></script>
-		<script src="src/pixfinder.js"></script>
 	</head>
 	<body>
 		<img id="img"></img>
@@ -16,7 +16,7 @@
 
 				img.onload = function () {
 					var objColors = [
-						'd4d4d4',
+						/*'d4d4d4',
 						'b1b0b2',
 						'b6b6b7',
 						'b9b9ba',
@@ -33,7 +33,8 @@
 						'c2c2c3',
 						'ababae',
 						'dedac8',
-						'c5c2b4'
+						'c5c2b4'*/
+						'd4d4d4'
 					];
 					var features = PF.getFeatures(this, objColors);
 					console.log(features.length);
@@ -41,7 +42,7 @@
 					var c=document.getElementById("canv");
 					var ctx=c.getContext("2d");
 					for (var i = 0; i < features.length; i++) {
-						ctx.fillStyle = toHex (
+						ctx.fillStyle = PF.toHex (
 							Math.random() * 255,
 							Math.random() * 255,
 							Math.random() * 255);
