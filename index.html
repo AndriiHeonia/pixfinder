@@ -24,10 +24,6 @@
 					];
 					var features = P.getRegionsByColors(this, objColors);
 
-					//var features = P.getFeatures(this, objColors);
-
-					console.log(features);
-
 					var c=document.getElementById("canv");
 					var ctx=c.getContext("2d");
 					for (var i = 0; i < features.length; i++) {
@@ -41,11 +37,6 @@
 							ctx.arc(features[i][j].x, features[i][j].y, 1, 0, 2*Math.PI);
 						};
 						ctx.fill();
-						/*ctx.moveTo(features[i][0].x, features[i][0].y);
-						for (var j = 1; j < features[i].length; j++) {
-							ctx.lineTo(features[i][j].x, features[i][j].y);
-						};
-						ctx.stroke();*/
 						ctx.closePath();
 					};
 				}
