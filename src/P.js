@@ -1,13 +1,3 @@
-// http://en.wikipedia.org/wiki/Binary_image
-// http://en.wikipedia.org/wiki/Otsu%27s_method
-// http://en.wikipedia.org/wiki/Blob_extraction
-
-// http://en.wikipedia.org/wiki/Grayscale
-// http://en.wikipedia.org/wiki/Gamma_correction
-
-// http://ru.wikipedia.org/wiki/%D0%92%D1%8B%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5_%D0%B3%D1%80%D0%B0%D0%BD%D0%B8%D1%86
-// http://ru.wikipedia.org/wiki/K-means
-
 var step = 2;
 var P = {
 
@@ -26,7 +16,17 @@ var P = {
         for (var x = 0; x < img.clientWidth; x = x+step) {
             for (var y = 0; y < img.clientHeight; y = y+step) {
                 var px = { x: x, y: y },
-                    pxCol = this._getPixelColor(canvas, px);
+                    pxCol = this._getPixelColor(canvas, px),
+                    nPxs = this._getNeighborPixels(px, {
+                        w: canvas.width - step, 
+                        h: canvas.height - step
+                    }),
+                    nPxCols = this._getPixelsColors(canvas, nPxs);
+
+                // skip if px is not a boundary pixel of the feature
+                if (this._areColorsEqualToColor(P.Util.Color.areEqual, nPxCols, pxCol) === true) {
+                    continue;
+                };
 
                 // is it pixel of the feature?
                 if(this._isColorInColors(P.Util.Color.areEqual, pxCol, colors)) {
@@ -57,63 +57,6 @@ var P = {
         res = disjointSet.extract();
         disjointSet.destroy();
         return res;
-    },
-
-    // @todo refactor this ugly function to FP style, add step as argument
-    // @todo try to detect similar colors by main color
-    getFeatures: function (img, colors) { // (HTMLImageElement, Array) -> Object
-        var canv = this._wrapByCanvas(img),
-            colors = this._extendColors(this._colorsToRgb(colors), 10),
-            features = [];
-
-        for (var x = 0; x < img.clientWidth; x = x+step) {
-            for (var y = 0; y < img.clientHeight; y = y+step) {
-
-                var px = { x: x, y: y },
-                	pxCol = this._getPixelColor(canv, px),
-                    isPxColEqualTo = P.Func.curry(P.Util.Color.areEqual, pxCol),
-                	nPxs,
-                	nPxCols;
-
-                // skip if px is not a pixel of the feature
-                if(!this._isColorInColors(P.Util.Color.areEqual, pxCol, colors)) {
-                    continue;
-                }
-
-                nPxs = this._getNeighborPixels(px, {
-                    w: canv.width - step, 
-                    h: canv.height - step
-                }, 0);
-                nPxCols = this._getPixelsColors(canv, nPxs);
-
-                // skip if px is not a boundary pixel of the feature
-                if (this._areColorsEqualToColor(P.Util.Color.areEqual, nPxCols, pxCol) === true) {
-                    continue;
-                };
-
-                if (features.length === 0) {
-                    features[0] = [px];
-                    continue;                   
-                };
-
-                var wasUpdated = false;
-
-                for (var i = 0; i < features.length; i++) {
-                    if (this._arePixelsIntersects(features[i], nPxs)) {
-                        features[i].push(px);
-                        wasUpdated = true;
-                        break;
-                    }
-                };
-
-                if (wasUpdated === false) {
-                    features[features.length] = [px];
-                };
-
-            }
-        };
-
-        return features;
     },
 
     _wrapByCanvas: function (img) { // (HTMLImageElement) -> HTMLCanvasElement
@@ -181,133 +124,41 @@ var P = {
         return true;
     },
 
-    _arePixelsIntersects: function (pxs1, pxs2) { // (Array, Array) -> Boolean
-        for (var i = 0; i < pxs1.length; i++) {
-            for (var j = 0; j < pxs2.length; j++) {
-                if (pxs1[i].x === pxs2[j].x && pxs1[i].y ===pxs2[j].y) {
-                    return true;
-                };
-            };
-        };
-        return false;
-    },
-
-    _getNeighborPixels: function (px, imgSize, count) { // (Object, Object) -> Array
+    _getNeighborPixels: function (px, imgSize) { // (Object, Object) -> Array
         var res = [];
 
         if (px.x > 0 && px.y > 0) {
-            res.push(this._getNeighborTlPixels(px, imgSize)); // tl
+            res.push({ x: px.x-step, y: px.y-step }); // tl
         };
 
         if (px.y > 0) {
-            res.push(this._getNeighborTPixels(px, imgSize)); // t
+            res.push({ x: px.x,   y: px.y-step }); // t
         };
 
         if (px.x < imgSize.w && px.y > 0) {
-            res.push(this._getNeighborTrPixels(px, imgSize)); // tr
+            res.push({ x: px.x+step, y: px.y-step }); // tr
         };
 
         if (px.x < imgSize.w) {
-            res.push(this._getNeighborRPixels(px, imgSize)); // r
+            res.push({ x: px.x+step, y: px.y }); // r
         };
 
         if (px.x < imgSize.w && px.y < imgSize.h) {
-            res.push(this._getNeighborBrPixels(px, imgSize)); // br
+            res.push({ x: px.x+step, y: px.y+step }); // br
         };
 
         if (px.y < imgSize.h) {
-            res.push(this._getNeighborBPixels(px, imgSize)); // b
+            res.push({ x: px.x, y: px.y+step }); // b
         };
 
         if (px.x > 0 && px.y < imgSize.h) {
-            res.push(this._getNeighborBlPixels(px, imgSize)); // bl
+            res.push({ x: px.x-step, y: px.y+step }); // bl
         };
 
         if (px.x > 0) {
-            res.push(this._getNeighborLPixels(px, imgSize)); // l
-        };
-
-        for (var c = 0; c < count; c++) {
-            var nRes = [];
-
-            for (var i = 0; i < res.length; i++) {
-
-                if (res[i].x > 0 && res[i].y > 0) {
-                    nRes.push(this._getNeighborTlPixels(res[i], imgSize));
-                };
-
-                if (res[i].y > 0) {
-                    nRes.push(this._getNeighborTPixels(res[i], imgSize)); // t
-                };
-
-                if (res[i].x < imgSize.w && res[i].y > 0) {
-                    nRes.push(this._getNeighborTrPixels(res[i], imgSize)); // tr
-                };
-
-                if (res[i].x < imgSize.w) {
-                    nRes.push(this._getNeighborRPixels(res[i], imgSize)); // r
-                };
-
-                if (res[i].x < imgSize.w && res[i].y < imgSize.h) {
-                    nRes.push(this._getNeighborBrPixels(res[i], imgSize)); // br
-                };
-
-                if (res[i].y < imgSize.h) {
-                    nRes.push(this._getNeighborBPixels(res[i], imgSize)); // b
-                };
-
-                if (res[i].x > 0 && res[i].y < imgSize.h) {
-                    nRes.push(this._getNeighborBlPixels(res[i], imgSize)); // bl
-                };
-
-                if (res[i].x > 0) {
-                    nRes.push(this._getNeighborLPixels(res[i], imgSize)); // l
-                };
-            };
-
-            for (var i = 0; i < nRes.length; i++) {
-                res.push(nRes[i]);
-            };            
+            res.push({ x: px.x-step, y: px.y }); // l
         };
 
         return res;
-    },
-
-    _getNeighborTlPixels: function (px, imgSize) { // (Object, Object) -> Object
-        return { x: px.x-step, y: px.y-step }; // tl
-    },
-
-    _getNeighborTPixels: function (px, imgSize) { // (Object, Object) -> Object
-        return { x: px.x,   y: px.y-step }; // t
-    },
-
-    _getNeighborTrPixels: function (px, imgSize) { // (Object, Object) -> Object
-        return { x: px.x+step, y: px.y-step }; // tr
-    },
-
-    _getNeighborRPixels: function (px, imgSize) { // (Object, Object) -> Object
-        return { x: px.x+step, y: px.y }; // r
-    },
-
-    _getNeighborBrPixels: function (px, imgSize) { // (Object, Object) -> Object
-        return { x: px.x+step, y: px.y+step }; // br
-    },
-
-    _getNeighborBPixels: function (px, imgSize) { // (Object, Object) -> Object
-        if (px.y < imgSize.h) {
-            return { x: px.x, y: px.y+step }; // b
-        };
-    },
-
-    _getNeighborBlPixels: function (px, imgSize) { // (Object, Object) -> Object
-        if (px.x > 0 && px.y < imgSize.h) {
-            return { x: px.x-step, y: px.y+step }; // bl
-        };
-    },
-
-    _getNeighborLPixels: function (px, imgSize) { // (Object, Object) -> Object
-        if (px.x > 0) {
-            return { x: px.x-step, y: px.y }; // l
-        };
     }
 }
