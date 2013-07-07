@@ -39,7 +39,8 @@ var P = {
     },
 
     _splitRegionsByDist: function (pixels, dist) { // (Array, Number) -> Array
-        var disjointSet = new P.Struct.DisjointSet();
+        var disjointSet = new P.Struct.DisjointSet(),
+            res;
 
         for (var i = 0; i < pixels.length; i++) {
             disjointSet.add(pixels[i]);
@@ -53,7 +54,9 @@ var P = {
             };
         };
 
-        return disjointSet.getRelations();
+        res = disjointSet.extract();
+        disjointSet.destroy();
+        return res;
     },
 
     // @todo refactor this ugly function to FP style, add step as argument

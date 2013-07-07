@@ -4,14 +4,6 @@ P.Struct.DisjointSet = function () {
 
     var _relations = {};
 
-    function _getObjectKeyByVal (obj, value) {
-        for (var prop in obj) {
-            if (obj[prop] === value) {
-                return prop;
-            }
-        }
-    };
-
     return {
 
         add: function (val) {
@@ -38,7 +30,7 @@ P.Struct.DisjointSet = function () {
             }
         },
 
-        getRelations: function () {
+        extract: function () {
             var resObj = {},
                 resArr = [];
 
@@ -57,6 +49,10 @@ P.Struct.DisjointSet = function () {
             }
 
             return resArr;
+        },
+
+        destroy: function () {
+            _relations = {};
         }
     }
 };
