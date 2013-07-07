@@ -1,9 +1,9 @@
-var step = 2;
+var step = 3;
 var P = {
 
     getRegionsByColors: function (img, colors) { // (HTMLImageElement, Array) -> Object
         var canvas = this._wrapByCanvas(img),
-            colors = this._extendColors(this._colorsToRgb(colors), 1),
+            colors = this._colorsToRgb(colors),
             regionsPxs = this._getRegionsPixels(canvas, colors),
             regions = this._splitRegionsByDist(regionsPxs, 10);
 
@@ -72,26 +72,6 @@ var P = {
             cols[i] = P.Util.Color.toRGB(cols[i]);
         };
         return cols;
-    },
-
-    _extendColors: function (cols, step) { // (Array) -> Array
-        var res = [];
-        for (var i = 0; i < cols.length; i++) {
-            res.push(cols[i]);
-            for (var j = 0; j < step; j++) {
-                res.push([cols[i][0] + j, cols[i][1], cols[i][2]]);
-                res.push([cols[i][0] + j, cols[i][1] + j, cols[i][2]]);
-                res.push([cols[i][0] + j, cols[i][1], cols[i][2] + j]);
-                res.push([cols[i][0] + j, cols[i][1] + j, cols[i][2] + j]);
-
-                res.push([cols[i][0], cols[i][1] + j, cols[i][2]]);
-                res.push([cols[i][0], cols[i][1] + j, cols[i][2] + j]);
-
-                res.push([cols[i][0], cols[i][1], cols[i][2] + j]);
-                res.push([cols[i][0] + j, cols[i][1], cols[i][2] + j]);
-            };
-        };
-        return res;
     },
 
     _getPixelColor: function (canvas, px) { // (HTMLCanvasElement, Object) -> Array
