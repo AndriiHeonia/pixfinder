@@ -1,4 +1,4 @@
-// http://www.mathblog.dk/disjoint-set-data-structure/
+// http://crazycode.net/blog/10-algorithms-and-data-structures/28-connection-task
 P.Struct.DisjointSet = function () {
     'use strict';
 
