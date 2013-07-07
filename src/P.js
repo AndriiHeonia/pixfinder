@@ -1,5 +1,60 @@
-var step = 3;
-var PF = {    
+// http://en.wikipedia.org/wiki/Binary_image
+// http://en.wikipedia.org/wiki/Otsu%27s_method
+// http://en.wikipedia.org/wiki/Blob_extraction
+
+// http://en.wikipedia.org/wiki/Grayscale
+// http://en.wikipedia.org/wiki/Gamma_correction
+
+// http://ru.wikipedia.org/wiki/%D0%92%D1%8B%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5_%D0%B3%D1%80%D0%B0%D0%BD%D0%B8%D1%86
+// http://ru.wikipedia.org/wiki/K-means
+
+var step = 2;
+var P = {
+
+    getRegionsByColors: function (img, colors) { // (HTMLImageElement, Array) -> Object
+        var canvas = this._wrapByCanvas(img),
+            colors = this._extendColors(this._colorsToRgb(colors), 1),
+            regionsPxs = this._getRegionsPixels(canvas, colors),
+            regions = this._splitRegionsByDist(regionsPxs, 10);
+
+        return regions;
+    },
+
+    _getRegionsPixels: function (canvas, colors) { // (HTMLCanvasElement, Array) -> Array
+        var res = [];
+
+        for (var x = 0; x < img.clientWidth; x = x+step) {
+            for (var y = 0; y < img.clientHeight; y = y+step) {
+                var px = { x: x, y: y },
+                    pxCol = this._getPixelColor(canvas, px);
+
+                // is it pixel of the feature?
+                if(this._isColorInColors(P.Util.Color.areEqual, pxCol, colors)) {
+                    res.push(px);
+                }
+            }
+        }
+
+        return res;
+    },
+
+    _splitRegionsByDist: function (pixels, dist) { // (Array, Number) -> Array
+        var disjointSet = new P.Struct.DisjointSet();
+
+        for (var i = 0; i < pixels.length; i++) {
+            disjointSet.add(pixels[i]);
+            for (var j = 0; j < pixels.length; j++) {
+                disjointSet.add(pixels[j]);
+                if (P.Util.Math.getDistance(pixels[i], pixels[j]) <= dist) {
+                    if (!disjointSet.find(pixels[i], pixels[j])) {
+                        disjointSet.union(pixels[i], pixels[j]);
+                    };
+                };
+            };
+        };
+
+        return disjointSet.getRelations();
+    },
 
     // @todo refactor this ugly function to FP style, add step as argument
     // @todo try to detect similar colors by main color
@@ -13,23 +68,23 @@ var PF = {
 
                 var px = { x: x, y: y },
                 	pxCol = this._getPixelColor(canv, px),
-                    isPxColEqualTo = curry(this._areColorsEqual, pxCol),
+                    isPxColEqualTo = P.Func.curry(P.Util.Color.areEqual, pxCol),
                 	nPxs,
                 	nPxCols;
 
                 // skip if px is not a pixel of the feature
-                if(!this._isColorInColors(this._areColorsEqual, pxCol, colors)) {
+                if(!this._isColorInColors(P.Util.Color.areEqual, pxCol, colors)) {
                     continue;
                 }
 
                 nPxs = this._getNeighborPixels(px, {
                     w: canv.width - step, 
                     h: canv.height - step
-                }, 3);
+                }, 0);
                 nPxCols = this._getPixelsColors(canv, nPxs);
 
                 // skip if px is not a boundary pixel of the feature
-                if (this._areColorsEqualToColor(this._areColorsEqual, nPxCols, pxCol) === true) {
+                if (this._areColorsEqualToColor(P.Util.Color.areEqual, nPxCols, pxCol) === true) {
                     continue;
                 };
 
@@ -68,7 +123,7 @@ var PF = {
 
     _colorsToRgb: function (cols) { // (Array) -> Array
         for (var i = 0; i < cols.length; i++) {
-            cols[i] = PF.toRGB(cols[i]);
+            cols[i] = P.Util.Color.toRGB(cols[i]);
         };
         return cols;
     },
@@ -103,14 +158,6 @@ var PF = {
         	list.push(canvas.getContext('2d').getImageData(pxs[i].x, pxs[i].y, 1, 1).data);
         };
         return list;
-    },
-
-    _areColorsEqual: function (col1, col2) { // (Array, Array) -> Boolean
-        var r = col1[0] === col2[0],
-            g = col1[1] === col2[1],
-            b = col1[2] === col2[2];
-
-        return (r && g && b);
     },
 
     _isColorInColors: function (checkingFunc, col, cols) { // (Function, Array, Array) -> Boolean
