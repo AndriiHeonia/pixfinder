@@ -22,7 +22,9 @@
 					var objColors = [
 						'd4d4d4'
 					];
-					var features = P.getRegionsByColors(this, objColors);
+					var features = P.getRegionsByColors(this, objColors, {
+						accuracy: 3
+					});
 
 					var c=document.getElementById("canv");
 					var ctx=c.getContext("2d");
