@@ -50,7 +50,7 @@ var P = {
         return res;
     },
 
-    // TODO: should be optimized
+    // TODO: should be optimized. Think about to sorting algorithms
     _splitByDist: function (pixels, dist) { // (Array, Number) -> Array
         var disjointSet = new P.Struct.DisjointSet(),
             res;
