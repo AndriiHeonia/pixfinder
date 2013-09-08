@@ -58,7 +58,7 @@ var P = {
         //var t0 = new Date();
         for (var i = 0; i < pixels.length; i++) {
             disjointSet.add(pixels[i]);
-            for (var j = 0; j < pixels.length; j++) {
+            for (var j = i; j < pixels.length; j++) {
                 disjointSet.add(pixels[j]);
                 if (P.Util.Math.getDistance(pixels[i], pixels[j]) <= dist) {
                     if (!disjointSet.find(pixels[i], pixels[j])) {
