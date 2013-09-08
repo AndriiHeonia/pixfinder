@@ -7,6 +7,7 @@ var P = {
             regionsPxs, regions;
 
         opt.accuracy = opt.accuracy || 3;
+        opt.dist = opt.dist || 15;
 
         var t0 = new Date();
         regionsPxs = this._getRegionsPixels(canvas, colors, opt.accuracy);
@@ -14,7 +15,7 @@ var P = {
         console.log('_getRegionsPixels: ', t1 - t0);
 
         var t0 = new Date();
-        regions = this._splitByDist(regionsPxs, 10);
+        regions = this._splitByDist(regionsPxs, opt.dist);
         var t1 = new Date();
         console.log('_splitByDist: ', t1 - t0);
 
