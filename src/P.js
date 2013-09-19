@@ -17,7 +17,7 @@ var P = {
         var t0 = new Date();
         regions = this._splitByDist(regionsPxs, opt.dist);
         var t1 = new Date();
-        console.log('_splitByDist: ', t1 - t0);
+        console.log('_splitByDist: ', t1 - t0); // 1716 -> 270
 
         return regions;
     },
@@ -59,7 +59,7 @@ var P = {
         //var t0 = new Date();
         for (var i = 0; i < pixels.length; i++) {
             disjointSet.add(pixels[i]);
-            for (var j = i + 1; j < pixels.length; j++) {
+            for (var j = i; j > 0; j--) {
                 disjointSet.add(pixels[j]);
                 if (P.Util.Math.getDistance(pixels[i], pixels[j]) <= dist) {
                     if (!disjointSet.find(pixels[i], pixels[j])) {
