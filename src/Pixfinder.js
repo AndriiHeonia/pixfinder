@@ -10,9 +10,11 @@ var Pixfinder = function (options) {
     var processImg = function() {
         var canv = Pixfinder._wrapByCanvas(opt.img);
         var regionsPxs = Pixfinder._getRegionsPixels(canv, opt.colors, opt.accuracy);
-        var regions = Pixfinder._splitByDist(regionsPxs, opt.distance);
+        var edges = Pixfinder._splitByDist(regionsPxs, opt.distance);
         if (typeof options.onload !== 'undefined') {
-            options.onload(regions);
+            options.onload({
+                edges: edges
+            });
         }
     }
 

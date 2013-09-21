@@ -28,18 +28,18 @@
 					onclick: function(e) {}
 				});
 
-				function drawGeometries (regions) {
+				function drawGeometries (e) {
 					var c=document.getElementById("canv");
 					var ctx=c.getContext("2d");
-					for (var i = 0; i < regions.length; i++) {
+					for (var i = 0; i < e.edges.length; i++) {
 						ctx.fillStyle = Pixfinder.Util.Color.toHex ([
 							Math.random() * 255,
 							Math.random() * 255,
 							Math.random() * 255
 						]);
 						ctx.beginPath();
-						for (var j = 0; j < regions[i].length; j++) {	
-							ctx.arc(regions[i][j].x, regions[i][j].y, 1, 0, 2*Math.PI);
+						for (var j = 0; j < e.edges[i].length; j++) {	
+							ctx.arc(e.edges[i][j].x, e.edges[i][j].y, 1, 0, 2*Math.PI);
 						};
 						ctx.fill();
 						ctx.closePath();
