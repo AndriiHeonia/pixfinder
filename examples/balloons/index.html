@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Pixfinder - a JavaScript library for image analysis and feature extraction</title>
+        <title>Pixfinder - a JavaScript library for image analysis</title>
         <meta charset="utf-8" />
         <script src="../../src/Pixfinder.js"></script>
         <script src="../../src/Util/Util.js"></script>
@@ -26,18 +26,12 @@
                     img: myImg,
                     colors: ['e31461'],
                     distance: 10,
-                    accuracy: 3,
                     tolerance: 100,
-                    onload: drawGeometries,
-                    onhover: function(e) {},
-                    onleave: function(e) {},
-                    onclick: function(e) {}
+                    onload: drawGeometries
                 });
 
-                function drawGeometries (e) {
-                    console.log(e.edges.length);
-                    var countField = document.getElementById('count');
-                    countField.innerHTML = e.edges.length;
+                function drawGeometries(e) {
+                    document.getElementById('count').innerHTML = e.edges.length;
 
                     var c=document.getElementById("canv");
                     var ctx=c.getContext("2d");

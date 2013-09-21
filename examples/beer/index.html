@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Pixfinder - a JavaScript library for image analysis and feature extraction</title>
+        <title>Pixfinder - a JavaScript library for image analysis</title>
         <meta charset="utf-8" />
         <script src="../../src/Pixfinder.js"></script>
         <script src="../../src/Util/Util.js"></script>
@@ -33,9 +33,8 @@
                         img: myImg,
                         colors: [color],
                         tolerance: 5,
-                        onload: function (e) {
-                            // find glass shape (because we have some noise in results)
-                            var shape = [];
+                        onload: function(e) {
+                            var shape = []; // find glass (because we have some noise in results)
                             for (var i = 0; i < e.edges.length; i++) {
                                 if (e.edges[i].length > shape.length) {
                                     shape = e.edges[i];
