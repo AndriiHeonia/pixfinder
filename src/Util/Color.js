@@ -1,4 +1,4 @@
-P.Util.Color = {
+Pixfinder.Util.Color = {
 
     toRGB: function (color) { // (String) -> Array
         var num = parseInt(color, 16);

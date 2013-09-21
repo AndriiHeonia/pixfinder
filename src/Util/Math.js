@@ -1,4 +1,4 @@
-P.Util.Math = {
+Pixfinder.Util.Math = {
 
     getDistance: function (px1, px2) { // (Object, Object) -> Number
         return Math.sqrt(

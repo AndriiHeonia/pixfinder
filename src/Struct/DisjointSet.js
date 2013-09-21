@@ -1,7 +1,7 @@
 // http://crazycode.net/blog/10-algorithms-and-data-structures/28-connection-task
 // TODO: rename to UnionFind
 // TODO: think about weighted quick-union or quick union with path compression (Sedjwik, page 231)
-P.Struct.DisjointSet = function () {
+Pixfinder.Struct.DisjointSet = function () {
     'use strict';
 
     var _relations = {};

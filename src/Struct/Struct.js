@@ -1,1 +1,1 @@
-P.Struct = {};
+Pixfinder.Struct = {};

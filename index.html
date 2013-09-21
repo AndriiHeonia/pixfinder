@@ -3,7 +3,7 @@
 	<head>
 		<title>Pixfinder - a JavaScript library for image analysis and feature extraction</title>
 		<meta charset="utf-8" />
-		<script src="src/P.js"></script>
+		<script src="src/Pixfinder.js"></script>
 		<script src="src/Util/Util.js"></script>
 		<script src="src/Util/Color.js"></script>
 		<script src="src/Util/Math.js"></script>
@@ -11,59 +11,40 @@
 		<script src="src/Struct/DisjointSet.js"></script>
 	</head>
 	<body>
-		<img id="img"></img>
+		<img id="myImg" src="img.png" crossOrigin="Anonymous"></img>
 		<canvas id="canv" width="899" height="317" style="border:1px solid #d3d3d3;"></canvas>
 		<script>
 			window.onload = function () {
-				// var p = pixfinder({
-				// 	img: img,
-				// 	colors: ['#d4d4d4'],
-				// 	distance: 15,
-				// 	accuracy: 3,
-				// 	onload: function(e) {
-				// 		console.log(e);
-				// 	},
-				// 	onhover: function(e) {
-				// 		console.log(e);
-				// 	},
-				// 	onleave: function(e) {
-				// 		console.log(e);
-				// 	},
-				// 	onclick: function(e) {
-				// 		console.log(e);
-				// 	}
-				// });
+				var myImg = document.getElementById('myImg');
 
-				var img = document.getElementById('img');
+				var p = pixfinder({
+					img: myImg,
+					colors: ['d4d4d4'],
+					distance: 15,
+					accuracy: 3,
+					onload: drawGeometries,
+					onhover: function(e) {},
+					onleave: function(e) {},
+					onclick: function(e) {}
+				});
 
-				img.onload = function () {
-					var objColors = [
-						'd4d4d4'
-					];
-					var features = P.getRegionsByColors(this, objColors, {
-						accuracy: 3,
-						dist: 15
-					});
-
+				function drawGeometries (regions) {
 					var c=document.getElementById("canv");
 					var ctx=c.getContext("2d");
-					for (var i = 0; i < features.length; i++) {
-						ctx.fillStyle = P.Util.Color.toHex ([
+					for (var i = 0; i < regions.length; i++) {
+						ctx.fillStyle = Pixfinder.Util.Color.toHex ([
 							Math.random() * 255,
 							Math.random() * 255,
 							Math.random() * 255
 						]);
 						ctx.beginPath();
-						for (var j = 0; j < features[i].length; j++) {	
-							ctx.arc(features[i][j].x, features[i][j].y, 1, 0, 2*Math.PI);
+						for (var j = 0; j < regions[i].length; j++) {	
+							ctx.arc(regions[i][j].x, regions[i][j].y, 1, 0, 2*Math.PI);
 						};
 						ctx.fill();
 						ctx.closePath();
-					};
+					}
 				}
-
-				img.crossOrigin = "Anonymous";
-				img.src = 'img.png';
 			}
 		</script>
 	</body>
