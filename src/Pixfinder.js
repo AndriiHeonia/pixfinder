@@ -1,3 +1,4 @@
+// TODO: think about clear noise option. See beer example.
 var Pixfinder = function (options) {
     var opt = options;
     
