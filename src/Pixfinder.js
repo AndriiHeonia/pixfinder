@@ -1,15 +1,16 @@
 var Pixfinder = function (options) {
     var opt = options;
-
+    
     opt.accuracy = opt.accuracy || 3;
     opt.distance = opt.distance || 15;
+    opt.tolerance = opt.tolerance || 50;
     opt.colors = Pixfinder._colorsToRgb(opt.colors);
     opt.img = Object.prototype.toString.call(opt.img) === '[object String]' ?
         document.getElementById(opt.img) : opt.img;
 
     var processImg = function() {
         var canv = Pixfinder._wrapByCanvas(opt.img);
-        var regionsPxs = Pixfinder._getRegionsPixels(canv, opt.colors, opt.accuracy);
+        var regionsPxs = Pixfinder._getRegionsPixels(canv, opt.colors, opt.accuracy, opt.tolerance);
         var edges = Pixfinder._splitByDist(regionsPxs, opt.distance);
         if (typeof options.onload !== 'undefined') {
             options.onload({
@@ -52,27 +53,27 @@ Pixfinder._wrapByCanvas = function(img) { // (HTMLImageElement) -> HTMLCanvasEle
     return canv;
 }
 
-Pixfinder._getRegionsPixels = function(canvas, colors, accuracy) { // (HTMLCanvasElement, Array, Number) -> Array
+Pixfinder._getRegionsPixels = function(canvas, colors, accuracy, tolerance) { // (HTMLCanvasElement, Array, Number, Number) -> Array
     var res = [],
         ctx = canvas.getContext('2d');
 
     for (var x = 0; x < canvas.width; x = x+accuracy) {
         for (var y = 0; y < canvas.height; y = y+accuracy) {
             var px = { x: x, y: y },
-                pxCol = this._getPixelColor(ctx, px),
-                nPxs = this._getNeighborPixels(px, {
+                pxCol = Pixfinder._getPixelColor(ctx, px),
+                nPxs = Pixfinder._getNeighborPixels(px, {
                     w: canvas.width - accuracy, 
                     h: canvas.height - accuracy
                 }, accuracy);
-                nPxCols = this._getPixelsColors(ctx, nPxs); // TODO: 1209ms should be optimized
+                nPxCols = Pixfinder._getPixelsColors(ctx, nPxs); // TODO: 1209ms should be optimized
 
             // skip if px is not a boundary pixel of the feature
-            if (this._areColorsEqualToColor(Pixfinder.Util.Color.areEqual, nPxCols, pxCol) === true) {
+            if (Pixfinder._areColorsEqualToColor(Pixfinder.Util.Color.areSimilar, nPxCols, pxCol, tolerance) === true) {
                 continue;
             }
 
             // is it pixel of the feature?
-            if(this._isColorInColors(Pixfinder.Util.Color.areEqual, pxCol, colors)) {
+            if(Pixfinder._isColorInColors(Pixfinder.Util.Color.areSimilar, pxCol, colors, tolerance)) {
                 res.push(px);
             }
         }
@@ -131,18 +132,18 @@ Pixfinder._getPixelsColors = function(context, pxs) { // (CanvasRenderingContext
     return list;
 }
 
-Pixfinder._areColorsEqualToColor = function(checkingFunc, cols, col) { // (Function, Array, Array) -> Boolean
+Pixfinder._areColorsEqualToColor = function(checkingFunc, cols, col, tolerance) { // (Function, Array, Array, Number) -> Boolean
     for (var i = 0; i < cols.length; i++) {
-        if (checkingFunc(col, cols[i]) === false) {
+        if (checkingFunc(col, cols[i], tolerance) === false) {
             return false;
         };
     };
     return true;
 }
 
-Pixfinder._isColorInColors = function(checkingFunc, col, cols) { // (Function, Array, Array) -> Boolean
+Pixfinder._isColorInColors = function(checkingFunc, col, cols, tolerance) { // (Function, Array, Array, Number) -> Boolean
     for (var i = 0; i < cols.length; i++) {
-        if (checkingFunc(col, cols[i]) === true) {
+        if (checkingFunc(col, cols[i], tolerance) === true) {
             return true;
         };
     };
@@ -156,7 +157,7 @@ Pixfinder._splitByDist = function(pixels, dist) { // (Array, Number) -> Array
     //var t0 = new Date();
     for (var i = 0; i < pixels.length; i++) {
         disjointSet.add(pixels[i]);
-        for (var j = i; j > 0; j--) {
+        for (var j = i; j >= 0; j--) {
             disjointSet.add(pixels[j]);
             if (Pixfinder.Util.Math.getDistance(pixels[i], pixels[j]) <= dist) {
                 if (!disjointSet.find(pixels[i], pixels[j])) {

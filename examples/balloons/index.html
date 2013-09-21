@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Pixfinder - a JavaScript library for image analysis and feature extraction</title>
+        <meta charset="utf-8" />
+        <script src="../../src/Pixfinder.js"></script>
+        <script src="../../src/Util/Util.js"></script>
+        <script src="../../src/Util/Color.js"></script>
+        <script src="../../src/Util/Math.js"></script>
+        <script src="../../src/Struct/Struct.js"></script>
+        <script src="../../src/Struct/DisjointSet.js"></script>
+    </head>
+    <body>
+        <p>
+        How many balloons in the sky?<br />
+        Pixfinder analyzed this image and thinks that there are <b id="count"></b> balloons!
+        </p>
+        <img id="myImg" width="512" height="512" src="img.jpg" crossOrigin="Anonymous"></img>
+        <canvas id="canv" width="512" height="512" style="border:1px solid #d3d3d3;"></canvas>
+        <p>Photo is &copy; <a target="_blank" href="http://500px.com/photo/37629346">Tamás Mészáros</a></p>
+        <script>
+            window.onload = function () {
+                var myImg = document.getElementById('myImg');
+
+                var p = pixfinder({
+                    img: myImg,
+                    colors: ['e31461'],
+                    distance: 10,
+                    accuracy: 3,
+                    tolerance: 100,
+                    onload: drawGeometries,
+                    onhover: function(e) {},
+                    onleave: function(e) {},
+                    onclick: function(e) {}
+                });
+
+                function drawGeometries (e) {
+                    console.log(e.edges.length);
+                    var countField = document.getElementById('count');
+                    countField.innerHTML = e.edges.length;
+
+                    var c=document.getElementById("canv");
+                    var ctx=c.getContext("2d");
+                    for (var i = 0; i < e.edges.length; i++) {
+                        ctx.fillStyle = Pixfinder.Util.Color.toHex ([
+                            Math.random() * 255,
+                            Math.random() * 255,
+                            Math.random() * 255
+                        ]);
+                        ctx.beginPath();
+                        for (var j = 0; j < e.edges[i].length; j++) {   
+                            ctx.arc(e.edges[i][j].x, e.edges[i][j].y, 1, 0, 2*Math.PI);
+                        };
+                        ctx.fill();
+                        ctx.closePath();
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>
