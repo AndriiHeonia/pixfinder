@@ -42,8 +42,7 @@
                             };
                             
                             var lastShapePx = shape[shape.length-1];
-                            var c = document.getElementById("canv");
-                            var ctx = c.getContext("2d");
+                            var ctx = document.getElementById("canv").getContext("2d");
                             ctx.font = "italic 12pt Tahoma";
                             ctx.fillText(beerTypes[color], lastShapePx.x-50, lastShapePx.y-100);
                         }
