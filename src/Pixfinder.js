@@ -71,7 +71,7 @@ Pixfinder._getRegionsPixels = function(canvas, colors, accuracy, tolerance) { //
         },
         imgCols = ctx.getImageData(0, 0, imgSize.w, imgSize.h).data;
 
-    for (var i = 0; i < imgCols.length; i+=4) { // 4 - rgba
+    for (var i = 0; i < imgCols.length; i+=(4*accuracy)) { // 4 - rgba
         var pxCol = [imgCols[i], imgCols[i+1], imgCols[i+2], imgCols[i+3]],
             nPxCols = Pixfinder._getNeighborPixelsColors(i, imgCols, {
                 w: canvas.width, 
@@ -100,7 +100,7 @@ Pixfinder._getPixelByColorPosition = function(colPos, imgSize) { // (Number, Obj
     return px;
 }
 
-Pixfinder._getNeighborPixelsColors = function(colPos, imgCols, imgSize, accuracy) { // (Number, Array, Object, Number) -> Array
+Pixfinder._getNeighborPixelsColors = function(colPos, imgCols, imgSize) { // (Number, Array, Object) -> Array
     var res = [],
         tlPos, tPos, trPos, rPos,
         brPos, bPos, blPos, lPos,
