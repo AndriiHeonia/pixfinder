@@ -17,16 +17,16 @@
         </p>
         <img id="myImg" width="512" height="512" src="img.jpg" crossOrigin="Anonymous"></img>
         <canvas id="canv" width="512" height="512" style="border:1px solid #d3d3d3;"></canvas>
-        <p>Photo is &copy; <a target="_blank" href="http://500px.com/photo/37629346">Tamás Mészáros</a></p>
+        <p>Photo: &copy; <a target="_blank" href="http://500px.com/photo/37629346">Tamás Mészáros</a></p>
         <script>
             window.onload = function () {
                 var myImg = document.getElementById('myImg');
-
                 var p = pixfinder({
                     img: myImg,
                     colors: ['e31461'],
                     distance: 10,
                     tolerance: 100,
+                    accuracy: 2,
                     onload: drawGeometries
                 });
 
