@@ -11,8 +11,16 @@ var Pixfinder = function (options) {
 
     var processImg = function() {
         var canv = Pixfinder._wrapByCanvas(opt.img);
+        var t0 = new Date();
         var regionsPxs = Pixfinder._getRegionsPixels(canv, opt.colors, opt.accuracy, opt.tolerance);
+        var t1 = new Date();
+        console.log('_getRegionsPixels: ', t1 - t0); // 10340 ms. -> 288 ms. Fuck yeah!
+
+        var t0 = new Date();    
         var edges = Pixfinder._splitByDist(regionsPxs, opt.distance);
+        var t1 = new Date();
+        console.log('_splitByDist: ', t1 - t0);
+
         if (typeof options.onload !== 'undefined') {
             options.onload({
                 edges: edges
@@ -56,81 +64,129 @@ Pixfinder._wrapByCanvas = function(img) { // (HTMLImageElement) -> HTMLCanvasEle
 
 Pixfinder._getRegionsPixels = function(canvas, colors, accuracy, tolerance) { // (HTMLCanvasElement, Array, Number, Number) -> Array
     var res = [],
-        ctx = canvas.getContext('2d');
+        ctx = canvas.getContext('2d'),
+        imgSize = {
+            w: canvas.width,
+            h: canvas.height
+        },
+        imgCols = ctx.getImageData(0, 0, imgSize.w, imgSize.h).data;
 
-    for (var x = 0; x < canvas.width; x = x+accuracy) {
-        for (var y = 0; y < canvas.height; y = y+accuracy) {
-            var px = { x: x, y: y },
-                pxCol = Pixfinder._getPixelColor(ctx, px),
-                nPxs = Pixfinder._getNeighborPixels(px, {
-                    w: canvas.width - accuracy, 
-                    h: canvas.height - accuracy
-                }, accuracy);
-                nPxCols = Pixfinder._getPixelsColors(ctx, nPxs); // TODO: 1209ms should be optimized
+    for (var i = 0; i < imgCols.length; i+=4) { // 4 - rgba
+        var pxCol = [imgCols[i], imgCols[i+1], imgCols[i+2], imgCols[i+3]],
+            nPxCols = Pixfinder._getNeighborPixelsColors(i, imgCols, {
+                w: canvas.width, 
+                h: canvas.height
+            }, accuracy),
+            px = Pixfinder._getPixelByColorPosition(i, imgSize);
 
-            // skip if px is not a boundary pixel of the feature
-            if (Pixfinder._areColorsEqualToColor(Pixfinder.Util.Color.areSimilar, nPxCols, pxCol, tolerance) === true) {
-                continue;
-            }
+        // skip if px is not a boundary pixel of the feature
+        if (Pixfinder._areColorsEqualToColor(Pixfinder.Util.Color.areSimilar, nPxCols, pxCol, tolerance) === true) {
+            continue;
+        }
 
-            // is it pixel of the feature?
-            if(Pixfinder._isColorInColors(Pixfinder.Util.Color.areSimilar, pxCol, colors, tolerance)) {
-                res.push(px);
-            }
+        // is it pixel of the feature?
+        if(Pixfinder._isColorInColors(Pixfinder.Util.Color.areSimilar, pxCol, colors, tolerance)) {
+            res.push(px);
         }
     }
 
     return res;
 }
 
-Pixfinder._getPixelColor = function(context, px) { // (CanvasRenderingContext2D, Object) -> Array
-    return context.getImageData(px.x, px.y, 1, 1).data;
+Pixfinder._getPixelByColorPosition = function(colPos, imgSize) { // (Number, Object) -> Object
+    px = {x: 0, y: 0};
+    px.y = parseInt(colPos / (imgSize.w*4));
+    px.x = colPos/4 - px.y*imgSize.w;
+    return px;
 }
 
-Pixfinder._getNeighborPixels = function(px, imgSize, accuracy) { // (Object, Object) -> Array
-    var res = [];
+Pixfinder._getNeighborPixelsColors = function(colPos, imgCols, imgSize, accuracy) { // (Number, Array, Object, Number) -> Array
+    var res = [],
+        tlPos, tPos, trPos, rPos,
+        brPos, bPos, blPos, lPos,
+        px = Pixfinder._getPixelByColorPosition(colPos, imgSize);
 
     if (px.x > 0 && px.y > 0) {
-        res.push({ x: px.x-accuracy, y: px.y-accuracy }); // tl
-    };
+        tlPos = colPos - 4 - imgSize.w*4;
+        res.push([ // top left color
+            imgCols[tlPos],
+            imgCols[tlPos+1],
+            imgCols[tlPos+2],
+            imgCols[tlPos+3]
+        ]);
+    }
 
     if (px.y > 0) {
-        res.push({ x: px.x,   y: px.y-accuracy }); // t
-    };
+        tPos = colPos - imgSize.w*4;
+        res.push([ // top color
+            imgCols[tPos],
+            imgCols[tPos+1],
+            imgCols[tPos+2],
+            imgCols[tPos+3]
+        ]);
+    }
 
     if (px.x < imgSize.w && px.y > 0) {
-        res.push({ x: px.x+accuracy, y: px.y-accuracy }); // tr
-    };
+        trPos = colPos - imgSize.w*4 + 4;
+        res.push([ // top right color
+            imgCols[trPos],
+            imgCols[trPos+1],
+            imgCols[trPos+2],
+            imgCols[trPos+3]
+        ]);
+    }
 
     if (px.x < imgSize.w) {
-        res.push({ x: px.x+accuracy, y: px.y }); // r
+        rPos = colPos + 4;
+        res.push([ // right color
+            imgCols[rPos],
+            imgCols[rPos+1],
+            imgCols[rPos+2],
+            imgCols[rPos+3]
+        ]);
     };
 
     if (px.x < imgSize.w && px.y < imgSize.h) {
-        res.push({ x: px.x+accuracy, y: px.y+accuracy }); // br
-    };
+        brPos = colPos + imgSize.w*4 + 4;
+        res.push([ // bottom right color
+            imgCols[brPos],
+            imgCols[brPos+1],
+            imgCols[brPos+2],
+            imgCols[brPos+3]
+        ]);
+    }
 
     if (px.y < imgSize.h) {
-        res.push({ x: px.x, y: px.y+accuracy }); // b
-    };
+        bPos = colPos + imgSize.w*4;
+        res.push([ // bottom color
+            imgCols[bPos],
+            imgCols[bPos+1],
+            imgCols[bPos+2],
+            imgCols[bPos+3]
+        ]);
+    }
 
     if (px.x > 0 && px.y < imgSize.h) {
-        res.push({ x: px.x-accuracy, y: px.y+accuracy }); // bl
-    };
+        blPos = colPos + imgSize.w*4 - 4;
+        res.push([ // bottom left color
+            imgCols[blPos],
+            imgCols[blPos+1],
+            imgCols[blPos+2],
+            imgCols[blPos+3]
+        ]);
+    }
 
     if (px.x > 0) {
-        res.push({ x: px.x-accuracy, y: px.y }); // l
-    };
+        lPos = colPos - 4;
+        res.push([ // left color
+            imgCols[lPos],
+            imgCols[lPos+1],
+            imgCols[lPos+2],
+            imgCols[lPos+3]
+        ]);
+    }
 
     return res;
-}
-
-Pixfinder._getPixelsColors = function(context, pxs) { // (CanvasRenderingContext2D, Array) -> Array
-    var list = [];
-    for (var i = 0; i < pxs.length; i++) {
-        list.push(context.getImageData(pxs[i].x, pxs[i].y, 1, 1).data);
-    };
-    return list;
 }
 
 Pixfinder._areColorsEqualToColor = function(checkingFunc, cols, col, tolerance) { // (Function, Array, Array, Number) -> Boolean
@@ -152,26 +208,22 @@ Pixfinder._isColorInColors = function(checkingFunc, col, cols, tolerance) { // (
 }
 
 Pixfinder._splitByDist = function(pixels, dist) { // (Array, Number) -> Array
-    var disjointSet = new Pixfinder.Struct.DisjointSet(),
+    var set = disjointSet(),
         res;
 
-    //var t0 = new Date();
     for (var i = 0; i < pixels.length; i++) {
-        disjointSet.add(pixels[i]);
+        set.add(pixels[i]);
         for (var j = i; j >= 0; j--) {
-            disjointSet.add(pixels[j]);
+            set.add(pixels[j]);
             if (Pixfinder.Util.Math.getDistance(pixels[i], pixels[j]) <= dist) {
-                if (!disjointSet.find(pixels[i], pixels[j])) {
-                    disjointSet.union(pixels[i], pixels[j]);
+                if (!set.connected(pixels[i], pixels[j])) {
+                    set.union(pixels[i], pixels[j]);
                 }
             }
         }
     }
-    // var t1 = new Date();
-    // console.log('_splitByDist loop: ', t1 - t0);
-
-    res = disjointSet.extract();
-    disjointSet.destroy();
+    res = set.extract();
+    set.destroy();
     return res;
 }
 
