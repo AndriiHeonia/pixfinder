@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Pixfinder - a JavaScript library for image analysis</title>
+        <meta charset="utf-8" />
+        <script src="../../src/Pixfinder.js"></script>
+        <script src="../../src/Util/Util.js"></script>
+        <script src="../../src/Util/Color.js"></script>
+        <script src="../../src/Util/Math.js"></script>
+        <script src="../../src/Struct/Struct.js"></script>
+        <script src="../../src/Struct/DisjointSet.js"></script>
+    </head>
+    <body>
+        <img style="position:absolute; top: 0px; left:0px;" id="myImg" width="914" height="593" src="map1.png" crossOrigin="Anonymous"></img>
+        <canvas style="position:absolute; top: 0px; left:0px;" id="canv" width="914" height="593" style="border:1px solid #d3d3d3;"></canvas>
+        <script>
+            window.onload = function () {
+                var myImg = document.getElementById('myImg');
+                var p = pixfinder({
+                    img: myImg,
+                    colors: [
+                        'fbf9e7', // house color
+                    ],
+                    distance: 2,
+                    tolerance: 1,
+                    accuracy: 1,
+                    onload: drawGeometries
+                });
+
+                function drawGeometries(e) {
+                    console.log(e.edges.length);
+
+                    var c=document.getElementById("canv");
+                    var ctx=c.getContext("2d");
+                    for (var i = 0; i < e.edges.length; i++) {
+                        ctx.fillStyle = Pixfinder.Util.Color.toHex ([
+                            Math.random() * 255,
+                            Math.random() * 255,
+                            Math.random() * 255
+                        ]);
+                        ctx.beginPath();
+                        for (var j = 0; j < e.edges[i].length; j++) {   
+                            ctx.arc(e.edges[i][j].x, e.edges[i][j].y, 1, 0, 2*Math.PI);
+                        };
+                        ctx.fill();
+                        ctx.closePath();
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>

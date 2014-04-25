@@ -15,6 +15,7 @@
         What kinds of beer on the photo?<br />
         Pixfinder analyzed this image and signed each glass!
         </p>
+        <p>Try to <input id="changeBtn" type="button" value="change" /> glasses and pixfinder will sign them again.</p>
         <img id="myImg" width="600" height="400" src="img.jpg" crossOrigin="Anonymous"></img>
         <canvas style="position:relative; left:-600px" id="canv" width="600" height="400" style="border:1px solid #d3d3d3;"></canvas>
         <p>Photo is &copy; <a target="_blank" href="http://500px.com/photo/5114123">Ed Dorroh</a></p>
@@ -28,26 +29,39 @@
                     'b87400': 'Wheat Beer!'
                 }
 
-                for (var color in beerTypes) {
-                    var p = pixfinder({
-                        img: myImg,
-                        colors: [color],
-                        tolerance: 5,
-                        onload: function(e) {
-                            var shape = []; // find glass (because we have some noise in results)
-                            for (var i = 0; i < e.edges.length; i++) {
-                                if (e.edges[i].length > shape.length) {
-                                    shape = e.edges[i];
+                var signGlasses = function() {
+                    var canv = document.getElementById("canv");
+                    var ctx = canv.getContext("2d");
+                    ctx.clearRect(0, 0, canv.width, canv.height);
+                    for (var color in beerTypes) {
+                        var p = pixfinder({
+                            img: myImg,
+                            colors: [color],
+                            tolerance: 5,
+                            onload: function(e) {
+                                var shape = []; // find glass (because we have some noise in results)
+                                for (var i = 0; i < e.edges.length; i++) {
+                                    if (e.edges[i].length > shape.length) {
+                                        shape = e.edges[i];
+                                    }
                                 }
-                            };
-                            
-                            var lastShapePx = shape[shape.length-1];
-                            var ctx = document.getElementById("canv").getContext("2d");
-                            ctx.font = "italic 12pt Tahoma";
-                            ctx.fillText(beerTypes[color], lastShapePx.x-50, lastShapePx.y-100);
-                        }
-                    });
-                };
+                                
+                                var lastShapePx = shape[shape.length-1];
+                                ctx.font = "italic 12pt Tahoma";
+                                ctx.fillText(beerTypes[color], lastShapePx.x-50, lastShapePx.y-100);
+                            }
+                        });
+                    }
+                }
+                signGlasses();
+
+                var changeBtn = document.getElementById('changeBtn');
+                changeBtn.onclick = function() {
+                    var path = window.location.origin + '/examples/beer/';
+                    myImg.src = myImg.src == path + 'img.jpg' ?
+                                path + 'img-reflected.jpg' : path + 'img.jpg';
+                    //signGlasses();
+                }
             }
         </script>
     </body>

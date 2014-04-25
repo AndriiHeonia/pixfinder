@@ -17,7 +17,7 @@ var Pixfinder = function (options) {
         console.log('_getRegionsPixels: ', t1 - t0); // 10340 ms. -> 288 ms. Fuck yeah!
 
         var t0 = new Date();    
-        var edges = Pixfinder._splitByDist(regionsPxs, opt.distance);
+        var edges = Pixfinder._splitByDist(regionsPxs, opt.distance); // 52089 ms. -> 2251 ms. Fuxk yeah!
         var t1 = new Date();
         console.log('_splitByDist: ', t1 - t0);
 
