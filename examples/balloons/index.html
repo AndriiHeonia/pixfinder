@@ -26,7 +26,7 @@
                     colors: ['e31461'],
                     distance: 10,
                     tolerance: 100,
-                    accuracy: 2,
+                    accuracy: 3,
                     onload: drawGeometries
                 });
 
@@ -42,8 +42,8 @@
                             Math.random() * 255
                         ]);
                         ctx.beginPath();
-                        for (var j = 0; j < e.edges[i].length; j++) {   
-                            ctx.arc(e.edges[i][j].x, e.edges[i][j].y, 1, 0, 2*Math.PI);
+                        for (var j = 0; j < e.edges[i].length; j++) {
+                            ctx.fillRect(e.edges[i][j].x, e.edges[i][j].y, 1, 1);   
                         };
                         ctx.fill();
                         ctx.closePath();
