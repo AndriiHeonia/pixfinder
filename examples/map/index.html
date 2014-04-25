@@ -19,17 +19,16 @@
                 var p = pixfinder({
                     img: myImg,
                     colors: [
-                        'fbf9e7', // house color
+                        //'fbf9e7',
+                        'ddd9c7'
                     ],
-                    distance: 2,
+                    distance: 25,
                     tolerance: 1,
                     accuracy: 1,
                     onload: drawGeometries
                 });
 
                 function drawGeometries(e) {
-                    console.log(e.edges.length);
-
                     var c=document.getElementById("canv");
                     var ctx=c.getContext("2d");
                     for (var i = 0; i < e.edges.length; i++) {
@@ -39,8 +38,8 @@
                             Math.random() * 255
                         ]);
                         ctx.beginPath();
-                        for (var j = 0; j < e.edges[i].length; j++) {   
-                            ctx.arc(e.edges[i][j].x, e.edges[i][j].y, 1, 0, 2*Math.PI);
+                        for (var j = 0; j < e.edges[i].length; j++) {
+                            ctx.fillRect(e.edges[i][j].x, e.edges[i][j].y, 1, 1); 
                         };
                         ctx.fill();
                         ctx.closePath();
