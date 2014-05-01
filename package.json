@@ -1,0 +1,27 @@
+{
+    "name": "Pixfinder",
+    "version": "0.1.0",
+    "description": "Javascript library for extracting objects from images",
+    "homepage": "https://github.com/AndreyGeonya/pixfinder",
+    "keywords": [
+        "blob-detection",
+        "feature-detection",
+        "image-analysis",
+        "computer-vision",
+        "algorithm",
+        "math"
+    ],
+    "author": "Andrey Geonya",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/AndreyGeonya/pixfinder"
+    },
+    "main": "./src/Pixfinder.js",
+    "devDependencies": {
+        "gulp": "~3.6.2",
+        "gulp-jshint": "~1.5.5",
+        "gulp-rename": "~1.2.0",
+        "gulp-concat": "~2.2.0",
+        "gulp-uglify": "~0.2.1"
+    }
+}
