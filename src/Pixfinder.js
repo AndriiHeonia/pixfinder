@@ -1,25 +1,18 @@
-// TODO: think about clear noise option. See beer example.
 var Pixfinder = function (options) {
     var opt = options;
     
-    opt.accuracy = opt.accuracy || 3;
-    opt.distance = opt.distance || 15;
+    opt.accuracy = opt.accuracy || 2;
+    opt.distance = opt.distance || 10;
     opt.tolerance = opt.tolerance || 50;
+    opt.fill = opt.fill || false;
     opt.colors = Pixfinder._colorsToRgb(opt.colors);
     opt.img = Object.prototype.toString.call(opt.img) === '[object String]' ?
         document.getElementById(opt.img) : opt.img;
 
     var processImg = function() {
-        var canv = Pixfinder._wrapByCanvas(opt.img);
-        var t0 = new Date();
-        var regionsPxs = Pixfinder._getRegionsPixels(canv, opt.colors, opt.accuracy, opt.tolerance);
-        var t1 = new Date();
-        console.log('_getRegionsPixels: ', t1 - t0); // 10340 ms. -> 288 ms. Fuck yeah!
-
-        var t0 = new Date();    
-        var edges = Pixfinder._splitByDist(regionsPxs, opt.distance); // 52089 ms. -> 2251 ms., 10174 ms. -> 3185 ms. Fuck yeah!
-        var t1 = new Date();
-        console.log('_splitByDist: ', t1 - t0);
+        var canv = Pixfinder._wrapByCanvas(opt.img),
+            regionsPxs = Pixfinder._getRegionsPixels(canv, opt.colors, opt.accuracy, opt.tolerance, opt.fill),
+            edges = Pixfinder._splitByDist(regionsPxs, opt.distance);
 
         if (typeof options.onload !== 'undefined') {
             options.onload({
@@ -31,15 +24,7 @@ var Pixfinder = function (options) {
     if (Pixfinder._isImgLoaded(opt.img)) {
         processImg();
     } else {
-        Pixfinder._on('load', opt.img, processImg);
-    }
-}
-
-Pixfinder._on = function(ev, el, func) {
-    if (el.addEventListener) {
-        el.addEventListener(ev, func, false); 
-    } else if (el.attachEvent)  {
-        el.attachEvent('on' + ev, func);
+        opt.img.addEventListener('load', processImg, false);
     }
 }
 
@@ -62,7 +47,7 @@ Pixfinder._wrapByCanvas = function(img) { // (HTMLImageElement) -> HTMLCanvasEle
     return canv;
 }
 
-Pixfinder._getRegionsPixels = function(canvas, colors, accuracy, tolerance) { // (HTMLCanvasElement, Array, Number, Number) -> Array
+Pixfinder._getRegionsPixels = function(canvas, colors, accuracy, tolerance, fill) { // (HTMLCanvasElement, Array, Number, Number, Boolean) -> Array
     var res = [],
         ctx = canvas.getContext('2d'),
         imgSize = {
@@ -79,8 +64,8 @@ Pixfinder._getRegionsPixels = function(canvas, colors, accuracy, tolerance) { //
             }),
             px = Pixfinder._getPixelByColorPosition(i, imgSize);
 
-        // skip if px is not a boundary pixel of the feature
-        if (Pixfinder._areColorsEqualToColor(Pixfinder.Util.Color.areSimilar, nPxCols, pxCol, tolerance) === true) {
+        // skip if px is inner pixel of the feature (not fill)
+        if (!fill && Pixfinder._areColorsEqualToColor(Pixfinder.Util.Color.areSimilar, nPxCols, pxCol, tolerance) === true) {
             continue;
         }
 

@@ -1,1 +1,0 @@
-Pixfinder.Struct = {};
