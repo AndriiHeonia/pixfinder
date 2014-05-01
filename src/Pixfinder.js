@@ -100,7 +100,7 @@ Pixfinder._getPixelByColorPosition = function(colPos, imgSize) { // (Number, Obj
     return px;
 }
 
-Pixfinder._getNeighborPixelsColors = function(colPos, imgCols, imgSize) { // (Number, Array, Object) -> Array
+Pixfinder._getNeighborPixelsColors = function(colPos, imgCols, imgSize, accuracy) { // (Number, Array, Object, Number) -> Array
     var res = [],
         tlPos, tPos, trPos, rPos,
         brPos, bPos, blPos, lPos,
@@ -221,7 +221,9 @@ Pixfinder._splitByDist = function(pixels, dist) { // (Array, Number) -> Array
             }
         }
     }
+
     res = set.extract();
+
     set.destroy();
     return res;
 }

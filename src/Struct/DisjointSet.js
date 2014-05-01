@@ -44,19 +44,17 @@ DisjointSet.prototype = {
 
     union: function (val1, val2) {
         var val1RootId = this.find(val1),
-            val2RootId = this.find(val2),
-            val1Id = this._isPrimitive(val1) ? val1 : val1._disjointSetId,
-            val2Id = this._isPrimitive(val2) ? val2 : val2._disjointSetId;
+            val2RootId = this.find(val2);
 
         if (val1RootId === val2RootId) { return this; }
 
-        if (this._size[val1Id] < this._size[val2Id]) {
-            this._relations[val1Id] = val2RootId;
-            this._size[val1Id] += this._size[val2Id];
+        if (this._size[val1RootId] < this._size[val2RootId]) {
+            this._relations[val1RootId] = val2RootId;
+            this._size[val1RootId] += this._size[val2RootId];
         }
         else {
-            this._relations[val2Id] = val1RootId;
-            this._size[val2Id] += this._size[val1Id];
+            this._relations[val2RootId] = val1RootId;
+            this._size[val2RootId] += this._size[val1RootId];
         }
 
         return this;
