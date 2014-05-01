@@ -76,7 +76,7 @@ Pixfinder._getRegionsPixels = function(canvas, colors, accuracy, tolerance) { //
             nPxCols = Pixfinder._getNeighborPixelsColors(i, imgCols, {
                 w: canvas.width, 
                 h: canvas.height
-            }, accuracy),
+            }),
             px = Pixfinder._getPixelByColorPosition(i, imgSize);
 
         // skip if px is not a boundary pixel of the feature
@@ -100,7 +100,7 @@ Pixfinder._getPixelByColorPosition = function(colPos, imgSize) { // (Number, Obj
     return px;
 }
 
-Pixfinder._getNeighborPixelsColors = function(colPos, imgCols, imgSize, accuracy) { // (Number, Array, Object, Number) -> Array
+Pixfinder._getNeighborPixelsColors = function(colPos, imgCols, imgSize) { // (Number, Array, Object) -> Array
     var res = [],
         tlPos, tPos, trPos, rPos,
         brPos, bPos, blPos, lPos,
