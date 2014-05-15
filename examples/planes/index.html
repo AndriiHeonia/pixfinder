@@ -20,7 +20,7 @@
         <script>
             window.onload = function () {
                 var myImg = document.getElementById('myImg');
-                var p = pixfinder({
+                pixfinder({
                     img: myImg,
                     colors: ['eff1f0'],
                     clearNoise: 50,
@@ -30,7 +30,7 @@
                 function draw(e) {
                     var c = document.getElementById("canv"),
                         ctx = c.getContext("2d");
-                        
+
                     for (var i = 0; i < e.objects.length; i++) {
                         ctx.fillStyle = '000000';
                         ctx.beginPath();

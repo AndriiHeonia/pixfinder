@@ -11,7 +11,7 @@ For example we have a photo from airport camera and want to know how many planes
 To solve this problem we need to write several lines of code and Pixfinder will find all planes on image:
 
     var myImg = document.getElementById('myImg');
-    var p = pixfinder({
+    pixfinder({
         img: myImg,
         colors: ['eff1f0'],
         clearNoise: 50,
