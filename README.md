@@ -4,7 +4,7 @@ Pixfinder is a JavaScript library for object detection.
 
 Pixfinder analyzes image and extracts coordinates of each object. Objects should be detected by several criteria, the most important of which is the color.
 
-For example we have a photo from airport camera and want to know how many planes at the airport right now:
+For example we have aerial shot of planes and want to know how many planes at the airport right now:
 
 <img src="https://raw.githubusercontent.com/AndreyGeonya/pixfinder/master/examples/planes/img.jpg" />
 
