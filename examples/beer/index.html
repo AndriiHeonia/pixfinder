@@ -14,18 +14,17 @@
         What kinds of beer on the photo?<br />
         Pixfinder analyzed this image and signed each glass!
         </p>
-        <p>Try to <input id="changeBtn" type="button" value="change" /> glasses and pixfinder will sign them again.</p>
         <img id="myImg" width="600" height="400" src="img.jpg" crossOrigin="Anonymous"></img>
         <canvas style="position:relative; left:-600px" id="canv" width="600" height="400" style="border:1px solid #d3d3d3;"></canvas>
-        <p>Photo is &copy; <a target="_blank" href="http://500px.com/photo/5114123">Ed Dorroh</a></p>
+        <p>Photo &copy; <a target="_blank" href="http://500px.com/photo/5114123">Ed Dorroh</a></p>
         <script>
             window.onload = function () {
                 var myImg = document.getElementById('myImg');
                 var beerTypes = {
-                    '000000': 'Stout!',
-                    '3b0000': 'Dark Ale!',
-                    'de5100': 'Golden Ale!',
-                    'b87400': 'Wheat Beer!'
+                    '000000': 'Stout',
+                    '3b0000': 'Dark Ale',
+                    'de5100': 'Golden Ale',
+                    'b87400': 'Wheat Beer'
                 }
 
                 var signGlasses = function() {
@@ -46,21 +45,14 @@
                                 }
                                 
                                 var lastShapePx = shape[shape.length-1];
-                                ctx.font = "italic 12pt Tahoma";
-                                ctx.fillText(beerTypes[color], lastShapePx.x-50, lastShapePx.y-100);
+                                ctx.font = "italic bold 14pt Tahoma";
+                                ctx.fillStyle = "blue";
+                                ctx.fillText(beerTypes[color], lastShapePx.x-50, lastShapePx.y-105);
                             }
                         });
                     }
                 }
                 signGlasses();
-
-                var changeBtn = document.getElementById('changeBtn');
-                changeBtn.onclick = function() {
-                    var path = window.location.origin + '/examples/beer/';
-                    myImg.src = myImg.src == path + 'img.jpg' ?
-                                path + 'img-reflected.jpg' : path + 'img.jpg';
-                    //signGlasses();
-                }
             }
         </script>
     </body>

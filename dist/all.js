@@ -1,4 +1,6 @@
 var Pixfinder = function (options) {
+    'use strict';
+
     var opt = options;
     
     opt.accuracy = opt.accuracy || 2;
@@ -11,7 +13,13 @@ var Pixfinder = function (options) {
 
     var processImg = function() {
         var canv = Pixfinder._wrapByCanvas(opt.img),
-            regionsPxs = Pixfinder._getRegionsPixels(canv, opt.colors, opt.accuracy, opt.tolerance, opt.fill),
+            regionsPxs = Pixfinder._getRegionsPixels(
+                canv,
+                opt.colors,
+                opt.accuracy,
+                opt.tolerance,
+                opt.fill
+            ),
             edges = Pixfinder._splitByDist(regionsPxs, opt.distance);
 
         if (typeof options.onload !== 'undefined') {
@@ -19,7 +27,7 @@ var Pixfinder = function (options) {
                 edges: edges
             });
         }
-    }
+    };
 
     if (Pixfinder._isImgLoaded(opt.img)) {
         processImg();
