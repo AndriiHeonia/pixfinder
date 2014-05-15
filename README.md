@@ -24,10 +24,9 @@ Callback function draw takes one parameter that contains coordinates of each pla
         document.getElementById('count').innerHTML = e.objects.length;
     }
 
-And draw their outlines:
+For clarity, let's draw the contours of planes that have been identified by Pixfinder:
 
     function draw(e) {
-        <b>
         var c = document.getElementById("canv"),
             ctx = c.getContext("2d");
             
@@ -40,7 +39,6 @@ And draw their outlines:
             ctx.fill();
             ctx.closePath();
         }
-        </b>
 
         document.getElementById('count').innerHTML = e.objects.length;
     }
