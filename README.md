@@ -48,5 +48,8 @@ Result:
 
 Full code of this example available [here](https://github.com/AndreyGeonya/pixfinder/blob/master/examples/planes/index.html).
 
-Version: 0.0.1
+## Changelog
 
+### 0.0.1 &mdash; 16.05.2014
+
+* First Pixfinder release (unstable alpha version)
