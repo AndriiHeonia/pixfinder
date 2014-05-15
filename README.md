@@ -18,7 +18,7 @@ To solve this problem we need to write several lines of code and Pixfinder will 
         onload: draw
     });
 
-Callback function draw() takes one parameter that contains coordinates of each plane and should display count of planes:
+The callback function draw() takes one parameter that contains the coordinates of each aircraft and shows their count:
 
     function draw(e) {
         document.getElementById('count').innerHTML = e.objects.length;
