@@ -13,7 +13,7 @@
   // Define globals exposed by Node.js.
   "node": true,
 
-  "predef": [ "Pixfinder", "define" ],
+  "predef": [ "Pixfinder", "define", "disjointSet" ],
 
   /*
    * ENFORCING OPTIONS

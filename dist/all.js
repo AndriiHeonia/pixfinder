@@ -221,7 +221,7 @@ function _isColorInColors(checkingFunc, col, cols, tolerance) {
 
 // (Array, Number) -> Array
 function _splitByDist(pixels, dist) {
-    var set = disjointSet(), // jshint ignore:line
+    var set = disjointSet(),
         res;
 
     for (var i = 0; i < pixels.length; i++) {
@@ -363,7 +363,6 @@ DisjointSet._isPrimitive = function (val) {
         return false;
     }
 };
-
 
 if (typeof define === 'function' && define.amd) {
     define(function() {
