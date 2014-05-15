@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Pixfinder - a JavaScript library for image analysis</title>
+        <meta charset="utf-8" />
+        <script src="../../src/Pixfinder.js"></script>
+        <script src="../../src/Util/Util.js"></script>
+        <script src="../../src/Util/Color.js"></script>
+        <script src="../../src/Util/Math.js"></script>
+        <script src="../../src/Struct/DisjointSet.js"></script>
+    </head>
+    <body>
+        <p>
+        How many planes in the airport?<br />
+        Pixfinder analyzed this image and thinks that there are <b id="count"></b> planes!
+        </p>
+        <img id="myImg" width="500" height="374" src="img.jpg" crossOrigin="Anonymous"></img>
+        <canvas id="canv" width="500" height="374" style="border:1px solid #d3d3d3;"></canvas>
+        <p>Photo: &copy; <a target="_blank" href="http://www.murraymitchell.com/wp-content/uploads/2011/04/aerial_shot_airport_boeing_parking_on_runway.jpg">Murray Mitchell</a></p>
+        <script>
+            window.onload = function () {
+                var myImg = document.getElementById('myImg');
+                var p = pixfinder({
+                    img: myImg,
+                    colors: ['eff1f0'],
+                    clearNoise: 50,
+                    onload: drawGeometries
+                });
+
+                function drawGeometries(e) {
+                    document.getElementById('count').innerHTML = e.objects.length;
+
+                    var c=document.getElementById("canv");
+                    var ctx=c.getContext("2d");
+                    for (var i = 0; i < e.objects.length; i++) {
+                        ctx.fillStyle = Pixfinder.Util.Color.toHex ([
+                            Math.random() * 255,
+                            Math.random() * 255,
+                            Math.random() * 255
+                        ]);
+                        ctx.beginPath();
+                        for (var j = 0; j < e.objects[i].length; j++) {
+                            ctx.fillRect(e.objects[i][j].x, e.objects[i][j].y, 1, 1);   
+                        };
+                        ctx.fill();
+                        ctx.closePath();
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>
