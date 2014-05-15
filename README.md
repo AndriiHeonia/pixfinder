@@ -24,7 +24,7 @@ The callback function draw() takes one parameter that contains the coordinates o
         document.getElementById('count').innerHTML = e.objects.length;
     }
 
-For clarity, let's draw the contours of planes that have been identified by Pixfinder:
+For clarity, let's add some code to draw() function and show the contours of planes that have been identified by Pixfinder:
 
     function draw(e) {
         var c = document.getElementById("canv"),
