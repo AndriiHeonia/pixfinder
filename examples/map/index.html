@@ -40,16 +40,16 @@
                 function drawGeometries(e) {
                     var c=document.getElementById("canv");
                     var ctx=c.getContext("2d");
-                    for (var i = 0; i < e.edges.length; i++) {
+                    for (var i = 0; i < e.objects.length; i++) {
                         ctx.fillStyle = Pixfinder.Util.Color.toHex ([
                             Math.random() * 255,
                             Math.random() * 255,
                             Math.random() * 255
                         ]);
                         ctx.beginPath();
-                        for (var j = 0; j < e.edges[i].length; j++) {
-                            ctx.fillRect(e.edges[i][j].x, e.edges[i][j].y, 1, 1); 
-                        };
+                        for (var j = 0; j < e.objects[i].length; j++) {
+                            ctx.fillRect(e.objects[i][j].x, e.objects[i][j].y, 1, 1); 
+                        }
                         ctx.fill();
                         ctx.closePath();
                     }

@@ -15,44 +15,59 @@
         Pixfinder analyzed this image and signed each glass!
         </p>
         <img id="myImg" width="600" height="400" src="img.jpg" crossOrigin="Anonymous"></img>
-        <canvas style="position:relative; left:-600px" id="canv" width="600" height="400" style="border:1px solid #d3d3d3;"></canvas>
+        <canvas style="position:relative; " id="canv" width="600" height="400" style="border:1px solid #d3d3d3;"></canvas>
         <p>Photo &copy; <a target="_blank" href="http://500px.com/photo/5114123">Ed Dorroh</a></p>
         <script>
             window.onload = function () {
                 var myImg = document.getElementById('myImg');
                 var beerTypes = {
-                    '000000': 'Stout',
-                    '3b0000': 'Dark Ale',
+                    'fab500': 'Wheat Beer',
                     'de5100': 'Golden Ale',
-                    'b87400': 'Wheat Beer'
+                    '780001': 'Dark Ale',
+                    '000000': 'Stout'
                 }
 
-                var signGlasses = function() {
-                    var canv = document.getElementById("canv");
-                    var ctx = canv.getContext("2d");
-                    ctx.clearRect(0, 0, canv.width, canv.height);
-                    for (var color in beerTypes) {
-                        var p = pixfinder({
-                            img: myImg,
-                            colors: [color],
-                            tolerance: 5,
-                            onload: function(e) {
-                                var shape = []; // find glass (because we have some noise in results)
-                                for (var i = 0; i < e.edges.length; i++) {
-                                    if (e.edges[i].length > shape.length) {
-                                        shape = e.edges[i];
-                                    }
-                                }
-                                
-                                var lastShapePx = shape[shape.length-1];
-                                ctx.font = "italic bold 14pt Tahoma";
-                                ctx.fillStyle = "blue";
-                                ctx.fillText(beerTypes[color], lastShapePx.x-50, lastShapePx.y-105);
-                            }
-                        });
+                var canv = document.getElementById("canv"),
+                    ctx = canv.getContext("2d");
+                ctx.clearRect(0, 0, canv.width, canv.height);
+
+                for (var color in beerTypes) {
+                    pixfinder({
+                        img: myImg,
+                        colors: [color],
+                        tolerance: 20,
+                        distance: 30,
+                        fill: true,
+                        clearNoise: 200, // object should contain more than 200 px filled by color
+                        onload: function(e) {
+                            drawGlasses(e);
+                            signGlasses(e, color);
+                        }
+                    });                    
+                }
+
+                function drawGlasses(e) {
+                    ctx.fillStyle = Pixfinder.Util.Color.toHex ([
+                        Math.random() * 255,
+                        Math.random() * 255,
+                        Math.random() * 255
+                    ]);
+                    for (var i = 0; i < e.objects.length; i++) {
+                        ctx.beginPath();
+                        for (var j = 0; j < e.objects[i].length; j++) {
+                            ctx.fillRect(e.objects[i][j].x, e.objects[i][j].y, 1, 1); 
+                        };
+                        ctx.fill();
+                        ctx.closePath();
                     }
                 }
-                signGlasses();
+
+                function signGlasses(e, color) {
+                    var lastObjPx = e.objects[0][0];
+                    ctx.font = "italic bold 12pt Tahoma";
+                    ctx.fillStyle = "blue";
+                    ctx.fillText(beerTypes[color], lastObjPx.x-20, lastObjPx.y);
+                }
             }
         </script>
     </body>

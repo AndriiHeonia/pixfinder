@@ -8,6 +8,7 @@ window.Pixfinder = function (options) {
     opt.distance = opt.distance || 10;
     opt.tolerance = opt.tolerance || 50;
     opt.fill = opt.fill || false;
+    opt.clearNoise = opt.clearNoise || false;
     opt.colors = _colorsToRgb(opt.colors);
     opt.img = Object.prototype.toString.call(opt.img) === '[object String]' ?
         document.getElementById(opt.img) : opt.img;
@@ -21,11 +22,13 @@ window.Pixfinder = function (options) {
                 opt.tolerance,
                 opt.fill
             ),
-            edges = _splitByDist(regionsPxs, opt.distance);
+            objects = _splitByDist(regionsPxs, opt.distance),
+            clearedObjects = opt.clearNoise ? 
+                _clearNoise(objects, opt.clearNoise) : objects;
 
         if (typeof options.onload !== 'undefined') {
             options.onload({
-                edges: edges
+                objects: clearedObjects
             });
         }
     };
@@ -239,6 +242,13 @@ function _splitByDist(pixels, dist) {
 
     set.destroy();
     return res;
+}
+
+// (Array, Number) -> Array
+function _clearNoise(objects, noise) {
+    return objects.filter(function(el) {
+        return el.length >= noise;
+    });
 }
 
 window.pixfinder = function(options) {
