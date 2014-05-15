@@ -116,7 +116,6 @@ DisjointSet._isPrimitive = function (val) {
     }
 };
 
-
 if (typeof define === 'function' && define.amd) {
     define(function() {
         return disjointSet;
