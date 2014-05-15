@@ -1,6 +1,8 @@
 (function() { 'use strict';
 
-window.Pixfinder = function (options) {
+window.Pixfinder = {};
+
+window.pixfinder = function (options) {
 
     var opt = options;
     
@@ -250,10 +252,6 @@ function _clearNoise(objects, noise) {
         return el.length >= noise;
     });
 }
-
-window.pixfinder = function(options) {
-    return new Pixfinder(options);
-};
 
 })();
 /**
