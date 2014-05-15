@@ -46,5 +46,7 @@ For clarity, let's draw the contours of planes that have been identified by Pixf
 Result:
 <img src="https://raw.githubusercontent.com/AndreyGeonya/pixfinder/master/examples/planes/screenshot.png" />
 
+Full code of this example available [here](https://github.com/AndreyGeonya/pixfinder/blob/master/examples/planes/index.html)
+
 Version: 0.0.1
 
