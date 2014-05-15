@@ -1,6 +1,6 @@
 (function() { 'use strict';
 
-var Pixfinder = function (options) {
+    window.Pixfinder = function (options) {
 
     var opt = options;
     
@@ -241,7 +241,6 @@ function _splitByDist(pixels, dist) {
     return res;
 }
 
-window.Pixfinder = Pixfinder;
 window.pixfinder = function(options) {
     return new Pixfinder(options);
 };
