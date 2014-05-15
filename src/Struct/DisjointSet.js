@@ -116,14 +116,13 @@ DisjointSet._isPrimitive = function (val) {
     }
 };
 
+
 if (typeof define === 'function' && define.amd) {
     define(function() {
         return disjointSet;
     });
 } else if (typeof module !== 'undefined') {
     module.exports = disjointSet;
-} else if (typeof self !== 'undefined') {
-    self.disjointSet = disjointSet;
 } else {
     window.disjointSet = disjointSet;
 }

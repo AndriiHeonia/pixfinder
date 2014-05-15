@@ -1,5 +1,6 @@
+(function() { 'use strict';
+
 var Pixfinder = function (options) {
-    'use strict';
 
     var opt = options;
     
@@ -7,20 +8,20 @@ var Pixfinder = function (options) {
     opt.distance = opt.distance || 10;
     opt.tolerance = opt.tolerance || 50;
     opt.fill = opt.fill || false;
-    opt.colors = Pixfinder._colorsToRgb(opt.colors);
+    opt.colors = _colorsToRgb(opt.colors);
     opt.img = Object.prototype.toString.call(opt.img) === '[object String]' ?
         document.getElementById(opt.img) : opt.img;
 
     var processImg = function() {
-        var canv = Pixfinder._wrapByCanvas(opt.img),
-            regionsPxs = Pixfinder._getRegionsPixels(
+        var canv = _wrapByCanvas(opt.img),
+            regionsPxs = _getRegionsPixels(
                 canv,
                 opt.colors,
                 opt.accuracy,
                 opt.tolerance,
                 opt.fill
             ),
-            edges = Pixfinder._splitByDist(regionsPxs, opt.distance);
+            edges = _splitByDist(regionsPxs, opt.distance);
 
         if (typeof options.onload !== 'undefined') {
             options.onload({
@@ -29,25 +30,28 @@ var Pixfinder = function (options) {
         }
     };
 
-    if (Pixfinder._isImgLoaded(opt.img)) {
+    if (_isImgLoaded(opt.img)) {
         processImg();
     } else {
         opt.img.addEventListener('load', processImg, false);
     }
+};
+
+// (HTMLImageElement) -> Boolean
+function _isImgLoaded(img) {
+    return !(typeof img.naturalWidth !== 'undefined' && img.naturalWidth === 0);
 }
 
-Pixfinder._isImgLoaded = function(img) {
-    return !(typeof img.naturalWidth !== "undefined" && img.naturalWidth == 0);
-}
-
-Pixfinder._colorsToRgb = function(cols) { // (Array) -> Array
+// (Array) -> Array
+function _colorsToRgb(cols) {
     for (var i = 0; i < cols.length; i++) {
         cols[i] = Pixfinder.Util.Color.toRGB(cols[i]);
-    };
+    }
     return cols;
 }
 
-Pixfinder._wrapByCanvas = function(img) { // (HTMLImageElement) -> HTMLCanvasElement
+// (HTMLImageElement) -> HTMLCanvasElement
+function _wrapByCanvas(img) {
     var canv = document.createElement('canvas');
     canv.width = img.width;
     canv.height = img.height;
@@ -55,7 +59,8 @@ Pixfinder._wrapByCanvas = function(img) { // (HTMLImageElement) -> HTMLCanvasEle
     return canv;
 }
 
-Pixfinder._getRegionsPixels = function(canvas, colors, accuracy, tolerance, fill) { // (HTMLCanvasElement, Array, Number, Number, Boolean) -> Array
+// (HTMLCanvasElement, Array, Number, Number, Boolean) -> Array
+function _getRegionsPixels(canvas, colors, accuracy, tolerance, fill) {
     var res = [],
         ctx = canvas.getContext('2d'),
         imgSize = {
@@ -66,19 +71,29 @@ Pixfinder._getRegionsPixels = function(canvas, colors, accuracy, tolerance, fill
 
     for (var i = 0; i < imgCols.length; i+=(4*accuracy)) { // 4 - rgba
         var pxCol = [imgCols[i], imgCols[i+1], imgCols[i+2], imgCols[i+3]],
-            nPxCols = Pixfinder._getNeighborPixelsColors(i, imgCols, {
+            nPxCols = _getNeighborPixelsColors(i, imgCols, {
                 w: canvas.width, 
                 h: canvas.height
             }),
-            px = Pixfinder._getPixelByColorPosition(i, imgSize);
+            px = _getPixelByColorPosition(i, imgSize);
 
         // skip if px is inner pixel of the feature (not fill)
-        if (!fill && Pixfinder._areColorsEqualToColor(Pixfinder.Util.Color.areSimilar, nPxCols, pxCol, tolerance) === true) {
+        if (!fill && 
+            _areColorsEqualToColor(
+                Pixfinder.Util.Color.areSimilar,
+                nPxCols,
+                pxCol,
+                tolerance) === true) {
             continue;
         }
 
         // is it pixel of the feature?
-        if(Pixfinder._isColorInColors(Pixfinder.Util.Color.areSimilar, pxCol, colors, tolerance)) {
+        if(_isColorInColors(
+            Pixfinder.Util.Color.areSimilar,
+            pxCol,
+            colors,
+            tolerance
+        )) {
             res.push(px);
         }
     }
@@ -86,18 +101,20 @@ Pixfinder._getRegionsPixels = function(canvas, colors, accuracy, tolerance, fill
     return res;
 }
 
-Pixfinder._getPixelByColorPosition = function(colPos, imgSize) { // (Number, Object) -> Object
-    px = {x: 0, y: 0};
+// (Number, Object) -> Object
+function _getPixelByColorPosition(colPos, imgSize) {
+    var px = {x: 0, y: 0};
     px.y = parseInt(colPos / (imgSize.w*4));
     px.x = colPos/4 - px.y*imgSize.w;
     return px;
 }
 
-Pixfinder._getNeighborPixelsColors = function(colPos, imgCols, imgSize) { // (Number, Array, Object) -> Array
+// (Number, Array, Object) -> Array
+function _getNeighborPixelsColors(colPos, imgCols, imgSize) {
     var res = [],
         tlPos, tPos, trPos, rPos,
         brPos, bPos, blPos, lPos,
-        px = Pixfinder._getPixelByColorPosition(colPos, imgSize);
+        px = _getPixelByColorPosition(colPos, imgSize);
 
     if (px.x > 0 && px.y > 0) {
         tlPos = colPos - 4 - imgSize.w*4;
@@ -137,7 +154,7 @@ Pixfinder._getNeighborPixelsColors = function(colPos, imgCols, imgSize) { // (Nu
             imgCols[rPos+2],
             imgCols[rPos+3]
         ]);
-    };
+    }
 
     if (px.x < imgSize.w && px.y < imgSize.h) {
         brPos = colPos + imgSize.w*4 + 4;
@@ -182,26 +199,29 @@ Pixfinder._getNeighborPixelsColors = function(colPos, imgCols, imgSize) { // (Nu
     return res;
 }
 
-Pixfinder._areColorsEqualToColor = function(checkingFunc, cols, col, tolerance) { // (Function, Array, Array, Number) -> Boolean
+// (Function, Array, Array, Number) -> Boolean
+function _areColorsEqualToColor(checkingFunc, cols, col, tolerance) {
     for (var i = 0; i < cols.length; i++) {
         if (checkingFunc(col, cols[i], tolerance) === false) {
             return false;
-        };
-    };
+        }
+    }
     return true;
 }
 
-Pixfinder._isColorInColors = function(checkingFunc, col, cols, tolerance) { // (Function, Array, Array, Number) -> Boolean
+// (Function, Array, Array, Number) -> Boolean
+function _isColorInColors(checkingFunc, col, cols, tolerance) {
     for (var i = 0; i < cols.length; i++) {
         if (checkingFunc(col, cols[i], tolerance) === true) {
             return true;
-        };
-    };
+        }
+    }
     return false;
 }
 
-Pixfinder._splitByDist = function(pixels, dist) { // (Array, Number) -> Array
-    var set = disjointSet(),
+// (Array, Number) -> Array
+function _splitByDist(pixels, dist) {
+    var set = disjointSet(), // jshint ignore:line
         res;
 
     for (var i = 0; i < pixels.length; i++) {
@@ -221,6 +241,9 @@ Pixfinder._splitByDist = function(pixels, dist) { // (Array, Number) -> Array
     return res;
 }
 
-var pixfinder = function(options) {
+window.Pixfinder = Pixfinder;
+window.pixfinder = function(options) {
     return new Pixfinder(options);
-}
+};
+
+})();
