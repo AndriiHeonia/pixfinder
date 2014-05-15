@@ -8,7 +8,7 @@ For example we have aerial shot of planes and want to know how many planes at th
 
 <img src="https://raw.githubusercontent.com/AndreyGeonya/pixfinder/master/examples/planes/img.jpg" />
 
-To solve this problem we need to write several lines of code and Pixfinder will find all planes on image:
+To solve this problem we need to write several lines of code and Pixfinder will find all planes in the image:
 
     var myImg = document.getElementById('myImg');
     pixfinder({
@@ -47,6 +47,94 @@ Result:
 <img src="https://raw.githubusercontent.com/AndreyGeonya/pixfinder/master/examples/planes/screenshot.png" />
 
 Full code of this example available [here](https://github.com/AndreyGeonya/pixfinder/blob/master/examples/planes/index.html).
+
+## API
+
+### pixfinder
+
+The main function that detects objects in the image.
+
+#### Function
+
+<table>
+    <thead>
+        <tr>
+            <th>Function</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <code>
+                    pixfinder(options)
+                </code>
+            </td>
+            <td>
+                Detects objects by given options.
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+#### Options
+
+<table>
+    <thead>
+        <tr>
+            <th>Option</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>img</td>
+            <td>HTMLImageElement | String</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>colors</td>
+            <td>Array</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>accuracy</td>
+            <td>Number</td>
+            <td>2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>distance</td>
+            <td>Number</td>
+            <td>10</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>tolerance</td>
+            <td>Number</td>
+            <td>50</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>fill</td>
+            <td>Boolean</td>
+            <td>false</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>clearNoise</td>
+            <td>Boolean | Number</td>
+            <td>false</td>
+            <td></td>
+        </tr>        
+    </thead>
+    <tbody>
+        
+    </tbody>
+</table>
+
 
 ## Changelog
 
