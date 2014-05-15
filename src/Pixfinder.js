@@ -1,6 +1,6 @@
 (function() { 'use strict';
 
-    window.Pixfinder = function (options) {
+window.Pixfinder = function (options) {
 
     var opt = options;
     
