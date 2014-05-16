@@ -38,7 +38,7 @@ For clarity, let's add some code to draw() function and show the contours of pla
             };
         }
         ctx.closePath();
-        
+
         document.getElementById('count').innerHTML = e.objects.length;
     }
 
@@ -90,13 +90,13 @@ The main function that detects objects in the image.
             <td>img</td>
             <td>HTMLImageElement | String</td>
             <td></td>
-            <td></td>
+            <td>Image element (or its id) which has to be analyzed.</td>
         </tr>
         <tr>
             <td>colors</td>
             <td>Array</td>
             <td></td>
-            <td></td>
+            <td>Colors of the objects that should be found</td>
         </tr>
         <tr>
             <td>accuracy</td>
