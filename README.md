@@ -102,7 +102,7 @@ The main function that detects objects in the image.
             <td>tolerance</td>
             <td>Number</td>
             <td>50</td>
-            <td>Permissible variation of the color (number of shades). Helps to detect objects not only by strict colors (by "colors" option), but by their shades too.</td>
+            <td>Permissible variation of the color (number of shades). Helps to detect objects not only by strict colors ("colors" option), but by their shades too.</td>
         </tr>
         <tr>
             <td>accuracy</td>
