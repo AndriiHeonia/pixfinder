@@ -114,19 +114,19 @@ The main function that detects objects in the image.
             <td>distance</td>
             <td>Number</td>
             <td>10</td>
-            <td>Distance between objects (in pixels). During image analysis Pixfinder detects all pixels according to color and then splits them to several objects by distance. If distance between two pixels lesser then this option then objects will be represented as one.</td>
+            <td>Distance between objects (in pixels). During image analysis Pixfinder detects all pixels according to specified colors and then splits them to several objects by distance. If distance between two pixels lesser then this option then objects will be represented as one.</td>
         </tr>
         <tr>
             <td>fill</td>
             <td>Boolean</td>
             <td>false</td>
-            <td>If 'false' then objects will contain only their borders, else objects will be filled by all pixels.</td>
+            <td>If "false" then objects will contain only their borders, else objects will be filled by all pixels.</td>
         </tr>
         <tr>
             <td>clearNoise</td>
             <td>Boolean | Number</td>
             <td>false</td>
-            <td>Removes all small objects after image analysis. If 'false' then noise clearing is disabled. Else if number is setted then all objects that contains less than specified number of pixels will be removed.</td>
+            <td>Removes all small objects after image analysis. If "false" then noise clearing is disabled. Else if number is setted then all objects that contains less than specified number of pixels will be removed.</td>
         </tr>        
     </thead>
     <tbody>
