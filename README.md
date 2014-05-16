@@ -114,7 +114,7 @@ The main function that detects objects in the image.
             <td>distance</td>
             <td>Number</td>
             <td>10</td>
-            <td>Distance between objects (in pixels). During image analysis Pixfinder detects all pixels according to specified colors and then splits them to several objects by distance. If distance between two pixels lesser then this option then objects will be represented as one.</td>
+            <td>Distance between objects (in pixels). During image analysis Pixfinder detects all pixels according to specified colors and then splits them to several objects by distance. If distance between two pixels lesser then this option then the pixels belong to the same object.</td>
         </tr>
         <tr>
             <td>fill</td>
