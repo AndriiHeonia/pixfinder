@@ -99,34 +99,34 @@ The main function that detects objects in the image.
             <td>Colors of the objects that should be found.</td>
         </tr>
         <tr>
+            <td>tolerance</td>
+            <td>Number</td>
+            <td>50</td>
+            <td>Permissible variation of the color (number of shades). Helps to detect objects not only by strict colors (by "colors" option), but by their shades too.</td>
+        </tr>
+        <tr>
             <td>accuracy</td>
             <td>Number</td>
             <td>2</td>
-            <td></td>
+            <td>If accuracy = 1 then Pixfinder analyzes each pixel of the image, if accuracy = 2 then Pixfinder analyzes each 2nd pixel, etc. Large number for better performance and worse quality and vice versa. Number should be positive integer.</td>
         </tr>
         <tr>
             <td>distance</td>
             <td>Number</td>
             <td>10</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>tolerance</td>
-            <td>Number</td>
-            <td>50</td>
-            <td></td>
+            <td>Distance between objects (in pixels). During image analysis Pixfinder detects all pixels according to color and then splits them to several objects by distance. If distance between two pixels lesser then this option then objects will be represented as one.</td>
         </tr>
         <tr>
             <td>fill</td>
             <td>Boolean</td>
             <td>false</td>
-            <td></td>
+            <td>If 'false' then objects will contain only their borders, else objects will be filled by all pixels.</td>
         </tr>
         <tr>
             <td>clearNoise</td>
             <td>Boolean | Number</td>
             <td>false</td>
-            <td></td>
+            <td>Removes all small objects after image analysis. If 'false' then noise clearing is disabled. Else if number is setted then all objects that contains less than specified number of pixels will be removed.</td>
         </tr>        
     </thead>
     <tbody>
