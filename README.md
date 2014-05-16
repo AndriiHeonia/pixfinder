@@ -37,8 +37,8 @@ For clarity, let's add some code to draw() function and show the contours of pla
                 ctx.fillRect(e.objects[i][j].x, e.objects[i][j].y, 1, 1);   
             };
         }
-        ctx.fill();
         ctx.closePath();
+        
         document.getElementById('count').innerHTML = e.objects.length;
     }
 
