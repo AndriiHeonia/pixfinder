@@ -96,7 +96,7 @@ The main function that detects objects in the image.
             <td>colors</td>
             <td>Array</td>
             <td></td>
-            <td>Colors of the objects that should be found</td>
+            <td>Colors of the objects that should be found.</td>
         </tr>
         <tr>
             <td>accuracy</td>
