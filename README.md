@@ -29,17 +29,16 @@ For clarity, let's add some code to draw() function and show the contours of pla
     function draw(e) {
         var c = document.getElementById("canv"),
             ctx = c.getContext("2d");
-            
+
+        ctx.fillStyle = '000000';
+        ctx.beginPath();
         for (var i = 0; i < e.objects.length; i++) {
-            ctx.fillStyle = '000000';
-            ctx.beginPath();
             for (var j = 0; j < e.objects[i].length; j++) {
                 ctx.fillRect(e.objects[i][j].x, e.objects[i][j].y, 1, 1);   
             };
-            ctx.fill();
-            ctx.closePath();
         }
-
+        ctx.fill();
+        ctx.closePath();
         document.getElementById('count').innerHTML = e.objects.length;
     }
 
