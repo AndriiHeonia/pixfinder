@@ -126,7 +126,7 @@ The main function that detects objects in the image.
             <td>clearNoise</td>
             <td>Boolean | Number</td>
             <td>false</td>
-            <td>Removes all small objects after image analysis. If "false" then noise clearing is disabled. Else if number is setted then all objects that contains less than specified number of pixels will be removed.</td>
+            <td>Removes all small objects after image analysis. If "false" then noise clearing is disabled, else if number is setted then all objects that contains less than specified number of pixels will be removed.</td>
         </tr>        
     </thead>
     <tbody>
