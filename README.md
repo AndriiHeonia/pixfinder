@@ -53,8 +53,6 @@ Full code of this example available [here](https://github.com/AndreyGeonya/pixfi
 
 The main function that detects objects in the image.
 
-#### Function
-
 <table>
     <thead>
         <tr>
