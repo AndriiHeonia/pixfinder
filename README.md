@@ -225,6 +225,11 @@ Contains information about one pixel.
     </tbody>
 </table>
 
+## Development
+
+    npm install # install dependencies
+    npm gulp    # check the code with JSHint, run tests and build dist
+
 ## Changelog
 
 ### 0.0.1 &mdash; 16.05.2014
