@@ -66,7 +66,7 @@ The main function that detects objects in the image.
         <tr>
             <td>
                 <code>
-                    pixfinder(options)
+                    pixfinder(&lt;Object&gt; options)
                 </code>
             </td>
             <td>
@@ -86,6 +86,8 @@ The main function that detects objects in the image.
             <th>Default</th>
             <th>Description</th>
         </tr>
+    </thead>
+    <tbody>
         <tr>
             <td>img</td>
             <td>HTMLImageElement | String</td>
@@ -127,13 +129,93 @@ The main function that detects objects in the image.
             <td>Boolean | Number</td>
             <td>false</td>
             <td>Removes all small objects after image analysis. If "false" then noise clearing is disabled, else if number is setted then all objects that contains less than specified number of pixels will be removed.</td>
+        </tr>
+        <tr>
+            <td>onload</td>
+            <td>Function</td>
+            <td></td>
+            <td>Callback that have to be called after image loading and analysis. Accepts event that contains all objects extracted from image. All objects are saved in "event.objects" property, each of them is Pixel object with 'x' and 'y' properties.</td>
         </tr>        
-    </thead>
-    <tbody>
-        
     </tbody>
 </table>
 
+### Util.Color
+
+Various color utility functions, used by Pixfinder internally.
+
+<table>
+    <thead>
+        <tr>
+            <th>Method</th>
+            <th>Returns</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><b>toRGB</b>(&lt;String&gt; color)</code></td>
+            <td>Array</td>
+            <td>Transforms hex color to RGB components.</td>
+        </tr>
+        <tr>
+            <td><b>toHex</b>(&lt;Array&gt; rgb)</code></td>
+            <td>String</td>
+            <td>Transforms RGB components to hex color.</td>
+        </tr>
+        <tr>
+            <td><b>areSimilar</b>( &lt;Array&gt; rgb1, &lt;Array&gt; rgb2, &lt;Number&gt; tolerance)</code></td>
+            <td>Boolean</td>
+            <td>Checks or colors are similar. Parameter "tolerance" is number of shades used during the checking.</td>
+        </tr>
+    </tbody>
+</table>
+
+### Util.Math
+
+Various math utility functions, used by Pixfinder internally.
+
+<table>
+    <thead>
+        <tr>
+            <th>Method</th>
+            <th>Returns</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><b>getDistance</b>(&lt;Pixel&gt; px1, &lt;Pixel&gt; px2)</code></td>
+            <td>Number</td>
+            <td>Returns distance between two pixels.</td>
+        </tr>
+    </tbody>
+</table>
+
+### Pixel
+
+Contains information about one pixel.
+
+<table>
+    <thead>
+        <tr>
+            <th>Property</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>x</td>
+            <td>Number</td>
+            <td>The x coordinate.</td>
+        </tr>
+        <tr>
+            <td>y</td>
+            <td>Number</td>
+            <td>The y coordinate.</td>
+        </tr>
+    </tbody>
+</table>
 
 ## Changelog
 
