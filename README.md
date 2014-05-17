@@ -137,7 +137,7 @@ The main function that detects objects in the image.
     </tbody>
 </table>
 
-### Util.Color
+### Pixfinder.Util.Color
 
 Various color utility functions, used by Pixfinder internally.
 
@@ -168,7 +168,7 @@ Various color utility functions, used by Pixfinder internally.
     </tbody>
 </table>
 
-### Util.Math
+### Pixfinder.Util.Math
 
 Various math utility functions, used by Pixfinder internally.
 
