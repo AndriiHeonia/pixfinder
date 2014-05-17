@@ -153,17 +153,17 @@ Various color utility functions, used by Pixfinder internally.
     </thead>
     <tbody>
         <tr>
-            <td><b>toRGB</b>(&lt;String&gt; color)</code></td>
+            <td>toRGB(&lt;String&gt; color)</code></td>
             <td>Array</td>
             <td>Transforms hex color to RGB components.</td>
         </tr>
         <tr>
-            <td><b>toHex</b>(&lt;Array&gt; rgb)</code></td>
+            <td>toHex(&lt;Array&gt; rgb)</code></td>
             <td>String</td>
             <td>Transforms RGB components to hex color.</td>
         </tr>
         <tr>
-            <td><b>areSimilar</b>( &lt;Array&gt; rgb1, &lt;Array&gt; rgb2, &lt;Number&gt; tolerance)</code></td>
+            <td>areSimilar( &lt;Array&gt; rgb1, &lt;Array&gt; rgb2, &lt;Number&gt; tolerance)</code></td>
             <td>Boolean</td>
             <td>Checks or colors are similar. Parameter "tolerance" is number of shades used during the checking.</td>
         </tr>
@@ -184,7 +184,7 @@ Various math utility functions, used by Pixfinder internally.
     </thead>
     <tbody>
         <tr>
-            <td><b>getDistance</b>(&lt;Pixel&gt; px1, &lt;Pixel&gt; px2)</code></td>
+            <td>getDistance(&lt;Pixel&gt; px1, &lt;Pixel&gt; px2)</code></td>
             <td>Number</td>
             <td>Returns distance between two pixels.</td>
         </tr>
