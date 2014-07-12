@@ -24,13 +24,16 @@ window.pixfinder = function (options) {
                 opt.tolerance,
                 opt.fill
             ),
-            objects = _splitByDist(regionsPxs, opt.distance),
-            clearedObjects = opt.clearNoise ? 
-                _clearNoise(objects, opt.clearNoise) : objects;
+            objects;
+
+        objects = _splitByDist(regionsPxs, opt.distance);
+
+        objects = opt.clearNoise ?
+            _clearNoise(objects, opt.clearNoise) : objects;
 
         if (typeof options.onload !== 'undefined') {
             options.onload({
-                objects: clearedObjects
+                objects: objects
             });
         }
     };
@@ -106,7 +109,7 @@ function _getRegionsPixels(canvas, colors, accuracy, tolerance, fill) {
     return res;
 }
 
-// (Number, Object) -> Object
+// (Number, Object) -> Pixel
 function _getPixelByColorPosition(colPos, imgSize) {
     var px = {x: 0, y: 0};
     px.y = parseInt(colPos / (imgSize.w*4));

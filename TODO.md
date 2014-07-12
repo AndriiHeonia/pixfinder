@@ -4,7 +4,10 @@
 * Add option to disable skipping not boundary pixels (Done!)
 * Refactor Pixfinder.js (namspaces, comments, etc), integrate jshint (Done!)
 * Finish beer example and think what about noise (Done!)
-* Write documentation
-* Add car counting example from parking webcam
-* Write tests
+* Write documentation (Done!)
+* Write breadth-first search of the borders from point
 * Try to integrate it to the real map
+* Optimize _splitByDist() operation, now it's too long: O(n2)
+* Implement geometries simplification, we need only corners
+* What about polygons with holes?
+* Write tests
