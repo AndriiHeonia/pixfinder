@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Pixfinder - a JavaScript library for image analysis</title>
+        <meta charset="utf-8" />
+    </head>
+        <script src="../src/Pixfinder.js"></script>
+        <script src="../src/Util/Util.js"></script>
+        <script src="../src/Util/Color.js"></script>
+        <script src="../src/Util/Math.js"></script>
+        <script src="../src/Util/Dom.js"></script>
+        <script src="../src/Struct/DisjointSet.js"></script>
+        <script src="../src/Struct/Voronoi.js"></script>
+        <script src="../src/Algo/Bfs.js"></script>
+        <script src="../src/Algo/clipper_unminified.js"></script>
+        <script src="../src/Algo/poly2cw.js"></script>
+        <script src="../src/Algo/hull.js"></script>
+    <body>
+        <img style="position:absolute; top: 0px; left:0px;" id="img" width="914" height="593" src="map.png" crossOrigin="Anonymous" />
+        <canvas style="position:absolute; top: 0px; left:0px;" id="canv" width="914" height="593" style="border:1px solid #d3d3d3; pointer-events: none;"></canvas>
+
+        <script>
+            window.onload = function() {
+                var img = document.getElementById('img'),
+                    canv = document.getElementById('canv'),
+                    ctx = canv.getContext('2d');
+                
+                canv.addEventListener('click', drawGeometry, false);
+
+                function drawGeometry(e) {
+                    var obj = Pixfinder.getObject({
+                            img: img,
+                            colors: [
+                                // houses
+                                'fbf9e7', 'fef3d8', 'ddd9c7', 'ecd5a3',
+                                'd3def1', 'd3d3d3', 'f0d0c6',
+                                // poi
+                                '2c8cc3', '80ba9d', 'd48949', 'e56464'
+                            ],
+                            distance: 10,
+                            tolerance: 4,
+                            accuracy: 2,
+                            fill: true,
+                            startPixel: {x: e.offsetX, y: e.offsetY}
+                        });
+
+                    ctx.beginPath();
+                    for (var j = 0; j < obj.length; j++) {
+                        ctx.lineTo(obj[j].x, obj[j].y);
+                        ctx.moveTo(obj[j].x, obj[j].y);
+                        ctx.stroke();
+                    }
+                    ctx.fill();
+                    ctx.closePath();
+                }
+            }
+        </script>
+    </body>
+</html>

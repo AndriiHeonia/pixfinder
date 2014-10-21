@@ -34,6 +34,17 @@ function poly2cw(vertices, algo) {
             vertices[indx].marked = true;
             v.push(vertices[indx]);
         }
+
+        // var c1=document.getElementById("canv1");
+        // var ctx1=c1.getContext("2d");
+        // ctx1.beginPath();
+        // for (var i = 0; i < v.length; i++) {
+        //     ctx1.lineTo(v[i].x, v[i].y);
+        //     ctx1.moveTo(v[i].x, v[i].y);
+        //     ctx1.stroke();
+        // }
+        // ctx1.closePath();
+
         return v;
     }
     else if (algo === 'tsp-voronoi') {
@@ -46,64 +57,60 @@ function poly2cw(vertices, algo) {
 
         var c1=document.getElementById("canv1");
         var ctx1=c1.getContext("2d");
-        for (var i = 0; i < diagram.cells.length; i++) {
-            ctx1.beginPath();
-            ctx1.arc(diagram.cells[i].site.x, diagram.cells[i].site.y, 4, 0, 2 * Math.PI, false);
-            ctx1.fill();
-            ctx1.closePath();
-        }
 
-        for (var i = 0; i < diagram.cells.length; i++) {
-            for (var j = 0; j < diagram.cells[i].halfedges.length; j++) {
-                var halfedge = diagram.cells[i].halfedges[j];
-                ctx1.beginPath();
-                ctx1.moveTo(halfedge.edge.va.x, halfedge.edge.va.y);
-                ctx1.lineTo(halfedge.edge.vb.x, halfedge.edge.vb.y);
-                ctx1.stroke();
-                ctx1.closePath();
-            };
-            ctx1.beginPath();
-            ctx1.arc(diagram.cells[i].site.x, diagram.cells[i].site.y, 4, 0, 2 * Math.PI, false);
-            ctx1.fill();
-            ctx1.closePath();
-        }
+        // точки
+        // for (var i = 0; i < diagram.cells.length; i++) {
+        //     ctx1.beginPath();
+        //     ctx1.arc(diagram.cells[i].site.x, diagram.cells[i].site.y, 4, 0, 2 * Math.PI, false);
+        //     ctx1.fill();
+        //     ctx1.closePath();
+        // }
 
-        var marked = {};
-        var v = [];
-        var vertice = vertices[0];
+        // сетка
+        // for (var i = 0; i < diagram.cells.length; i++) {
+        //     for (var j = 0; j < diagram.cells[i].halfedges.length; j++) {
+        //         var halfedge = diagram.cells[i].halfedges[j];
+        //         ctx1.beginPath();
+        //         ctx1.moveTo(halfedge.edge.va.x, halfedge.edge.va.y);
+        //         ctx1.lineTo(halfedge.edge.vb.x, halfedge.edge.vb.y);
+        //         ctx1.stroke();
+        //         ctx1.closePath();
+        //     };
+        // }
+
+        // var marked = {};
+        // var v = [];
+        // var vertice = vertices[0];
         // for (var i = 0; i < 22; i++) {
         //     var curVertice = vertice;
-        //     vertice = _getClosestVertice(vertice, diagram, marked);
+        //     vertice = _getClosestVertice(vertice, diagram, marked, bbox);
             
         //     if (vertice) {
-        //         console.log(vertice);
         //         v.push(vertice);
         //         marked[vertice.voronoiId] = true;
-        //     }
-        //     else {
-        //         vertice = _getClosestVertice(curVertice, diagram, {});
-        //         console.log(null, vertice);
+        //     } else {
+        //         vertice = _getClosestVertice(curVertice, diagram, {}, bbox);
         //     }
         // }
         // TODO: обратно нужно идти строго в обратном направлении!
         // Или избежать необходимости идти обратно...
-        while(true) {
-            var curVertice = vertice;
-            vertice = _getClosestVertice(vertice, diagram, marked, bbox);
-            if (!vertice) {
-                // // зашли в "тупик", но ещё обошли не все вершины
-                // if (v.length<vertices.length-1) {
-                //     vertice = _getClosestVertice(curVertice, diagram, {});
-                // }
-                // else {
-                    break;
-                // }
-            }
-            else {
-                v.push(vertice);
-                marked[vertice.voronoiId] = true;
-            }
-        }
+        // while(true) {
+        //     var curVertice = vertice;
+        //     vertice = _getClosestVertice(vertice, diagram, marked, bbox);
+        //     if (!vertice) {
+        //         // // зашли в "тупик", но ещё обошли не все вершины
+        //         // if (v.length<vertices.length-1) {
+        //         //     vertice = _getClosestVertice(curVertice, diagram, {});
+        //         // }
+        //         // else {
+        //             break;
+        //         // }
+        //     }
+        //     else {
+        //         v.push(vertice);
+        //         marked[vertice.voronoiId] = true;
+        //     }
+        // }
 
         // console.log(diagram.cells[vertices[9].voronoiId]);
         return v;
