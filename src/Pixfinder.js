@@ -72,11 +72,11 @@
             bfs(canvas, px, {
                 onvisit: function(e) {
 
-                    ctx1.fillStyle="green";
-                    ctx1.beginPath();
-                    ctx1.arc(e.pixel.coord.x, e.pixel.coord.y, 1, 0, 2 * Math.PI, true);
-                    ctx1.fill();
-                    ctx1.closePath();
+                    // ctx1.fillStyle="green";
+                    // ctx1.beginPath();
+                    // ctx1.arc(e.pixel.coord.x, e.pixel.coord.y, 1, 0, 2 * Math.PI, true);
+                    // ctx1.fill();
+                    // ctx1.closePath();
 
                     blacklist[e.pixel.coord.x + '-' + e.pixel.coord.y] = true;
                     if (!_isColorInColors(
@@ -92,13 +92,13 @@
             });
         }
 
-        ctx1.fillStyle="red";
-        for (var i = 0; i < result.length; i++) {
-            ctx1.beginPath();
-            ctx1.arc(result[i].x, result[i].y, 1, 0, 2 * Math.PI, true);
-            ctx1.fill();
-            ctx1.closePath();
-        }
+        // ctx1.fillStyle="red";
+        // for (var i = 0; i < result.length; i++) {
+        //     ctx1.beginPath();
+        //     ctx1.arc(result[i].x, result[i].y, 1, 0, 2 * Math.PI, true);
+        //     ctx1.fill();
+        //     ctx1.closePath();
+        // }
 
         return result;
     }
@@ -151,13 +151,15 @@
         });
         pixelsForQueue = pixelsForQueue.concat(queue);
         
-        ctx1.fillStyle="blue";
-        for (var i = 0; i < pixelsForQueue.length; i++) {
-            ctx1.beginPath();
-            ctx1.arc(pixelsForQueue[i].x, pixelsForQueue[i].y, 1, 0, 2 * Math.PI, true);
-            ctx1.fill();
-            ctx1.closePath();
-        }
+        // ctx1.fillStyle="blue";
+        // for (var i = 0; i < pixelsForQueue.length; i++) {
+        //     ctx1.beginPath();
+        //     ctx1.arc(pixelsForQueue[i].x, pixelsForQueue[i].y, 1, 0, 2 * Math.PI, true);
+        //     ctx1.fill();
+        //     ctx1.closePath();
+        // }
+        
+        // return borderPxs;
 
         if (pixelsForQueue.length > 0) {
             return _getBorderPxsWithOffset(pixelsForQueue, borderPxs, canvas, options);
