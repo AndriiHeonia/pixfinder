@@ -62,13 +62,6 @@
                 bfs(canv, px, {
                     onvisit: function(e) {
                         blacklist[e.pixel.coord.x + '-' + e.pixel.coord.y] = true;
-                
-                // ctx1.fillStyle="green";
-                // ctx1.beginPath();
-                // ctx1.arc(e.pixel.coord.x, e.pixel.coord.y, 1, 0, 2 * Math.PI, true);
-                // ctx1.fill();
-                // ctx1.closePath();
-
                         if (!_isColorInColors(
                             Pixfinder.Util.Color.areSimilar,
                             e.pixel.color,
@@ -102,6 +95,7 @@
             }
 
             function searchBorderPxs(queue) {
+                // get borderPxs
                 _bfs(queue.pop());
                 console.log('borderPxs: ', borderPxs.length);
 
@@ -117,22 +111,23 @@
                 }
                 borderPxs.forEach(function(px) {
                     var nPxs = _getNeighborPixels(px, imgSize);
-                    nPxs = nPxs.filter(notInBlacklistAndInsideObject);
+                    nPxs = nPxs.filter(notInBlacklist);
                     nPxs.forEach(function(p) {
                          pixelsForQueueBlacklist[p.x + '-' + p.y] = true;
                     });
                     pixelsForQueue = pixelsForQueue.concat(nPxs);
                 });
-                for (var i = 0; i < opt.distance-1; i++) {
+                for (var i = 0; i < opt.distance - 1; i++) {
                     pixelsForQueue.forEach(function(px) {
                         var nPxs = _getNeighborPixels(px, imgSize);
-                        nPxs = nPxs.filter(notInBlacklistAndInsideObject);
+                        nPxs = nPxs.filter(notInBlacklist);
                         nPxs.forEach(function(p) {
                              pixelsForQueueBlacklist[p.x + '-' + p.y] = true;
                         });
                         pixelsForQueue = pixelsForQueue.concat(nPxs);
                     });
                 }
+                pixelsForQueue = pixelsForQueue.filter(insideObject);
 
                 // draw pxs for queue                
                 ctx1.fillStyle="blue";
@@ -153,7 +148,7 @@
                 }
 
                 // var q = pixelsForQueue.concat(queue);
-                console.log(pixelsForQueue.length);
+                console.log('pixelsForQueue', pixelsForQueue.length);
                 if (pixelsForQueue.length > 0) {
                     searchBorderPxs(pixelsForQueue);
                 }
