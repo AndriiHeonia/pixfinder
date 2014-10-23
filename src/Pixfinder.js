@@ -39,10 +39,7 @@
             var opt = _setCommonDefaults(options),
                 canv = _wrapByCanvas(opt.img),
                 ctx = canv.getContext('2d'),
-                imgSize = {
-                    w: canv.width,
-                    h: canv.height
-                },
+                imgSize = { w: canv.width, h: canv.height },
                 imgCols = ctx.getImageData(0, 0, imgSize.w, imgSize.h).data,
                 colPos = _getColorPositionByPixel(opt.startPixel, imgSize),
                 pxCol = [imgCols[colPos], imgCols[colPos+1], imgCols[colPos+2], imgCols[colPos+3]],
@@ -55,19 +52,23 @@
                 opt.colors,
                 opt.tolerance
             );
+            if (!isStartPxInObject) { return []; }
 
-            if (!isStartPxInObject) {
-                return [];
-            }
-
-            var blacklistHash = {};
+            var blacklist = {};
             function _bfs(px) {
-                if (blacklistHash[px.x + '-' + px.y] === true) {
+                if (blacklist[px.x + '-' + px.y] === true) {
                     return;
                 }
                 bfs(canv, px, {
                     onvisit: function(e) {
-                        blacklistHash[e.pixel.coord.x + '-' + e.pixel.coord.y] = true;
+                        blacklist[e.pixel.coord.x + '-' + e.pixel.coord.y] = true;
+                
+                // ctx1.fillStyle="green";
+                // ctx1.beginPath();
+                // ctx1.arc(e.pixel.coord.x, e.pixel.coord.y, 1, 0, 2 * Math.PI, true);
+                // ctx1.fill();
+                // ctx1.closePath();
+
                         if (!_isColorInColors(
                             Pixfinder.Util.Color.areSimilar,
                             e.pixel.color,
@@ -79,10 +80,6 @@
                         }
                     }
                 });
-            }
-            
-            function notInBlacklist(px) {
-                return blacklistHash[px.x + '-' + px.y] !== true;
             }
 
             function insideObject(px) {
@@ -96,29 +93,82 @@
                 );
             }
 
+            // function notInBlacklist(px) {
+            //     return blacklist[px.x + '-' + px.y] !== true;
+            // }
+
             function notInBlacklistAndInsideObject(px) {
                 return notInBlacklist(px) && insideObject(px);
             }
 
-            function processPixelQueue(queue) {
+            function searchBorderPxs(queue) {
                 _bfs(queue.pop());
-                borderPxs = borderPxs.map(function(px) {
-                    return [px.x, px.y];
-                });
-                borderPxs = hull(borderPxs, 10);
-                borderPxs = borderPxs.map(function(px) {
-                    return {x: px[0], y: px[1]};
-                });
+                console.log('borderPxs: ', borderPxs.length);
 
-                var pxsForQueue = ClipperLib.Clipper.OffsetPaths([borderPxs], opt.distance, ClipperLib.JoinType.jtMiter, ClipperLib.EndType.etClosed, 2);
-                pxsForQueue = pxsForQueue[0].filter(notInBlacklistAndInsideObject);
-                if (pxsForQueue.length > 0) {
-                    processPixelQueue(queue.concat(pxsForQueue));
+                // get pxs for queue
+                var pixelsForQueue = [];
+                var pixelsForQueueBlacklist = {};
+                Pixfinder.Util.Obj.extend(pixelsForQueueBlacklist, blacklist);
+                function notInBlacklist(px) {
+                    return pixelsForQueueBlacklist[px.x + '-' + px.y] !== true;
+                }
+                function notInBlacklistAndInsideObject(px) {
+                    return notInBlacklist(px) && insideObject(px);
+                }
+                borderPxs.forEach(function(px) {
+                    var nPxs = _getNeighborPixels(px, imgSize);
+                    nPxs = nPxs.filter(notInBlacklistAndInsideObject);
+                    nPxs.forEach(function(p) {
+                         pixelsForQueueBlacklist[p.x + '-' + p.y] = true;
+                    });
+                    pixelsForQueue = pixelsForQueue.concat(nPxs);
+                });
+                for (var i = 0; i < opt.distance-1; i++) {
+                    pixelsForQueue.forEach(function(px) {
+                        var nPxs = _getNeighborPixels(px, imgSize);
+                        nPxs = nPxs.filter(notInBlacklistAndInsideObject);
+                        nPxs.forEach(function(p) {
+                             pixelsForQueueBlacklist[p.x + '-' + p.y] = true;
+                        });
+                        pixelsForQueue = pixelsForQueue.concat(nPxs);
+                    });
+                }
+
+                // draw pxs for queue                
+                ctx1.fillStyle="blue";
+                for (var i = 0; i < pixelsForQueue.length; i++) {
+                    ctx1.beginPath();
+                    ctx1.arc(pixelsForQueue[i].x, pixelsForQueue[i].y, 1, 0, 2 * Math.PI, true);
+                    ctx1.fill();
+                    ctx1.closePath();
+                }
+
+                // draw border
+                ctx1.fillStyle="red";
+                for (var i = 0; i < borderPxs.length; i++) {
+                    ctx1.beginPath();
+                    ctx1.arc(borderPxs[i].x, borderPxs[i].y, 1, 0, 2 * Math.PI, true);
+                    ctx1.fill();
+                    ctx1.closePath();
+                }
+
+                // var q = pixelsForQueue.concat(queue);
+                console.log(pixelsForQueue.length);
+                if (pixelsForQueue.length > 0) {
+                    searchBorderPxs(pixelsForQueue);
                 }
             }
 
-            processPixelQueue([opt.startPixel]);
+            searchBorderPxs([opt.startPixel]);
             
+            borderPxs = borderPxs.map(function(px) {
+                return [px.x, px.y];
+            });
+            borderPxs = hull(borderPxs, opt.distance);
+            borderPxs = borderPxs.map(function(px) {
+                return {x: px[0], y: px[1]};
+            });
+
             return borderPxs;
         }
 
@@ -199,6 +249,45 @@
     // (Pixel, Object) -> Number
     function _getColorPositionByPixel(px, imgSize) {
         return ((px.y - 1) * imgSize.w * 4) + (px.x * 4 - 4);
+    }
+
+    function _getNeighborPixels(px, imgSize) {
+        var nPxs = [],
+            t   = {x: px.x, y: px.y - 1},
+            tr  = {x: px.x + 1, y: px.y - 1},
+            r   = {x: px.x + 1, y: px.y},
+            br  = {x: px.x + 1, y: px.y + 1},
+            b   = {x: px.x, y: px.y + 1},
+            bl  = {x: px.x - 1, y: px.y + 1},
+            l   = {x: px.x - 1, y: px.y},
+            tl  = {x: px.x - 1, y: px.y - 1};
+
+        if (px.y > 0) {
+            nPxs.push(t);
+            if (px.x < imgSize.w) {
+                nPxs.push(tr);
+            }
+        }
+        if (px.x < imgSize.w) {
+            nPxs.push(r);
+            if (px.y < imgSize.h) {
+                nPxs.push(br);
+            }
+        }
+        if (px.y < imgSize.h) {
+            nPxs.push(b);
+            if (px.x > 0) {
+                nPxs.push(bl);
+            }
+        }
+        if (px.x > 0) {
+            nPxs.push(l);
+            if (px.y > 0) {
+                nPxs.push(tl);
+            }
+        }
+
+        return nPxs;
     }
 
     // (Number, Array, Object) -> Array
