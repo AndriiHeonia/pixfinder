@@ -86,10 +86,6 @@
                 );
             }
 
-            // function notInBlacklist(px) {
-            //     return blacklist[px.x + '-' + px.y] !== true;
-            // }
-
             function notInBlacklistAndInsideObject(px) {
                 return notInBlacklist(px) && insideObject(px);
             }
@@ -130,25 +126,25 @@
                 pixelsForQueue = pixelsForQueue.filter(insideObject);
 
                 // draw pxs for queue                
-                ctx1.fillStyle="blue";
-                for (var i = 0; i < pixelsForQueue.length; i++) {
-                    ctx1.beginPath();
-                    ctx1.arc(pixelsForQueue[i].x, pixelsForQueue[i].y, 1, 0, 2 * Math.PI, true);
-                    ctx1.fill();
-                    ctx1.closePath();
-                }
+                // ctx1.fillStyle="blue";
+                // for (var i = 0; i < pixelsForQueue.length; i++) {
+                //     ctx1.beginPath();
+                //     ctx1.arc(pixelsForQueue[i].x, pixelsForQueue[i].y, 1, 0, 2 * Math.PI, true);
+                //     ctx1.fill();
+                //     ctx1.closePath();
+                // }
 
                 // draw border
-                ctx1.fillStyle="red";
-                for (var i = 0; i < borderPxs.length; i++) {
-                    ctx1.beginPath();
-                    ctx1.arc(borderPxs[i].x, borderPxs[i].y, 1, 0, 2 * Math.PI, true);
-                    ctx1.fill();
-                    ctx1.closePath();
-                }
+                // ctx1.fillStyle="red";
+                // for (var i = 0; i < borderPxs.length; i++) {
+                //     ctx1.beginPath();
+                //     ctx1.arc(borderPxs[i].x, borderPxs[i].y, 1, 0, 2 * Math.PI, true);
+                //     ctx1.fill();
+                //     ctx1.closePath();
+                // }
 
                 // var q = pixelsForQueue.concat(queue);
-                console.log('pixelsForQueue', pixelsForQueue.length);
+                // console.log('pixelsForQueue', pixelsForQueue.length);
                 if (pixelsForQueue.length > 0) {
                     searchBorderPxs(pixelsForQueue);
                 }
@@ -159,7 +155,7 @@
             borderPxs = borderPxs.map(function(px) {
                 return [px.x, px.y];
             });
-            borderPxs = hull(borderPxs, opt.distance);
+            borderPxs = hull(borderPxs, 15);
             borderPxs = borderPxs.map(function(px) {
                 return {x: px[0], y: px[1]};
             });

@@ -38,7 +38,10 @@
                                 'fbf9e7', 'fef3d8', 'ddd9c7', 'ecd5a3',
                                 'd3def1', 'd3d3d3', 'f0d0c6',
                                 // poi
-                                '2c8cc3', '80ba9d', 'd48949', 'e56464'
+                                '2c8cc3', '80ba9d', 'd48949', 'e56464',
+                                // text
+                                '6d807e'
+                                // '6d807e', 'fefefd'
                             ],
                             distance: 5,
                             tolerance: 3,
@@ -47,14 +50,14 @@
                             startPixel: {x: e.offsetX, y: e.offsetY}
                         });
 
-                    // ctx.beginPath();
-                    // for (var j = 0; j < obj.length; j++) {
-                    //     ctx.lineTo(obj[j].x, obj[j].y);
-                    //     ctx.moveTo(obj[j].x, obj[j].y);
-                    //     ctx.stroke();
-                    // }
-                    // ctx.fill();
-                    // ctx.closePath();
+                    ctx.beginPath();
+                    for (var j = 0; j < obj.length; j++) {
+                        ctx.lineTo(obj[j].x, obj[j].y);
+                        ctx.moveTo(obj[j].x, obj[j].y);
+                        ctx.stroke();
+                    }
+                    ctx.fill();
+                    ctx.closePath();
                 }
             }
         </script>
