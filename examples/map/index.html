@@ -3,95 +3,57 @@
     <head>
         <title>Pixfinder - a JavaScript library for image analysis</title>
         <meta charset="utf-8" />
-    </head>
         <script src="../../src/Pixfinder.js"></script>
         <script src="../../src/Util/Util.js"></script>
         <script src="../../src/Util/Color.js"></script>
         <script src="../../src/Util/Math.js"></script>
-        <script src="../../src/Util/Dom.js"></script>
         <script src="../../src/Struct/DisjointSet.js"></script>
-        <script src="../../src/Struct/Voronoi.js"></script>
-        <script src="../../src/Algo/Bfs.js"></script>
-        <script src="../../src/Algo/clipper_unminified.js"></script>
-        <script src="../../src/Algo/poly2cw.js"></script>
+    </head>
     <body>
-        <img style="position:absolute; top: 0px; left:0px;" id="myImg" width="914" height="593" src="map1.png" crossOrigin="Anonymous" />
-        <canvas style="position:absolute; top: 0px; left:0px;" id="canv" width="914" height="593" style="border:1px solid #d3d3d3; pointer-events: none;"></canvas>
-
-        <canvas style="position:absolute; top: 594px; left:0px; border: 1px solid black;" id="canv1" width="914" height="593" style="border:1px solid #d3d3d3; pointer-events: none;"></canvas>
-
+        <img style="position:absolute; top: 0px; left:0px;" id="myImg" width="914" height="593" src="map1.png" crossOrigin="Anonymous"></img>
+        <canvas style="position:absolute; top: 0px; left:0px;" id="canv" width="914" height="593" style="border:1px solid #d3d3d3;"></canvas>
         <script>
             window.onload = function () {
-
                 var myImg = document.getElementById('myImg');
-                // if (Pixfinder.Util.Dom.isImgLoaded(myImg)) drawGeometries(myImg);
-                // else myImg.addEventListener('load', drawGeometries, false);
-                var myCanv = document.getElementById('canv');
-                myCanv.addEventListener('click', drawGeometry, false);
+                var p = pixfinder({
+                    img: myImg,
+                    colors: [
+                        'fbf9e7', // houses
+                        'ddd9c7',
+                        'd3def1',
+                        'd3d3d3',
+                        'f0d0c6',
+                        'ecd5a3',
+                        'd3d3d3',
+                        '2c8cc3', // poi
+                        '80ba9d',
+                        'd48949',
+                        'e56464'
+                    ],
+                    distance: 10,
+                    tolerance: 3,
+                    accuracy: 2,
+                    fill: true,
+                    onload: drawGeometries
+                });
 
-                function drawGeometries(img) {
-                    var ctx = document.getElementById("canv").getContext("2d"),
-                        objects = Pixfinder.getObjects({
-                            img: img,
-                            colors: [
-                                // houses
-                                'fbf9e7', 'fef3d8', 'ddd9c7', 'ecd5a3',
-                                'd3def1', 'd3d3d3', 'f0d0c6',
-                                // poi
-                                '2c8cc3', '80ba9d', 'd48949', 'e56464'
-                            ],
-                            distance: 10,
-                            tolerance: 3,
-                            accuracy: 2,
-                            fill: false
-                        });
-
-                    for (var i = 0; i < objects.length; i++) {
+                function drawGeometries(e) {
+                    var c=document.getElementById("canv");
+                    var ctx=c.getContext("2d");
+                    for (var i = 0; i < e.objects.length; i++) {
                         ctx.fillStyle = Pixfinder.Util.Color.toHex ([
                             Math.random() * 255,
                             Math.random() * 255,
                             Math.random() * 255
                         ]);
                         ctx.beginPath();
-                        for (var j = 0; j < objects[i].length; j++) {
-                            ctx.fillRect(objects[i][j].x, objects[i][j].y, 1, 1); 
+                        for (var j = 0; j < e.objects[i].length; j++) {
+                            ctx.fillRect(e.objects[i][j].x, e.objects[i][j].y, 1, 1); 
                         }
                         ctx.fill();
                         ctx.closePath();
                     }
                 }
-
-                function drawGeometry(e) {
-                    // console.time('getObject');
-                    var ctx = document.getElementById("canv").getContext("2d"),
-                        obj = Pixfinder.getObject({
-                            img: myImg,
-                            colors: [
-                                // houses
-                                'fbf9e7', 'fef3d8', 'ddd9c7', 'ecd5a3',
-                                'd3def1', 'd3d3d3', 'f0d0c6'
-                                // poi
-                                // '2c8cc3', '80ba9d', 'd48949', 'e56464'
-                            ],
-                            distance: 5,
-                            tolerance: 3,
-                            accuracy: 2,
-                            fill: true,
-                            startPixel: {x: e.offsetX, y: e.offsetY}
-                        });
-                    // console.timeEnd('getObject');
-
-                    ctx.beginPath();
-                    for (var j = 0; j < obj.length; j++) {
-                        // ctx.fillRect(obj[j].x, obj[j].y, 1, 1);
-                        ctx.lineTo(obj[j].x, obj[j].y);
-                        ctx.moveTo(obj[j].x, obj[j].y);
-                        ctx.stroke();
-                    }
-                    ctx.fill();
-                    ctx.closePath();
-                }
-
             }
         </script>
     </body>

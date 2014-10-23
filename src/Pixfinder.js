@@ -135,16 +135,14 @@
                 // }
 
                 // draw border
-                // ctx1.fillStyle="red";
-                // for (var i = 0; i < borderPxs.length; i++) {
-                //     ctx1.beginPath();
-                //     ctx1.arc(borderPxs[i].x, borderPxs[i].y, 1, 0, 2 * Math.PI, true);
-                //     ctx1.fill();
-                //     ctx1.closePath();
-                // }
+                ctx1.fillStyle="red";
+                for (var i = 0; i < borderPxs.length; i++) {
+                    ctx1.beginPath();
+                    ctx1.arc(borderPxs[i].x, borderPxs[i].y, 1, 0, 2 * Math.PI, true);
+                    ctx1.fill();
+                    ctx1.closePath();
+                }
 
-                // var q = pixelsForQueue.concat(queue);
-                // console.log('pixelsForQueue', pixelsForQueue.length);
                 if (pixelsForQueue.length > 0) {
                     searchBorderPxs(pixelsForQueue);
                 }
@@ -155,7 +153,7 @@
             borderPxs = borderPxs.map(function(px) {
                 return [px.x, px.y];
             });
-            borderPxs = hull(borderPxs, 15);
+            borderPxs = hull(borderPxs, 6);
             borderPxs = borderPxs.map(function(px) {
                 return {x: px[0], y: px[1]};
             });
