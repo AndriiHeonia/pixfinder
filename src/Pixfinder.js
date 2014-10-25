@@ -15,6 +15,7 @@ getObject
         }
     }
  3. извлекаем все пиксели из дерева
+ Complexity: O(N*logN), N - pixels in object
 */
 
         getObject: function(options) {
