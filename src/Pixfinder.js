@@ -21,11 +21,12 @@
             );
             if (!isStartPxInObject) { return []; }
 
-            borderPxs = _getBorderPxsWithOffset([opt.startPixel], borderPxs, canv, opt);
+            borderPxs = _getBorderPxsWithOffset([opt.startPixel], borderPxs, canv, ctx, imgSize, imgCols, opt);
+
             borderPxs = borderPxs.map(function(px) {
                 return [px.x, px.y];
             });
-            borderPxs = hull(borderPxs, 6);
+            borderPxs = hull(borderPxs, 5);
             borderPxs = borderPxs.map(function(px) {
                 return {x: px[0], y: px[1]};
             });
@@ -64,33 +65,26 @@
         }
     };
 
-    var blacklist = {};
+    var blacklist = [],
+        blacklistHash = {};
     function _getBorderPxs(px, canvas, options) { // (Pixel, HTMLCanvasElement, Object) -> Object
         var result = [];
 
-        if (blacklist[px.x + '-' + px.y] !== true) {
-            bfs(canvas, px, {
-                onvisit: function(e) {
-
-                    // ctx1.fillStyle="green";
-                    // ctx1.beginPath();
-                    // ctx1.arc(e.pixel.coord.x, e.pixel.coord.y, 1, 0, 2 * Math.PI, true);
-                    // ctx1.fill();
-                    // ctx1.closePath();
-
-                    blacklist[e.pixel.coord.x + '-' + e.pixel.coord.y] = true;
-                    if (!_isColorInColors(
-                        Pixfinder.Util.Color.areSimilar,
-                        e.pixel.color,
-                        options.colors,
-                        options.tolerance
-                    )) {
-                        result.push(e.pixel.coord);
-                        e.skip();
-                    }
+        bfs(canvas, px, {
+            onvisit: function(e) {
+                blacklist.push(e.pixel.coord);
+                blacklistHash[e.pixel.coord.x + '-' + e.pixel.coord.y] = true;
+                if (!_isColorInColors(
+                    Pixfinder.Util.Color.areSimilar,
+                    e.pixel.color,
+                    options.colors,
+                    options.tolerance
+                )) {
+                    result.push(e.pixel.coord);
+                    e.skip();
                 }
-            });
-        }
+            }
+        }, blacklist);
 
         // ctx1.fillStyle="red";
         // for (var i = 0; i < result.length; i++) {
@@ -107,19 +101,26 @@
     function _getPixelsAroundBorder(borderPxs, imgSize) {
         var result = [];
 
-        Pixfinder.Util.Obj.extend(pixelsAroundBorderBlacklist, blacklist);
+        Pixfinder.Util.Obj.extend(pixelsAroundBorderBlacklist, blacklistHash);
         function _notInBlacklist(px) {
             return pixelsAroundBorderBlacklist[px.x + '-' + px.y] !== true;
         }
 
         borderPxs.forEach(function(px) {
-            var nPxs = Pixfinder.Util.Canvas.getNeighborPixels(px, imgSize);
-            nPxs = nPxs.filter(_notInBlacklist);
+            var nPxs = Pixfinder.Util.Canvas.getNeighborPixels(px, imgSize).filter(_notInBlacklist);
             nPxs.forEach(function(p) {
                  pixelsAroundBorderBlacklist[p.x + '-' + p.y] = true;
             });
             result = result.concat(nPxs);
         });
+
+        // ctx1.fillStyle="blue";
+        // for (var i = 0; i < result.length; i++) {
+        //     ctx1.beginPath();
+        //     ctx1.arc(result[i].x, result[i].y, 1, 0, 2 * Math.PI, true);
+        //     ctx1.fill();
+        //     ctx1.closePath();
+        // }
 
         return result;
     }
@@ -135,37 +136,51 @@
         );
     }
 
-    function _getBorderPxsWithOffset(queue, borderPxs, canvas, options) {
-        var ctx = canvas.getContext('2d'),
-            imgSize = { w: canvas.width, h: canvas.height },
-            imgCols = ctx.getImageData(0, 0, imgSize.w, imgSize.h).data,
-            borderPxs = borderPxs.concat(_getBorderPxs(queue.pop(), canvas, options)),
-            pixelsForQueue = _getPixelsAroundBorder(borderPxs, imgSize, options.distance);
-        
-        for (var i = 0; i < options.distance; i++) {
-            pixelsForQueue = _getPixelsAroundBorder(pixelsForQueue, imgSize);
-        }
+    // var calls = 0;
+    function _getBorderPxsWithOffset(queue, borderPxs, canvas, ctx, imgSize, imgCols, options) {
+        // calls++;
 
-        pixelsForQueue = pixelsForQueue.filter(function(px) {
+        // console.time('_getBorderPxs');
+        var borderPxs = borderPxs.concat(_getBorderPxs(queue.pop(), canvas, options));
+        // console.timeEnd('_getBorderPxs');
+        
+        // console.time('queue.filter');
+        queue = queue.filter(function(px) {
+            return blacklistHash[px.x + '-' + px.y] !== true;
+        });
+        // console.timeEnd('queue.filter');
+
+        // console.time('pxsAroundBorder');
+        var pxsAroundBorder = _getPixelsAroundBorder(borderPxs, imgSize, options.distance);
+        for (var i = 0; i < options.distance; i++) {
+            pxsAroundBorder = pxsAroundBorder.concat(_getPixelsAroundBorder(pxsAroundBorder, imgSize));
+        }
+        // console.timeEnd('pxsAroundBorder');
+
+        // console.time('pxsAroundBorder.filter');
+        pxsAroundBorder = pxsAroundBorder.filter(function(px) {
             return _insideRegion(px, imgSize, imgCols, options);
         });
-        pixelsForQueue = pixelsForQueue.concat(queue);
-        
-        // ctx1.fillStyle="blue";
-        // for (var i = 0; i < pixelsForQueue.length; i++) {
+        // console.timeEnd('pxsAroundBorder.filter');
+
+        // ctx1.fillStyle="green";
+        // for (var i = 0; i < pxsAroundBorder.length; i++) {
         //     ctx1.beginPath();
-        //     ctx1.arc(pixelsForQueue[i].x, pixelsForQueue[i].y, 1, 0, 2 * Math.PI, true);
+        //     ctx1.arc(pxsAroundBorder[i].x, pxsAroundBorder[i].y, 1, 0, 2 * Math.PI, true);
         //     ctx1.fill();
         //     ctx1.closePath();
         // }
-        
-        // return borderPxs;
 
-        if (pixelsForQueue.length > 0) {
-            return _getBorderPxsWithOffset(pixelsForQueue, borderPxs, canvas, options);
-        } else {
-            return borderPxs;
+        // console.time('queue.concat');
+        queue = queue.concat(pxsAroundBorder);
+        // console.timeEnd('queue.concat');
+
+        // console.log(queue.length);
+        if (queue.length > 0) {
+            return _getBorderPxsWithOffset(queue, borderPxs, canvas, ctx, imgSize, imgCols, options);
         }
+
+        return borderPxs;
     }    
 
 

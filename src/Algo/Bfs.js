@@ -4,7 +4,7 @@
 function bfs(img, startCoord, eventMap, blacklist) {
     var queue = _is('Array', startCoord) ? startCoord : [startCoord];
 
-    if (_isImgLoaded(img)) {
+    if(_isImgLoaded(img)) {
         _bfs(_wrapByCanvas(img), queue, eventMap, blacklist);
     } else {
         img.addEventListener('load', function() {
@@ -25,7 +25,7 @@ function _bfs(canvas, queue, eventMap, blacklist) {
         stopMainLoop = false,
         skipNeighbords = false;
 
-    if (blacklist !== undefined) {
+    if(blacklist !== undefined) {
         blacklist.forEach(function(coord) {
             visited[coord.x + '-' + coord.y] = true;
         });
@@ -33,7 +33,7 @@ function _bfs(canvas, queue, eventMap, blacklist) {
 
     function visitPx(coord) {
         visited[coord.x + '-' + coord.y] = true;
-        if (eventMap !== undefined && eventMap.onvisit !== undefined) {
+        if(eventMap !== undefined && eventMap.onvisit !== undefined) {
             eventMap.onvisit({
                 pixel: {
                     coord: coord,
@@ -49,7 +49,7 @@ function _bfs(canvas, queue, eventMap, blacklist) {
 
 mainLoop:
     while (queue.length > 0) {
-        if (stopMainLoop) { break mainLoop; }
+        if(stopMainLoop) { break mainLoop; }
 
         var coord = queue.shift(),
             colPos = _getColorPositionByXY(coord, imgSize),
@@ -59,10 +59,10 @@ mainLoop:
 
         for (var i = 0; i < nPxs.length; i++) {
             var nPx = nPxs[i];
-            if (visited[nPx.coord.x + '-' + nPx.coord.y] !== true) {
+            if(visited[nPx.coord.x + '-' + nPx.coord.y] !== true) {
                 visitPx(nPx.coord);
-                if (stopMainLoop) { break mainLoop; }
-                if (!skipNeighbords) {
+                if(stopMainLoop) { break mainLoop; }
+                if(!skipNeighbords) {
                     queue.push(nPx.coord);
                 }
                 skipNeighbords = false;
@@ -97,7 +97,7 @@ function _getNeighborPixels(coord, imgSize, imgCols) {
         });
     }
 
-    if(coord.y > 0) { // tPx
+    if (coord.y > 0) { // tPx
         pos = {
             x: coord.x,
             y: coord.y - 1
@@ -108,7 +108,7 @@ function _getNeighborPixels(coord, imgSize, imgCols) {
         });
     }
 
-    if(coord.x < imgSize.w && coord.y > 0) { // trPx
+    if (coord.x < imgSize.w && coord.y > 0) { // trPx
         pos = {
             x: coord.x + 1,
             y: coord.y - 1
@@ -119,7 +119,7 @@ function _getNeighborPixels(coord, imgSize, imgCols) {
         });
     }
 
-    if(coord.x < imgSize.w) { // rPx
+    if (coord.x < imgSize.w) { // rPx
         pos = {
             x: coord.x + 1,
             y: coord.y
@@ -130,7 +130,7 @@ function _getNeighborPixels(coord, imgSize, imgCols) {
         });
     }
 
-    if(coord.x < imgSize.w && coord.y < imgSize.h) { // brPx
+    if (coord.x < imgSize.w && coord.y < imgSize.h) { // brPx
         pos = {
             x: coord.x + 1,
             y: coord.y + 1
@@ -141,7 +141,7 @@ function _getNeighborPixels(coord, imgSize, imgCols) {
         });
     }
 
-    if(coord.y < imgSize.h) { // bPx
+    if (coord.y < imgSize.h) { // bPx
         pos = {
             x: coord.x,
             y: coord.y + 1
@@ -184,7 +184,7 @@ function _isImgLoaded(img) {
 
 // (HTMLImageElement) -> HTMLCanvasElement
 function _wrapByCanvas(img) {
-    if (img.tagName === 'CANVAS') { return img; }
+    if(img.tagName === 'CANVAS') { return img; }
     var canv = document.createElement('canvas');
     canv.width = img.width;
     canv.height = img.height;
