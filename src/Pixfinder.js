@@ -2,22 +2,6 @@
 
     window.Pixfinder = {
 
-/*
-TODO:
-getObject
- 1. запускаем bfs
- 2. if (пиксель в объекте){
-        добавляем его пространственное дерево
-    } else {
-        ищем в дереве в радиусе dist ближайшего соседа, который в объекте
-        if (соседа нет) {
-            e.skip();
-        }
-    }
- 3. извлекаем все пиксели из дерева
- Complexity: O(N*logN), N - pixels in object
-*/
-
         getObject: function(options) {
             var opt = _getCommonDefaults(options),
                 canv = Pixfinder.Util.Canvas.wrapImgByCanvas(opt.img),
@@ -27,7 +11,8 @@ getObject
                 colPos = Pixfinder.Util.Canvas.getColorPositionByPixel(opt.startPixel, imgSize),
                 pxCol = [imgCols[colPos], imgCols[colPos+1], imgCols[colPos+2], imgCols[colPos+3]],
                 isStartPxInObject = false,
-                borderPxs = [];
+                tree = rbush(9, ['.x', '.y', '.x', '.y']),
+                result = [];
 
             isStartPxInObject = _isColorInColors(
                 Pixfinder.Util.Color.areSimilar,
@@ -37,17 +22,38 @@ getObject
             );
             if (!isStartPxInObject) { return []; }
 
-            borderPxs = _getBorderPxsWithOffset([opt.startPixel], borderPxs, canv, ctx, imgSize, imgCols, opt);
+            bfs(canv, opt.startPixel, {
+                onvisit: function(e) {
+                    var px = e.pixel.coord;
+                    if (_isColorInColors(
+                        Pixfinder.Util.Color.areSimilar,
+                        e.pixel.color,
+                        options.colors,
+                        options.tolerance
+                    )) {
+                        tree.insert(px);
+                    } else {
+                        var bbox = [
+                            px.x - opt.distance, px.y - opt.distance,
+                            px.x + opt.distance, px.y + opt.distance
+                        ];
+                        if (tree.search(bbox).length === 0) {
+                            e.skip();
+                        }
+                    }
+                }
+            });
 
-            borderPxs = borderPxs.map(function(px) {
+            result = tree.all();
+            result = result.map(function(px) {
                 return [px.x, px.y];
             });
-            borderPxs = hull(borderPxs, 5);
-            borderPxs = borderPxs.map(function(px) {
+            result = hull(result, 9);
+            result = result.map(function(px) {
                 return {x: px[0], y: px[1]};
             });
 
-            return borderPxs;
+            return result;      
         },
 
         getObjects: function(options) {
@@ -80,127 +86,6 @@ getObject
             return objects;
         }
     };
-
-    var blacklist = [],
-        blacklistHash = {};
-    function _getBorderPxs(px, canvas, options) { // (Pixel, HTMLCanvasElement, Object) -> Object
-        var result = [];
-
-        bfs(canvas, px, {
-            onvisit: function(e) {
-                blacklist.push(e.pixel.coord);
-                blacklistHash[e.pixel.coord.x + '-' + e.pixel.coord.y] = true;
-                if (!_isColorInColors(
-                    Pixfinder.Util.Color.areSimilar,
-                    e.pixel.color,
-                    options.colors,
-                    options.tolerance
-                )) {
-                    result.push(e.pixel.coord);
-                    e.skip();
-                }
-            }
-        }, blacklist);
-
-        // ctx1.fillStyle="red";
-        // for (var i = 0; i < result.length; i++) {
-        //     ctx1.beginPath();
-        //     ctx1.arc(result[i].x, result[i].y, 1, 0, 2 * Math.PI, true);
-        //     ctx1.fill();
-        //     ctx1.closePath();
-        // }
-
-        return result;
-    }
-
-    var pixelsAroundBorderBlacklist = {};
-    function _getPixelsAroundBorder(borderPxs, imgSize) {
-        var result = [];
-
-        Pixfinder.Util.Obj.extend(pixelsAroundBorderBlacklist, blacklistHash);
-        function _notInBlacklist(px) {
-            return pixelsAroundBorderBlacklist[px.x + '-' + px.y] !== true;
-        }
-
-        borderPxs.forEach(function(px) {
-            var nPxs = Pixfinder.Util.Canvas.getNeighborPixels(px, imgSize).filter(_notInBlacklist);
-            nPxs.forEach(function(p) {
-                 pixelsAroundBorderBlacklist[p.x + '-' + p.y] = true;
-            });
-            result = result.concat(nPxs);
-        });
-
-        // ctx1.fillStyle="blue";
-        // for (var i = 0; i < result.length; i++) {
-        //     ctx1.beginPath();
-        //     ctx1.arc(result[i].x, result[i].y, 1, 0, 2 * Math.PI, true);
-        //     ctx1.fill();
-        //     ctx1.closePath();
-        // }
-
-        return result;
-    }
-
-    function _insideRegion(px, imgSize, imgCols, options) {
-        var colPos = Pixfinder.Util.Canvas.getColorPositionByPixel(px, imgSize),
-            pxCol = [imgCols[colPos], imgCols[colPos+1], imgCols[colPos+2], imgCols[colPos+3]];
-        return _isColorInColors(
-            Pixfinder.Util.Color.areSimilar,
-            pxCol,
-            options.colors,
-            options.tolerance
-        );
-    }
-
-    // var calls = 0;
-    function _getBorderPxsWithOffset(queue, borderPxs, canvas, ctx, imgSize, imgCols, options) {
-        // calls++;
-
-        // console.time('_getBorderPxs');
-        var borderPxs = borderPxs.concat(_getBorderPxs(queue.pop(), canvas, options));
-        // console.timeEnd('_getBorderPxs');
-        
-        // console.time('queue.filter');
-        queue = queue.filter(function(px) {
-            return blacklistHash[px.x + '-' + px.y] !== true;
-        });
-        // console.timeEnd('queue.filter');
-
-        // console.time('pxsAroundBorder');
-        var pxsAroundBorder = _getPixelsAroundBorder(borderPxs, imgSize, options.distance);
-        for (var i = 0; i < options.distance; i++) {
-            pxsAroundBorder = pxsAroundBorder.concat(_getPixelsAroundBorder(pxsAroundBorder, imgSize));
-        }
-        // console.timeEnd('pxsAroundBorder');
-
-        // console.time('pxsAroundBorder.filter');
-        pxsAroundBorder = pxsAroundBorder.filter(function(px) {
-            return _insideRegion(px, imgSize, imgCols, options);
-        });
-        // console.timeEnd('pxsAroundBorder.filter');
-
-        // ctx1.fillStyle="green";
-        // for (var i = 0; i < pxsAroundBorder.length; i++) {
-        //     ctx1.beginPath();
-        //     ctx1.arc(pxsAroundBorder[i].x, pxsAroundBorder[i].y, 1, 0, 2 * Math.PI, true);
-        //     ctx1.fill();
-        //     ctx1.closePath();
-        // }
-
-        // console.time('queue.concat');
-        queue = queue.concat(pxsAroundBorder);
-        // console.timeEnd('queue.concat');
-
-        // console.log(queue.length);
-        if (queue.length > 0) {
-            return _getBorderPxsWithOffset(queue, borderPxs, canvas, ctx, imgSize, imgCols, options);
-        }
-
-        return borderPxs;
-    }    
-
-
-    ///
 
 
     // (Object) -> Object
