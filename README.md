@@ -83,7 +83,7 @@ Search all objects in image.
     </tbody>
 </table>
 
-#### Options
+#### options
 
 <table>
     <thead>
@@ -161,7 +161,7 @@ Starts searching from the start point and returns one object that belongs to thi
     </tbody>
 </table>
 
-#### Options
+#### options
 
 <table>
     <thead>
