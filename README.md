@@ -182,7 +182,7 @@ Starts searching from the start point and returns one object that belongs to thi
             <td>startPoint</td>
             <td>Point</td>
             <td></td>
-            <td>Start point.</td>
+            <td>Point from which to start the object pixels search.</td>
         </tr>
         <tr>
             <td>tolerance</td>
