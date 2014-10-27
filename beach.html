@@ -98,9 +98,11 @@
                     ctx.stroke();
                 }
 
-                video.play();
-                redraw();
                 video.addEventListener('pause', redraw, false);
+                video.addEventListener('canplay', function() {
+                    video.play();
+                    redraw();
+                }, false);
             }
         </script>
 
