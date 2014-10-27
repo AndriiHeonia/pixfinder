@@ -271,6 +271,9 @@ Contains information about point.
 
 ## Changelog
 
+### 0.2.1 &mdash; 27.10.2014
+* Readme fixes
+
 ### 0.2.0 &mdash; 27.10.2014
 * API changes without backward compatibility
 
