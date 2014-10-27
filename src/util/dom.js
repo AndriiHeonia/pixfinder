@@ -1,7 +1,7 @@
 'use strict';
 
 // (HTMLImageElement) -> Boolean
-function imgLoaded (img) {
+function imgLoaded(img) {
     return !(typeof img.naturalWidth !== 'undefined' && img.naturalWidth === 0);
 }
 

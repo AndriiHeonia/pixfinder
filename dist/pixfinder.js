@@ -1,4 +1,4 @@
-!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.pix=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+!function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.pix=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 /**
  * (c) 2014, Andrey Geonya
  * https://github.com/dstructjs/disjoint-set
@@ -130,7 +130,7 @@ if (typeof define === 'function' && define.amd) {
 }
 
 })();
-},{}],2:[function(require,module,exports){
+},{}],2:[function(_dereq_,module,exports){
 function Grid(points) {
     var _cells = [];
 
@@ -207,7 +207,7 @@ function grid(points) {
 Grid.CELL_SIZE = 10;
 
 module.exports = grid;
-},{}],3:[function(require,module,exports){
+},{}],3:[function(_dereq_,module,exports){
 /*
  (c) 2014, Andrey Geonya
  Hull.js, a JavaScript library for concave hull generation by set of points.
@@ -216,8 +216,8 @@ module.exports = grid;
 
 'use strict';
 
-var intersect = require('./intersect.js');
-var grid = require('./grid.js');
+var intersect = _dereq_('./intersect.js');
+var grid = _dereq_('./grid.js');
 
 function _sortByX(pointset) {
     return pointset.sort(function(a, b) {
@@ -409,7 +409,7 @@ var MIN_SEARCH_BBOX_SIZE = 5;
 var MAX_SEARCH_BBOX_SIZE_PERCENT = 0.8;
 
 module.exports = hull;
-},{"./grid.js":2,"./intersect.js":4}],4:[function(require,module,exports){
+},{"./grid.js":2,"./intersect.js":4}],4:[function(_dereq_,module,exports){
 function ccw(x1, y1, x2, y2, x3, y3) {           
     var cw = ((y3 - y1) * (x2 - x1)) - ((y2 - y1) * (x3 - x1));
     return cw > 0 ? true : cw < 0 ? false : true; // colinear
@@ -424,7 +424,7 @@ function intersect(seg1, seg2) {
 }
 
 module.exports = intersect;
-},{}],5:[function(require,module,exports){
+},{}],5:[function(_dereq_,module,exports){
 (function() {
 
 // (HTMLImageElement | HTMLCanvasElement, Coord | Array, Object, Array)
@@ -629,7 +629,7 @@ if (typeof module !== 'undefined') module.exports = bfs;
 else window.bfs = bfs;
 
 })();
-},{}],6:[function(require,module,exports){
+},{}],6:[function(_dereq_,module,exports){
 /*
  (c) 2013, Vladimir Agafonkin
  RBush, a JavaScript library for high-performance 2D spatial indexing of points and rectangles.
@@ -1218,7 +1218,7 @@ else window.rbush = rbush;
 
 })();
 
-},{}],7:[function(require,module,exports){
+},{}],7:[function(_dereq_,module,exports){
 /*
  (c) 2014, Andrey Geonya
  Pixfinder, a JavaScript library for image analysis and object detection.
@@ -1227,24 +1227,30 @@ else window.rbush = rbush;
 
 'use strict';
 
-var rbush = require('rbush'),
-    bfs = require('img-bfs'),
-    hull = require('hull.js'),
-    disjointSet = require('disjoint-set'),
+var rbush = _dereq_('rbush'),
+    bfs = _dereq_('img-bfs'),
+    hull = _dereq_('hull.js'),
+    disjointSet = _dereq_('disjoint-set'),
     util = {
-        canvas: require('./util/canvas'),
-        math: require('./util/math')
+        canvas: _dereq_('./util/canvas'),
+        math: _dereq_('./util/math'),
+        dom: _dereq_('./util/dom')
     };
 
 // (Object) -> Array
-exports.find = function(options) {
+function find(options) {
     var opt = _default(options),
         canv = util.canvas.wrap(opt.img),
         ctx = canv.getContext('2d'),
         imgSize = { w: canv.width, h: canv.height },
         imgCols = ctx.getImageData(0, 0, imgSize.w, imgSize.h).data,
         colPos = util.canvas.point2ColorPos(opt.startPoint, imgSize),
-        ptCol = [imgCols[colPos], imgCols[colPos + 1], imgCols[colPos + 2], imgCols[colPos + 3]],
+        ptCol = [
+            imgCols[colPos],
+            imgCols[colPos + 1],
+            imgCols[colPos + 2],
+            imgCols[colPos + 3]
+        ],
         tree = rbush(9, ['.x', '.y', '.x', '.y']),
         points = [];
 
@@ -1280,13 +1286,18 @@ exports.find = function(options) {
     return points;
 }
 
-exports.findAll = function(options) {
+function findAll(options) {
     var opt = _default(options),
         canv = util.canvas.wrap(opt.img),
-        ctx = canv.getContext('2d'),
         objectPts, objects;
 
-    objectPts = _objectsPoints(canv, opt.colors, opt.accuracy, opt.tolerance, opt.fill);
+    objectPts = _objectsPoints(
+        canv,
+        opt.colors,
+        opt.accuracy,
+        opt.tolerance,
+        opt.fill
+    );
     objects = _splitByDist(objectPts, opt.distance);
     objects = opt.clearNoise ? _clearNoise(objects, opt.clearNoise) : objects;
 
@@ -1320,7 +1331,11 @@ function _default(options) {
 
 // (Array, Object) -> Boolean
 function _pointInObject(ptColor, options) {
-    return util.canvas.colorInColors(ptColor, options.colors, options.tolerance);
+    return util.canvas.colorInColors(
+        ptColor,
+        options.colors,
+        options.tolerance
+    );
 }
 
 // (HTMLCanvasElement, Array, Number, Number, Boolean) -> Array
@@ -1331,7 +1346,12 @@ function _objectsPoints(canvas, colors, accuracy, tolerance, fill) {
         imgCols = ctx.getImageData(0, 0, imgSize.w, imgSize.h).data;
 
     for (var i = 0; i < imgCols.length; i += (4 * accuracy)) { // 4 - rgba
-        var ptCol = [imgCols[i], imgCols[i + 1], imgCols[i + 2], imgCols[i + 3]],
+        var ptCol = [
+                imgCols[i],
+                imgCols[i + 1],
+                imgCols[i + 2],
+                imgCols[i + 3]
+            ],
             nCols = util.canvas.neighborColors(i, imgCols, imgSize),
             pt = util.canvas.colorPos2Point(i, imgSize);
 
@@ -1352,25 +1372,25 @@ function _objectsPoints(canvas, colors, accuracy, tolerance, fill) {
 // (Array, Number) -> Array
 function _splitByDist(points, dist) {
     var set = disjointSet(),
-        objects;
+        tree = rbush(9, ['.x', '.y', '.x', '.y']);
 
-    // TODO: O(N^2) should be optimized
-    // May be there is reason to rethink algorithm and use
-    // Shared Nearest Neighbor Clustering instead of _splitByDist?
-    for (var i = 0; i < points.length; i++) {
-        set.add(points[i]);
-        for (var j = i; j >= 0; j--) {
-            if (util.math.dist(points[i], points[j]) <= dist) {
-                if (!set.connected(points[i], points[j])) {
-                    set.union(points[i], points[j]);
-                }
+    tree.load(points);
+    points.forEach(function(pt){
+        var bbox = [
+            pt.x - dist, pt.y - dist,
+            pt.x + dist, pt.y + dist
+        ];
+        var neighbours = tree.search(bbox);
+        set.add(pt);
+        neighbours.forEach(function(nPt) {
+            set.add(nPt);
+            if (!set.connected(pt, nPt)) {
+                set.union(pt, nPt);
             }
-        }
-    }
-    objects = set.extract();
-    set.destroy();
+        });
+    });
 
-    return objects;
+    return set.extract();
 }
 
 // (Array, Number) -> Array
@@ -1379,11 +1399,18 @@ function _clearNoise(objects, noise) {
         return obj.length >= noise;
     });
 }
-},{"./util/canvas":8,"./util/math":9,"disjoint-set":1,"hull.js":3,"img-bfs":5,"rbush":6}],8:[function(require,module,exports){
+
+exports.find = find;
+exports.findAll = findAll;
+exports.util = util;
+},{"./util/canvas":8,"./util/dom":9,"./util/math":10,"disjoint-set":1,"hull.js":3,"img-bfs":5,"rbush":6}],8:[function(_dereq_,module,exports){
 'use strict';
 
-// (HTMLImageElement) -> HTMLCanvasElement
+// (HTMLImageElement | HTMLCanvasElement) -> HTMLCanvasElement
 function wrap(img) {
+    if (!!(img.getContext && img.getContext('2d'))) {
+        return img;
+    }
     var canv = document.createElement('canvas');
     canv.width = img.width;
     canv.height = img.height;
@@ -1543,15 +1570,32 @@ exports.rgb2Hex = rgb2Hex;
 exports.similarColors = similarColors;
 exports.colorInColors = colorInColors;
 exports.colorInAllColors = colorInAllColors;
-},{}],9:[function(require,module,exports){
+},{}],9:[function(_dereq_,module,exports){
 'use strict';
 
-function dist(pt1, pt2) { // (Point, Point) -> Number
+// (HTMLImageElement) -> Boolean
+function imgLoaded(img) {
+    return !(typeof img.naturalWidth !== 'undefined' && img.naturalWidth === 0);
+}
+
+exports.imgLoaded = imgLoaded;
+},{}],10:[function(_dereq_,module,exports){
+'use strict';
+
+// (Point, Point) -> Number
+function sqDist(pt1, pt2) {
+    return Math.pow(pt2.x - pt1.x, 2) + Math.pow(pt2.y - pt1.y, 2);
+}
+
+// (Point, Point) -> Number
+function dist(pt1, pt2) {
     return Math.sqrt(
         Math.pow(pt2.x - pt1.x, 2) + Math.pow(pt2.y - pt1.y, 2)
     );
 }
 
 exports.dist = dist;
-},{}]},{},[7])(7)
+exports.sqDist = sqDist;
+},{}]},{},[7])
+(7)
 });

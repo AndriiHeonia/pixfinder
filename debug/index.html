@@ -10,9 +10,16 @@
         <canvas style="position:absolute; top: 0px; left:0px;" id="canv" width="914" height="593" style="border:1px solid #d3d3d3; pointer-events: none;"></canvas>
 
         <script>
-            function imgLoaded (img) {
-                return !(typeof img.naturalWidth !== 'undefined' && img.naturalWidth === 0);
-            }
+            var colors = [
+                // houses
+                'fbf9e7', 'fef3d8', 'ddd9c7', 'ecd5a3',
+                'd3def1', 'd3d3d3', 'f0d0c6', 'c2c0b3',
+                'c7c4b7', 'd0d1d1',
+                // poi
+                '2c8cc3', '80ba9d', 'd48949', 'e56464',
+                'eee9e3', 'f0ece7', 'c6c3b3', 'c8c6bc',
+                '4f9e77', 'bc7536'
+            ];
 
             window.onload = function() {
                 var img = document.getElementById('img'),
@@ -23,20 +30,8 @@
                 function findAndDrawObj(e) {
                     var obj = pix.find({
                         img: img,
-                        colors: [
-                            // houses
-                            'fbf9e7', 'fef3d8', 'ddd9c7', 'ecd5a3',
-                            'd3def1', 'd3d3d3', 'f0d0c6', 'c2c0b3',
-                            'c7c4b7', 'd0d1d1',
-                            // poi
-                            '2c8cc3', '80ba9d', 'd48949', 'e56464',
-                            'eee9e3', 'f0ece7', 'c6c3b3', 'c8c6bc',
-                            '4f9e77', 'bc7536',
-                            // labels
-                            'a1a3a3', '808282', '9ea1a0', '9b9e9d',
-                            '6e7271', '959898'
-                        ],
-                        distance: 4,
+                        colors: colors,
+                        distance: 5,
                         tolerance: 3,
                         startPoint: {x: e.offsetX, y: e.offsetY}
                     });
@@ -58,24 +53,14 @@
 
                 // findAll
                 function findAndDrawObjs() {
+                    console.time('findAll');
                     var objs = pix.findAll({
                         img: img,
-                        colors: [
-                            // houses
-                            'fbf9e7', 'fef3d8', 'ddd9c7', 'ecd5a3',
-                            'd3def1', 'd3d3d3', 'f0d0c6', 'c2c0b3',
-                            'c7c4b7', 'd0d1d1',
-                            // poi
-                            '2c8cc3', '80ba9d', 'd48949', 'e56464',
-                            'eee9e3', 'f0ece7', 'c6c3b3', 'c8c6bc',
-                            '4f9e77', 'bc7536',
-                            // labels
-                            'a1a3a3', '808282', '9ea1a0', '9b9e9d',
-                            '6e7271', '959898'
-                        ],
-                        distance: 4,
+                        colors: colors,
+                        distance: 5,
                         tolerance: 3
                     });
+                    console.timeEnd('findAll');
 
                     for (var i = 0; i < objs.length; i++) {
                         var obj = objs[i],
@@ -89,14 +74,14 @@
                             ctx.lineTo(obj[j].x, obj[j].y);
                         }
                         ctx.closePath();
-                        ctx.fillStyle = "rgba(178,178,178,0.3)";
+                        ctx.fillStyle = 'rgba(' + r + ',' + g + ',' + b + ',0.3)';
                         ctx.fill();
                         ctx.lineWidth = 1;
                         ctx.strokeStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
                         ctx.stroke();
                     }
                 }
-                if (imgLoaded(img)) {
+                if (pix.util.dom.imgLoaded(img)) {
                     findAndDrawObjs();
                 } else {
                     img.addEventListener('load', findAndDrawObjs, false); 

@@ -1,25 +1,26 @@
-var gulp = require('gulp');
-var jshint = require('gulp-jshint');
-var concat = require('gulp-concat');
-var rename = require('gulp-rename');
-var uglify = require('gulp-uglify');
+var gulp = require('gulp'),
+    jshint = require('gulp-jshint'),
+    rename = require('gulp-rename'),
+    uglify = require('gulp-uglify'),
+    browserify = require('gulp-browserify');
 
-var scripts = ['./src/**/*.js', './src/*.js'];
-
-// Lint & Concat & Minify JS
-gulp.task('build', function(){
-    gulp.src(scripts)
+gulp.task('lint', function() {
+    gulp.src('./src/*.js')
         .pipe(jshint())
-        .pipe(jshint.reporter('default'))
-        .pipe(concat('all.js'))
+        .pipe(jshint.reporter('default'));
+});
+
+gulp.task('build', ['lint'], function(){
+    gulp.src(['./src/pixfinder.js'])
+        .pipe(browserify({standalone: 'pix'}))
         .pipe(gulp.dest('./dist'))
-        .pipe(rename('all.min.js'))
+        .pipe(rename('pixfinder.min.js'))
         .pipe(uglify())
         .pipe(gulp.dest('./dist'));
 });
 
 gulp.task('watch', function() {
-  gulp.watch(scripts, ['build']);
+    gulp.watch(['./src/**/*.js', './src/*.js'], ['build']);
 });
 
 gulp.task('default', ['build', 'watch']);

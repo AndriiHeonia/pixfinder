@@ -13,7 +13,7 @@
   // Define globals exposed by Node.js.
   "node": true,
 
-  "predef": [ "Pixfinder", "define", "disjointSet" ],
+  "predef": [],
 
   /*
    * ENFORCING OPTIONS
@@ -34,7 +34,7 @@
   "indent": 2,
 
   // Prohibit use of a variable before it is defined.
-  "latedef": true,
+  "latedef": false,
 
   // Require capitalized names for constructor functions.
   "newcap": true,

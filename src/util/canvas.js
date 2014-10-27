@@ -1,7 +1,10 @@
 'use strict';
 
-// (HTMLImageElement) -> HTMLCanvasElement
+// (HTMLImageElement | HTMLCanvasElement) -> HTMLCanvasElement
 function wrap(img) {
+    if (!!(img.getContext && img.getContext('2d'))) {
+        return img;
+    }
     var canv = document.createElement('canvas');
     canv.width = img.width;
     canv.height = img.height;

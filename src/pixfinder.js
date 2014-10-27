@@ -12,18 +12,24 @@ var rbush = require('rbush'),
     disjointSet = require('disjoint-set'),
     util = {
         canvas: require('./util/canvas'),
-        math: require('./util/math')
+        math: require('./util/math'),
+        dom: require('./util/dom')
     };
 
 // (Object) -> Array
-exports.find = function(options) {
+function find(options) {
     var opt = _default(options),
         canv = util.canvas.wrap(opt.img),
         ctx = canv.getContext('2d'),
         imgSize = { w: canv.width, h: canv.height },
         imgCols = ctx.getImageData(0, 0, imgSize.w, imgSize.h).data,
         colPos = util.canvas.point2ColorPos(opt.startPoint, imgSize),
-        ptCol = [imgCols[colPos], imgCols[colPos + 1], imgCols[colPos + 2], imgCols[colPos + 3]],
+        ptCol = [
+            imgCols[colPos],
+            imgCols[colPos + 1],
+            imgCols[colPos + 2],
+            imgCols[colPos + 3]
+        ],
         tree = rbush(9, ['.x', '.y', '.x', '.y']),
         points = [];
 
@@ -59,13 +65,18 @@ exports.find = function(options) {
     return points;
 }
 
-exports.findAll = function(options) {
+function findAll(options) {
     var opt = _default(options),
         canv = util.canvas.wrap(opt.img),
-        ctx = canv.getContext('2d'),
         objectPts, objects;
 
-    objectPts = _objectsPoints(canv, opt.colors, opt.accuracy, opt.tolerance, opt.fill);
+    objectPts = _objectsPoints(
+        canv,
+        opt.colors,
+        opt.accuracy,
+        opt.tolerance,
+        opt.fill
+    );
     objects = _splitByDist(objectPts, opt.distance);
     objects = opt.clearNoise ? _clearNoise(objects, opt.clearNoise) : objects;
 
@@ -99,7 +110,11 @@ function _default(options) {
 
 // (Array, Object) -> Boolean
 function _pointInObject(ptColor, options) {
-    return util.canvas.colorInColors(ptColor, options.colors, options.tolerance);
+    return util.canvas.colorInColors(
+        ptColor,
+        options.colors,
+        options.tolerance
+    );
 }
 
 // (HTMLCanvasElement, Array, Number, Number, Boolean) -> Array
@@ -110,7 +125,12 @@ function _objectsPoints(canvas, colors, accuracy, tolerance, fill) {
         imgCols = ctx.getImageData(0, 0, imgSize.w, imgSize.h).data;
 
     for (var i = 0; i < imgCols.length; i += (4 * accuracy)) { // 4 - rgba
-        var ptCol = [imgCols[i], imgCols[i + 1], imgCols[i + 2], imgCols[i + 3]],
+        var ptCol = [
+                imgCols[i],
+                imgCols[i + 1],
+                imgCols[i + 2],
+                imgCols[i + 3]
+            ],
             nCols = util.canvas.neighborColors(i, imgCols, imgSize),
             pt = util.canvas.colorPos2Point(i, imgSize);
 
@@ -131,25 +151,25 @@ function _objectsPoints(canvas, colors, accuracy, tolerance, fill) {
 // (Array, Number) -> Array
 function _splitByDist(points, dist) {
     var set = disjointSet(),
-        objects;
+        tree = rbush(9, ['.x', '.y', '.x', '.y']);
 
-    // TODO: O(N^2) should be optimized
-    // May be there is reason to rethink algorithm and use
-    // Shared Nearest Neighbor Clustering instead of _splitByDist?
-    for (var i = 0; i < points.length; i++) {
-        set.add(points[i]);
-        for (var j = i; j >= 0; j--) {
-            if (util.math.dist(points[i], points[j]) <= dist) {
-                if (!set.connected(points[i], points[j])) {
-                    set.union(points[i], points[j]);
-                }
+    tree.load(points);
+    points.forEach(function(pt){
+        var bbox = [
+            pt.x - dist, pt.y - dist,
+            pt.x + dist, pt.y + dist
+        ];
+        var neighbours = tree.search(bbox);
+        set.add(pt);
+        neighbours.forEach(function(nPt) {
+            set.add(nPt);
+            if (!set.connected(pt, nPt)) {
+                set.union(pt, nPt);
             }
-        }
-    }
-    objects = set.extract();
-    set.destroy();
+        });
+    });
 
-    return objects;
+    return set.extract();
 }
 
 // (Array, Number) -> Array
@@ -158,3 +178,7 @@ function _clearNoise(objects, noise) {
         return obj.length >= noise;
     });
 }
+
+exports.find = find;
+exports.findAll = findAll;
+exports.util = util;
