@@ -258,6 +258,11 @@ Contains information about point.
     </tbody>
 </table>
 
+## To-do
+
+* write more demos;
+* improve performance.
+
 ## Development
 
     npm install     # install dependencies
