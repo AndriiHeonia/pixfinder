@@ -255,7 +255,7 @@ Contains information about point.
 
     npm install     # install dependencies
     npm gulp build  # check the code with JSHint, run tests and build dist
-    npm gulp        # build and watch for source changes
+    npm gulp        # build and watch for the src changes
 
 ## Changelog
 
