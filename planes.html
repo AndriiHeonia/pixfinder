@@ -38,6 +38,7 @@
           <canvas id="canv" width="500" height="374" style="border:1px solid #d3d3d3; pointer-events: none;"></canvas>
 
           <script>
+          window.onload = function() {
             var img = document.getElementById('img');
             pix.util.dom.onload(img, function() {
                 var planes = pix.findAll({
@@ -49,7 +50,6 @@
                 document.getElementById('count').innerHTML = planes.length;
                 planes.forEach(draw);
             });
-
             function draw(plane) {
                 var ctx = document.getElementById("canv").getContext("2d");
                 ctx.beginPath();
@@ -59,6 +59,7 @@
                 ctx.stroke();
                 ctx.closePath();
             }
+          }
           </script>
 
         </section>
