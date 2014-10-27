@@ -261,7 +261,8 @@ Contains information about point.
 ## To-do
 
 * write more demos;
-* improve performance.
+* improve performance;
+* write tests.
 
 ## Development
 
