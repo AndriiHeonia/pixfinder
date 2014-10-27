@@ -104,7 +104,7 @@ Search all objects in image.
             <td>tolerance</td>
             <td>Number</td>
             <td>50</td>
-            <td>Permissible variation of the color (number of shades). Helps to detect objects not only by strict colors (`colors` option), but by their shades too.</td>
+            <td>Permissible variation of the color (number of shades). Helps to detect objects not only by strict colors (<code>colors</code> option), but by their shades too.</td>
         </tr>
         <tr>
             <td>accuracy</td>
@@ -122,7 +122,7 @@ Search all objects in image.
             <td>clearNoise</td>
             <td>Boolean | Number</td>
             <td>false</td>
-            <td>Removes all small objects after image analysis. If `false` then noise clearing is disabled, else if number is setted then all objects that contains less than specified number of pixels will be removed.</td>
+            <td>Removes all small objects after image analysis. If <code>false</code> then noise clearing is disabled, else if number is setted then all objects that contains less than specified number of pixels will be removed.</td>
         </tr>       
     </tbody>
 </table>
@@ -188,7 +188,7 @@ Starts searching from the start point and returns one object that belongs to thi
             <td>tolerance</td>
             <td>Number</td>
             <td>50</td>
-            <td>Permissible variation of the color (number of shades). Helps to detect objects not only by strict colors (`colors` option), but by their shades too.</td>
+            <td>Permissible variation of the color (number of shades). Helps to detect objects not only by strict colors (<code>colors</code> option), but by their shades too.</td>
         </tr>
         <tr>
             <td>distance</td>
@@ -215,7 +215,12 @@ Various DOM utility functions.
         <tr>
             <td>onload(&lt;HTMLImageElement&gt; img, &lt;Function&gt; func)</code></td>
             <td></td>
-            <td>Calls `func` function when `img` has been loaded.</td>
+            <td>Calls <code>func</code> function when <code>img</code> image has been loaded.</td>
+        </tr>
+        <tr>
+            <td>loaded(&lt;HTMLImageElement&gt; img)</code></td>
+            <td>Boolean</td>
+            <td>Checks or <code>img</code> image has been loaded.</td>
         </tr>
     </tbody>
 </table>
@@ -250,7 +255,7 @@ Contains information about one pixel.
 
     npm install     # install dependencies
     npm gulp build  # check the code with JSHint, run tests and build dist
-    npm gulp        # run `build` and watch for source changes
+    npm gulp        # build and watch for source changes
 
 ## Changelog
 
