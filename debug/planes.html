@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Pixfinder - a JavaScript library for image analysis</title>
+        <meta charset="utf-8" />
+        <script src="../dist/pixfinder.js"></script>
+    </head>
+    <body>
+        <p>How many planes in the airport?<br />
+        Pixfinder analyzed this image and thinks that there are <b id="count"></b> planes!</p>
+
+        <img id="img" width="500" height="374" src="planes.jpg" crossOrigin="Anonymous" />
+        <canvas id="canv" width="500" height="374" style="border:1px solid #d3d3d3; pointer-events: none;"></canvas>
+
+        <script>
+            var img = document.getElementById('img');
+            pix.util.dom.onload(img, function() {
+                var planes = pix.findAll({
+                    img: img,
+                    distance: 5,
+                    colors: ['eff1f0'],
+                    clearNoise: 50
+                });
+                document.getElementById('count').innerHTML = planes.length;
+                planes.forEach(draw);
+            });
+
+            function draw(plane) {
+                var ctx = document.getElementById("canv").getContext("2d");
+                ctx.beginPath();
+                plane.forEach(function(point) {
+                    ctx.arc(point.x, point.y, 1, 0, 2 * Math.PI);
+                });
+                ctx.stroke();
+                ctx.closePath();
+            }
+        </script>
+    </body>
+</html>

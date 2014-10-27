@@ -74,8 +74,7 @@ function findAll(options) {
         canv,
         opt.colors,
         opt.accuracy,
-        opt.tolerance,
-        opt.fill
+        opt.tolerance
     );
     objects = _splitByDist(objectPts, opt.distance);
     objects = opt.clearNoise ? _clearNoise(objects, opt.clearNoise) : objects;
@@ -101,7 +100,6 @@ function _default(options) {
     opt.accuracy = opt.accuracy || 2;
     opt.distance = opt.distance || 10;
     opt.tolerance = opt.tolerance || 50;
-    opt.fill = opt.fill || false;
     opt.colors = opt.colors.map(util.canvas.hex2Rgb);
     opt.clearNoise = opt.clearNoise || false;
 
@@ -117,8 +115,8 @@ function _pointInObject(ptColor, options) {
     );
 }
 
-// (HTMLCanvasElement, Array, Number, Number, Boolean) -> Array
-function _objectsPoints(canvas, colors, accuracy, tolerance, fill) {
+// (HTMLCanvasElement, Array, Number, Number) -> Array
+function _objectsPoints(canvas, colors, accuracy, tolerance) {
     var result = [],
         ctx = canvas.getContext('2d'),
         imgSize = { w: canvas.width, h: canvas.height },
@@ -135,7 +133,7 @@ function _objectsPoints(canvas, colors, accuracy, tolerance, fill) {
             pt = util.canvas.colorPos2Point(i, imgSize);
 
         // skip if pt is inner pixel of the feature (not fill)
-        if (!fill && util.canvas.colorInAllColors(ptCol, nCols, tolerance)) {
+        if (util.canvas.colorInAllColors(ptCol, nCols, tolerance)) {
             continue;
         }
 

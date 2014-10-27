@@ -4,10 +4,8 @@ Pixfinder is a JavaScript library for object detection.
 
 - [How it works](#how-it-works)
 - [API](#api)
-    - [pixfinder](#pixfinder)
-    - [Pixfinder.Util.Color](#pixfinderutilcolor)
-    - [Pixfinder.Util.Math](#pixfinderutilmath)
-    - [Pixel](#pixel)
+    - [findAll](#findAll)
+    - [find](#find)
 - [Development](#development)
 - [Changelog](#changelog)
 
@@ -17,52 +15,41 @@ Pixfinder analyzes image and extracts coordinates of each object. Objects should
 
 For example we have aerial shot of planes and want to know how many planes at the airport right now:
 
-<img src="https://raw.githubusercontent.com/AndreyGeonya/pixfinder/master/examples/planes/img.jpg" />
+<img src="https://raw.githubusercontent.com/AndreyGeonya/pixfinder/bfs/readme-imgs/planes.jpg" />
 
-To solve this problem we need to write several lines of code and Pixfinder will find all planes in the image:
+To solve this problem we need to write several lines of code and pixfinder will find all planes in the image. So, let's find all planes and draw them all on canvas:
 
-    var myImg = document.getElementById('myImg');
-    pixfinder({
-        img: myImg,
-        colors: ['eff1f0'],
-        clearNoise: 50,
-        onload: draw
+    var img = document.getElementById('img');
+
+    pix.util.dom.onload(img, function() {
+        var planes = pix.findAll({
+            img: img,
+            distance: 5,
+            colors: ['eff1f0'],
+            clearNoise: 50
+        });
+        document.getElementById('count').innerHTML = planes.length;
+        planes.forEach(draw);
     });
 
-The callback function draw() takes one parameter that contains the coordinates of each aircraft and shows their count:
-
-    function draw(e) {
-        document.getElementById('count').innerHTML = e.objects.length;
-    }
-
-For clarity, let's add some code to draw() function and show the contours of planes that have been identified by Pixfinder:
-
-    function draw(e) {
-        var c = document.getElementById("canv"),
-            ctx = c.getContext("2d");
-
-        ctx.fillStyle = '000000';
+    function draw(plane) {
+        var ctx = document.getElementById("canv").getContext("2d");
         ctx.beginPath();
-        for (var i = 0; i < e.objects.length; i++) {
-            for (var j = 0; j < e.objects[i].length; j++) {
-                ctx.fillRect(e.objects[i][j].x, e.objects[i][j].y, 1, 1);   
-            };
-        }
+        plane.forEach(function(point) {
+            ctx.arc(point.x, point.y, 1, 0, 2 * Math.PI);
+        });
+        ctx.stroke();
         ctx.closePath();
-
-        document.getElementById('count').innerHTML = e.objects.length;
     }
 
 Result:
-<img src="https://raw.githubusercontent.com/AndreyGeonya/pixfinder/master/examples/planes/screenshot.png" />
-
-Full code of this example available [here](https://github.com/AndreyGeonya/pixfinder/blob/master/examples/planes/index.html).
+<img src="https://raw.githubusercontent.com/AndreyGeonya/pixfinder/bfs/readme-imgs/planes-result.jpg" />
 
 ## API
 
-### pixfinder
+### findAll
 
-The main function that detects objects in the image.
+Search all objects in the image.
 
 <table>
     <thead>
@@ -75,7 +62,7 @@ The main function that detects objects in the image.
         <tr>
             <td>
                 <code>
-                    pixfinder(&lt;Object&gt; options)
+                    pix.findAll(&lt;Object&gt; options)
                 </code>
             </td>
             <td>
@@ -99,9 +86,9 @@ The main function that detects objects in the image.
     <tbody>
         <tr>
             <td>img</td>
-            <td>HTMLImageElement | String</td>
+            <td>HTMLImageElement | HTMLCanvasElement</td>
             <td></td>
-            <td>Image element (or its id) which has to be analyzed.</td>
+            <td>Loaded image or canvas element which has to be analyzed.</td>
         </tr>
         <tr>
             <td>colors</td>
@@ -119,7 +106,7 @@ The main function that detects objects in the image.
             <td>accuracy</td>
             <td>Number</td>
             <td>2</td>
-            <td>If accuracy = 1 then Pixfinder analyzes each pixel of the image, if accuracy = 2 then Pixfinder analyzes each 2nd pixel, etc. Large number for better performance and worse quality and vice versa. Number should be positive integer.</td>
+            <td>If accuracy = 1 then Pixfinder analyzes each pixel of the image, if accuracy = 2 then each 2nd pixel, etc. Large number for better performance and worse quality and vice versa. Number should be positive integer.</td>
         </tr>
         <tr>
             <td>distance</td>
@@ -128,111 +115,25 @@ The main function that detects objects in the image.
             <td>Distance between objects (in pixels). During image analysis Pixfinder detects all pixels according to specified colors and then splits them to several objects by distance. If distance between two pixels lesser then this option then pixels belong to the same object.</td>
         </tr>
         <tr>
-            <td>fill</td>
-            <td>Boolean</td>
-            <td>false</td>
-            <td>If "false" then objects will contain only their borders, else objects will be filled by all pixels.</td>
-        </tr>
-        <tr>
             <td>clearNoise</td>
             <td>Boolean | Number</td>
             <td>false</td>
             <td>Removes all small objects after image analysis. If "false" then noise clearing is disabled, else if number is setted then all objects that contains less than specified number of pixels will be removed.</td>
-        </tr>
-        <tr>
-            <td>onload</td>
-            <td>Function</td>
-            <td></td>
-            <td>Callback that have to be called after image loading and analysis. Accepts event that contains all objects extracted from image. All objects are saved in "event.objects" property, each of them is Pixel object with 'x' and 'y' properties.</td>
-        </tr>        
-    </tbody>
-</table>
-
-### Pixfinder.Util.Color
-
-Various color utility functions, used by Pixfinder internally.
-
-<table>
-    <thead>
-        <tr>
-            <th>Method</th>
-            <th>Returns</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>toRGB(&lt;String&gt; color)</code></td>
-            <td>Array</td>
-            <td>Transforms hex color to RGB components.</td>
-        </tr>
-        <tr>
-            <td>toHex(&lt;Array&gt; rgb)</code></td>
-            <td>String</td>
-            <td>Transforms RGB components to hex color.</td>
-        </tr>
-        <tr>
-            <td>areSimilar( &lt;Array&gt; rgb1, &lt;Array&gt; rgb2, &lt;Number&gt; tolerance)</code></td>
-            <td>Boolean</td>
-            <td>Checks or colors are similar. Parameter "tolerance" is number of shades used during the checking.</td>
-        </tr>
-    </tbody>
-</table>
-
-### Pixfinder.Util.Math
-
-Various math utility functions, used by Pixfinder internally.
-
-<table>
-    <thead>
-        <tr>
-            <th>Method</th>
-            <th>Returns</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>getDistance(&lt;Pixel&gt; px1, &lt;Pixel&gt; px2)</code></td>
-            <td>Number</td>
-            <td>Returns distance between two pixels.</td>
-        </tr>
-    </tbody>
-</table>
-
-### Pixel
-
-Contains information about one pixel.
-
-<table>
-    <thead>
-        <tr>
-            <th>Property</th>
-            <th>Type</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>x</td>
-            <td>Number</td>
-            <td>The x coordinate.</td>
-        </tr>
-        <tr>
-            <td>y</td>
-            <td>Number</td>
-            <td>The y coordinate.</td>
-        </tr>
+        </tr>       
     </tbody>
 </table>
 
 ## Development
 
-    npm install # install dependencies
-    npm gulp    # check the code with JSHint, run tests and build dist
+    npm install     # install dependencies
+    npm gulp build  # check the code with JSHint, run tests and build dist
+    npm gulp        # run `build` and watch for source changes
 
 ## Changelog
 
-### 0.0.1 &mdash; 16.05.2014
+### 0.2.0 &mdash; 27.10.2014
+* API changes without backward compatibility
+
+### 0.1.0 &mdash; 16.05.2014
 
 * First Pixfinder release (unstable alpha version)

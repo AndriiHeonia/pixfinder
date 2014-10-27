@@ -10,18 +10,17 @@
         <canvas style="position:absolute; top: 0px; left:0px;" id="canv" width="914" height="593" style="border:1px solid #d3d3d3; pointer-events: none;"></canvas>
 
         <script>
-            var colors = [
-                // houses
-                'fbf9e7', 'fef3d8', 'ddd9c7', 'ecd5a3',
-                'd3def1', 'd3d3d3', 'f0d0c6', 'c2c0b3',
-                'c7c4b7', 'd0d1d1',
-                // poi
-                '2c8cc3', '80ba9d', 'd48949', 'e56464',
-                'eee9e3', 'f0ece7', 'c6c3b3', 'c8c6bc',
-                '4f9e77', 'bc7536'
-            ];
-
             window.onload = function() {
+                var colors = [
+                    // houses
+                    'fbf9e7', 'fef3d8', 'ddd9c7', 'ecd5a3',
+                    'd3def1', 'd3d3d3', 'f0d0c6', 'c2c0b3',
+                    'c7c4b7', 'd0d1d1',
+                    // poi
+                    '2c8cc3', '80ba9d', 'd48949', 'e56464',
+                    'eee9e3', 'f0ece7', 'c6c3b3', 'c8c6bc',
+                    '4f9e77', 'bc7536'
+                ];
                 var img = document.getElementById('img'),
                     canv = document.getElementById('canv'),
                     ctx = canv.getContext('2d');
@@ -81,7 +80,7 @@
                         ctx.stroke();
                     }
                 }
-                if (pix.util.dom.imgLoaded(img)) {
+                if (pix.util.dom.loaded(img)) {
                     findAndDrawObjs();
                 } else {
                     img.addEventListener('load', findAndDrawObjs, false); 

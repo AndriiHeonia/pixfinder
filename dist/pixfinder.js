@@ -1295,8 +1295,7 @@ function findAll(options) {
         canv,
         opt.colors,
         opt.accuracy,
-        opt.tolerance,
-        opt.fill
+        opt.tolerance
     );
     objects = _splitByDist(objectPts, opt.distance);
     objects = opt.clearNoise ? _clearNoise(objects, opt.clearNoise) : objects;
@@ -1322,7 +1321,6 @@ function _default(options) {
     opt.accuracy = opt.accuracy || 2;
     opt.distance = opt.distance || 10;
     opt.tolerance = opt.tolerance || 50;
-    opt.fill = opt.fill || false;
     opt.colors = opt.colors.map(util.canvas.hex2Rgb);
     opt.clearNoise = opt.clearNoise || false;
 
@@ -1338,8 +1336,8 @@ function _pointInObject(ptColor, options) {
     );
 }
 
-// (HTMLCanvasElement, Array, Number, Number, Boolean) -> Array
-function _objectsPoints(canvas, colors, accuracy, tolerance, fill) {
+// (HTMLCanvasElement, Array, Number, Number) -> Array
+function _objectsPoints(canvas, colors, accuracy, tolerance) {
     var result = [],
         ctx = canvas.getContext('2d'),
         imgSize = { w: canvas.width, h: canvas.height },
@@ -1356,7 +1354,7 @@ function _objectsPoints(canvas, colors, accuracy, tolerance, fill) {
             pt = util.canvas.colorPos2Point(i, imgSize);
 
         // skip if pt is inner pixel of the feature (not fill)
-        if (!fill && util.canvas.colorInAllColors(ptCol, nCols, tolerance)) {
+        if (util.canvas.colorInAllColors(ptCol, nCols, tolerance)) {
             continue;
         }
 
@@ -1574,11 +1572,21 @@ exports.colorInAllColors = colorInAllColors;
 'use strict';
 
 // (HTMLImageElement) -> Boolean
-function imgLoaded(img) {
+function loaded(img) {
     return !(typeof img.naturalWidth !== 'undefined' && img.naturalWidth === 0);
 }
 
-exports.imgLoaded = imgLoaded;
+// (HTMLImageElement, Function)
+function onload(img, func) {
+    if (loaded(img)) {
+        func();
+    } else {
+        img.addEventListener('load', func, false);
+    }
+}
+
+exports.loaded = loaded;
+exports.onload = onload;
 },{}],10:[function(_dereq_,module,exports){
 'use strict';
 
@@ -1587,14 +1595,6 @@ function sqDist(pt1, pt2) {
     return Math.pow(pt2.x - pt1.x, 2) + Math.pow(pt2.y - pt1.y, 2);
 }
 
-// (Point, Point) -> Number
-function dist(pt1, pt2) {
-    return Math.sqrt(
-        Math.pow(pt2.x - pt1.x, 2) + Math.pow(pt2.y - pt1.y, 2)
-    );
-}
-
-exports.dist = dist;
 exports.sqDist = sqDist;
 },{}]},{},[7])
 (7)
