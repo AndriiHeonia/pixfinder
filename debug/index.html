@@ -3,68 +3,103 @@
     <head>
         <title>Pixfinder - a JavaScript library for image analysis</title>
         <meta charset="utf-8" />
+        <script src="../dist/pixfinder.js"></script>
     </head>
-        <script src="../src/Pixfinder.js"></script>
-        <script src="../src/Util/Util.js"></script>
-        <script src="../src/Util/Color.js"></script>
-        <script src="../src/Util/Math.js"></script>
-        <script src="../src/Util/Dom.js"></script>
-        <script src="../src/Util/Obj.js"></script>
-        <script src="../src/Util/Canvas.js"></script>
-        <script src="../src/Struct/DisjointSet.js"></script>
-        <script src="../src/Struct/Voronoi.js"></script>
-        <script src="../src/Struct/rbush.js"></script>
-        <script src="../src/Algo/Bfs.js"></script>
-        <script src="../src/Algo/clipper_unminified.js"></script>
-        <script src="../src/Algo/poly2cw.js"></script>
-        <script src="../src/Algo/hull.js"></script>
     <body>
         <img style="position:absolute; top: 0px; left:0px;" id="img" width="914" height="593" src="map.png" crossOrigin="Anonymous" />
         <canvas style="position:absolute; top: 0px; left:0px;" id="canv" width="914" height="593" style="border:1px solid #d3d3d3; pointer-events: none;"></canvas>
 
         <script>
+            function imgLoaded (img) {
+                return !(typeof img.naturalWidth !== 'undefined' && img.naturalWidth === 0);
+            }
+
             window.onload = function() {
                 var img = document.getElementById('img'),
                     canv = document.getElementById('canv'),
                     ctx = canv.getContext('2d');
 
-                    window.ctx1 = ctx;
-                
-                canv.addEventListener('click', drawGeometry, false);
-
-                function drawGeometry(e) {
-                    console.time('getObject');
-                    var obj = Pixfinder.getObject({
+                // find
+                function findAndDrawObj(e) {
+                    var obj = pix.find({
                         img: img,
                         colors: [
                             // houses
                             'fbf9e7', 'fef3d8', 'ddd9c7', 'ecd5a3',
-                            'd3def1', 'd3d3d3', 'f0d0c6', 
+                            'd3def1', 'd3d3d3', 'f0d0c6', 'c2c0b3',
+                            'c7c4b7', 'd0d1d1',
                             // poi
                             '2c8cc3', '80ba9d', 'd48949', 'e56464',
                             'eee9e3', 'f0ece7', 'c6c3b3', 'c8c6bc',
-                            '4f9e77',
+                            '4f9e77', 'bc7536',
                             // labels
-                            'a1a3a3', '808282'
+                            'a1a3a3', '808282', '9ea1a0', '9b9e9d',
+                            '6e7271', '959898'
                         ],
                         distance: 4,
                         tolerance: 3,
-                        startPixel: {x: e.offsetX, y: e.offsetY}
+                        startPoint: {x: e.offsetX, y: e.offsetY}
                     });
-                    console.timeEnd('getObject');
 
+                    if (obj.length === 0) { return; }
                     ctx.beginPath();
+                    ctx.moveTo(obj[0].x, obj[0].y);
                     for (var j = 0; j < obj.length; j++) {
                         ctx.lineTo(obj[j].x, obj[j].y);
-                        ctx.moveTo(obj[j].x, obj[j].y);
                     }
                     ctx.closePath();
-
-                    ctx.lineWidth = 2;
-                    ctx.strokeStyle = '#888989';
+                    ctx.fillStyle = "rgba(178,178,178,0.3)";
+                    ctx.fill();
+                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = "rgba(49,51,51,0.3)";
                     ctx.stroke();
-                    // ctx.fillStyle = '#8ED6FF';
-                    // ctx.fill();
+                }
+                canv.addEventListener('click', findAndDrawObj, false);
+
+                // findAll
+                function findAndDrawObjs() {
+                    var objs = pix.findAll({
+                        img: img,
+                        colors: [
+                            // houses
+                            'fbf9e7', 'fef3d8', 'ddd9c7', 'ecd5a3',
+                            'd3def1', 'd3d3d3', 'f0d0c6', 'c2c0b3',
+                            'c7c4b7', 'd0d1d1',
+                            // poi
+                            '2c8cc3', '80ba9d', 'd48949', 'e56464',
+                            'eee9e3', 'f0ece7', 'c6c3b3', 'c8c6bc',
+                            '4f9e77', 'bc7536',
+                            // labels
+                            'a1a3a3', '808282', '9ea1a0', '9b9e9d',
+                            '6e7271', '959898'
+                        ],
+                        distance: 4,
+                        tolerance: 3
+                    });
+
+                    for (var i = 0; i < objs.length; i++) {
+                        var obj = objs[i],
+                            r = parseInt(Math.random()*255),
+                            g = parseInt(Math.random()*255),
+                            b = parseInt(Math.random()*255);
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(obj[0].x, obj[0].y);
+                        for (var j = 0; j < obj.length; j++) {
+                            ctx.lineTo(obj[j].x, obj[j].y);
+                        }
+                        ctx.closePath();
+                        ctx.fillStyle = "rgba(178,178,178,0.3)";
+                        ctx.fill();
+                        ctx.lineWidth = 1;
+                        ctx.strokeStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
+                        ctx.stroke();
+                    }
+                }
+                if (imgLoaded(img)) {
+                    findAndDrawObjs();
+                } else {
+                    img.addEventListener('load', findAndDrawObjs, false); 
                 }
             }
         </script>

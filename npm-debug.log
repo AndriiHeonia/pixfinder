@@ -1,0 +1,99 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/bin/node', '/usr/bin/npm', 'install' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.32
+4 verbose node symlink /usr/bin/node
+5 verbose readDependencies using package.json deps
+6 verbose install where, deps [ '/var/www/pixfinder',
+6 verbose install   [ 'rbush',
+6 verbose install     'img-bfs',
+6 verbose install     'hull',
+6 verbose install     'gulp',
+6 verbose install     'gulp-jshint',
+6 verbose install     'gulp-rename',
+6 verbose install     'gulp-concat',
+6 verbose install     'gulp-uglify',
+6 verbose install     'browserify' ] ]
+7 info preinstall Pixfinder@0.1.1
+8 verbose readDependencies using package.json deps
+9 verbose already installed skipping rbush@~1.3.4 /var/www/pixfinder
+10 verbose already installed skipping img-bfs@~0.1.1 /var/www/pixfinder
+11 verbose cache add [ 'hull@0.2.1', null ]
+12 verbose cache add name=undefined spec="hull@0.2.1" args=["hull@0.2.1",null]
+13 verbose parsed url { protocol: null,
+13 verbose parsed url   slashes: null,
+13 verbose parsed url   auth: null,
+13 verbose parsed url   host: null,
+13 verbose parsed url   port: null,
+13 verbose parsed url   hostname: null,
+13 verbose parsed url   hash: null,
+13 verbose parsed url   search: null,
+13 verbose parsed url   query: null,
+13 verbose parsed url   pathname: 'hull@0.2.1',
+13 verbose parsed url   path: 'hull@0.2.1',
+13 verbose parsed url   href: 'hull@0.2.1' }
+14 verbose already installed skipping gulp@~3.6.2 /var/www/pixfinder
+15 verbose already installed skipping gulp-jshint@~1.5.5 /var/www/pixfinder
+16 verbose cache add name="hull" spec="0.2.1" args=["hull","0.2.1"]
+17 verbose parsed url { protocol: null,
+17 verbose parsed url   slashes: null,
+17 verbose parsed url   auth: null,
+17 verbose parsed url   host: null,
+17 verbose parsed url   port: null,
+17 verbose parsed url   hostname: null,
+17 verbose parsed url   hash: null,
+17 verbose parsed url   search: null,
+17 verbose parsed url   query: null,
+17 verbose parsed url   pathname: '0.2.1',
+17 verbose parsed url   path: '0.2.1',
+17 verbose parsed url   href: '0.2.1' }
+18 verbose addNamed [ 'hull', '0.2.1' ]
+19 verbose addNamed [ '0.2.1', '0.2.1' ]
+20 verbose already installed skipping gulp-rename@~1.2.0 /var/www/pixfinder
+21 silly lockFile 8a395839-hull-0-2-1 hull@0.2.1
+22 verbose lock hull@0.2.1 /home/ageonya/.npm/8a395839-hull-0-2-1.lock
+23 verbose already installed skipping gulp-concat@~2.2.0 /var/www/pixfinder
+24 verbose already installed skipping gulp-uglify@~0.2.1 /var/www/pixfinder
+25 verbose request where is /hull
+26 verbose request registry https://registry.npmjs.org/
+27 verbose request id 2e7b5503b1e70717
+28 verbose url raw /hull
+29 verbose url resolving [ 'https://registry.npmjs.org/', './hull' ]
+30 verbose url resolved https://registry.npmjs.org/hull
+31 verbose request where is https://registry.npmjs.org/hull
+32 info trying registry request attempt 1 at 00:20:01
+33 http GET https://registry.npmjs.org/hull
+34 verbose already installed skipping browserify@~5.11.0 /var/www/pixfinder
+35 http 200 https://registry.npmjs.org/hull
+36 silly registry.get cb [ 200,
+36 silly registry.get   { date: 'Sun, 26 Oct 2014 22:20:03 GMT',
+36 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+36 silly registry.get     etag: '"CPVU72RWNM7JZNNXYQUHQXRCB"',
+36 silly registry.get     'content-type': 'application/json',
+36 silly registry.get     'cache-control': 'max-age=60',
+36 silly registry.get     'content-length': '8412',
+36 silly registry.get     'accept-ranges': 'bytes',
+36 silly registry.get     via: '1.1 varnish',
+36 silly registry.get     age: '0',
+36 silly registry.get     'x-served-by': 'cache-fra1236-FRA',
+36 silly registry.get     'x-cache': 'MISS',
+36 silly registry.get     'x-cache-hits': '0',
+36 silly registry.get     'x-timer': 'S1414362003.025323,VS0,VE175',
+36 silly registry.get     vary: 'Accept',
+36 silly registry.get     'keep-alive': 'timeout=10, max=50',
+36 silly registry.get     connection: 'Keep-Alive' } ]
+37 silly lockFile 8a395839-hull-0-2-1 hull@0.2.1
+38 silly lockFile 8a395839-hull-0-2-1 hull@0.2.1
+39 error Error: version not found: hull@0.2.1
+39 error     at /usr/lib/node_modules/npm/lib/cache/add-named.js:125:12
+39 error     at saved (/usr/lib/node_modules/npm/node_modules/npm-registry-client/lib/get.js:167:7)
+39 error     at Object.oncomplete (fs.js:107:15)
+40 error If you need help, you may report this *entire* log,
+40 error including the npm and node versions, at:
+40 error     <http://github.com/npm/npm/issues>
+41 error System Linux 3.13.0-37-generic
+42 error command "/usr/bin/node" "/usr/bin/npm" "install"
+43 error cwd /var/www/pixfinder
+44 error node -v v0.10.32
+45 error npm -v 1.4.28
+46 verbose exit [ 1, true ]
