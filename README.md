@@ -136,7 +136,7 @@ Search all objects in image.
 
 ### find
 
-Starts searching from the start point and returns one object that belongs to this point. This method should be useful for example if you want to highlight building under the mouse cursor.
+Starts searching from the start point and returns one object that belongs to this point. This method should be useful for example if you want to highlight object under the mouse cursor.
 
 <table>
     <thead>
