@@ -16,7 +16,7 @@ Pixfinder is a JavaScript library for object detection.
 
 See live demos here:
 - <a href="http://andreygeonya.github.io/pixfinder/planes" target="_blank">Airplanes counter</a>;
-- <a href="http://localhost/pixfinder/beach.html" target="_blank">Dry coast area calculation</a>.
+- <a href="http://andreygeonya.github.io/pixfinder/beach" target="_blank">Dry coast area calculation</a>.
 
 ## How it works
 
