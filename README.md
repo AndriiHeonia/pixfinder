@@ -6,6 +6,8 @@ Pixfinder is a JavaScript library for object detection.
 - [API](#api)
     - [findAll](#findall)
     - [find](#find)
+    - [util.dom](#util-dom)
+    - [Point](#point)
 - [Development](#development)
 - [Changelog](#changelog)
 
@@ -102,7 +104,7 @@ Search all objects in image.
             <td>tolerance</td>
             <td>Number</td>
             <td>50</td>
-            <td>Permissible variation of the color (number of shades). Helps to detect objects not only by strict colors ("colors" option), but by their shades too.</td>
+            <td>Permissible variation of the color (number of shades). Helps to detect objects not only by strict colors (`colors` option), but by their shades too.</td>
         </tr>
         <tr>
             <td>accuracy</td>
@@ -120,7 +122,7 @@ Search all objects in image.
             <td>clearNoise</td>
             <td>Boolean | Number</td>
             <td>false</td>
-            <td>Removes all small objects after image analysis. If "false" then noise clearing is disabled, else if number is setted then all objects that contains less than specified number of pixels will be removed.</td>
+            <td>Removes all small objects after image analysis. If `false` then noise clearing is disabled, else if number is setted then all objects that contains less than specified number of pixels will be removed.</td>
         </tr>       
     </tbody>
 </table>
@@ -186,13 +188,34 @@ Starts searching from the start point and returns one object that belongs to thi
             <td>tolerance</td>
             <td>Number</td>
             <td>50</td>
-            <td>Permissible variation of the color (number of shades). Helps to detect objects not only by strict colors ("colors" option), but by their shades too.</td>
+            <td>Permissible variation of the color (number of shades). Helps to detect objects not only by strict colors (`colors` option), but by their shades too.</td>
         </tr>
         <tr>
             <td>distance</td>
             <td>Number</td>
             <td>10</td>
             <td>Distance between objects (in pixels). If distance between two pixels lesser then this option then Pixfinder thinks that pixels belong to the same object.</td>
+        </tr>
+    </tbody>
+</table>
+
+### util.dom
+
+Various DOM utility functions.
+
+<table>
+    <thead>
+        <tr>
+            <th>Method</th>
+            <th>Returns</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>onload(&lt;HTMLImageElement&gt; img, &lt;Function&gt; func)</code></td>
+            <td></td>
+            <td>Calls `func` function when `img` has been loaded.</td>
         </tr>
     </tbody>
 </table>
