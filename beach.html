@@ -26,9 +26,9 @@
         canvas {
             float: left;
         }
-        p.clear {
+        .clear {
             clear: both;
-            padding-top: 20px;
+            padding-top: 10px;
         }
     </style>
   </head>
@@ -50,8 +50,9 @@
         <br>
         <video id="video" controls><source src="./videos/demos/beach.mp4" type="video/mp4" />
         </video>
+        <p>Pixfinder thinks that area of the dry shore on <b id="time"></b> second is <b id="area"></b> pixels.</p>
         <p>Press "Pause" to make new snapshot and recalculate area.</p>
-        <p class="clear">Pixfinder thinks that area of the dry shore on <b id="time"></b> second is <b id="area"></b> pixels:</p>
+        <p class="clear"></p>
         <canvas width="640" height="360" id="canvas"></canvas>
 
         <script>
