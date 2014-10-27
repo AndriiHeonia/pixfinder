@@ -6,7 +6,7 @@ Pixfinder is a JavaScript library for object detection.
 - [API](#api)
     - [findAll](#findall)
     - [find](#find)
-    - [util.dom](#util-dom)
+    - [util.dom](#utildom)
     - [Point](#point)
 - [Development](#development)
 - [Changelog](#changelog)
