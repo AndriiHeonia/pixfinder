@@ -227,7 +227,7 @@ Various DOM utility functions.
 
 ### Point
 
-Contains information about one pixel.
+Contains information about point.
 
 <table>
     <thead>
