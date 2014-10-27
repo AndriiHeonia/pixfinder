@@ -62,7 +62,7 @@ Search all objects in image.
     <tbody>
         <tr>
             <td>
-                <code>pix.findAll(&lt;Object&gt; options)</code>
+                <code>pix.findAll(&lt;Object&gt;&nbsp;options)</code>
             </td>
             <td>
                 Array
@@ -127,7 +127,7 @@ Search all objects in image.
 
 ### find
 
-Starts searching from start point and returns object that belongs to it. This method should be useful for example if you want to highlight building under the mouse cursor.
+Starts searching from the start point and returns one object that belongs to this point. This method should be useful for example if you want to highlight building under the mouse cursor.
 
 <table>
     <thead>
@@ -140,7 +140,7 @@ Starts searching from start point and returns object that belongs to it. This me
     <tbody>
         <tr>
             <td>
-                <code>pix.find(&lt;Object&gt; options)</code>
+                <code>pix.find(&lt;Object&gt;&nbsp;options)</code>
             </td>
             <td>
                 Array
@@ -148,6 +148,77 @@ Starts searching from start point and returns object that belongs to it. This me
             <td>
                 Returns points of the object that belongs to the startPoint.
             </td>
+        </tr>
+    </tbody>
+</table>
+
+#### Options
+
+<table>
+    <thead>
+        <tr>
+            <th>Option</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>img</td>
+            <td>HTMLImageElement | HTMLCanvasElement</td>
+            <td></td>
+            <td>Loaded image or canvas element which has to be analyzed.</td>
+        </tr>
+        <tr>
+            <td>startPoint</td>
+            <td>Point</td>
+            <td></td>
+            <td>Start point.</td>
+        </tr>    
+        <tr>
+            <td>colors</td>
+            <td>Array</td>
+            <td></td>
+            <td>Colors of the objects that should be found.</td>
+        </tr>
+        <tr>
+            <td>tolerance</td>
+            <td>Number</td>
+            <td>50</td>
+            <td>Permissible variation of the color (number of shades). Helps to detect objects not only by strict colors ("colors" option), but by their shades too.</td>
+        </tr>
+        <tr>
+            <td>distance</td>
+            <td>Number</td>
+            <td>10</td>
+            <td>Distance between objects (in pixels). If distance between two pixels lesser then this option then Pixfinder thinks that pixels belong to the same object.</td>
+        </tr>
+    </tbody>
+</table>
+
+### Point
+
+Contains information about one pixel.
+
+<table>
+    <thead>
+        <tr>
+            <th>Property</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>x</td>
+            <td>Number</td>
+            <td>The x coordinate.</td>
+        </tr>
+        <tr>
+            <td>y</td>
+            <td>Number</td>
+            <td>The y coordinate.</td>
         </tr>
     </tbody>
 </table>
