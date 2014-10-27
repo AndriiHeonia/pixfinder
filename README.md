@@ -17,7 +17,7 @@ Pixfinder analyzes image and extracts coordinates of each object. Objects should
 
 For example we have aerial shot of planes and want to know how many planes at the airport right now:
 
-<img src="https://raw.githubusercontent.com/AndreyGeonya/pixfinder/bfs/readme-imgs/planes.jpg" />
+<img src="https://raw.githubusercontent.com/AndreyGeonya/pixfinder/master/readme-imgs/planes.jpg" />
 
 To solve this problem we need to write several lines of code and pixfinder will find all planes in the image. So, let's find all planes and draw them all on canvas:
 
@@ -45,7 +45,7 @@ To solve this problem we need to write several lines of code and pixfinder will 
     }
 
 Result:
-<img src="https://raw.githubusercontent.com/AndreyGeonya/pixfinder/bfs/readme-imgs/planes-result.png" />
+<img src="https://raw.githubusercontent.com/AndreyGeonya/pixfinder/master/readme-imgs/planes-result.png" />
 
 ## API
 
