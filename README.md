@@ -49,12 +49,13 @@ Result:
 
 ### findAll
 
-Search all objects in the image.
+Search all objects in image.
 
 <table>
     <thead>
         <tr>
             <th>Function</th>
+            <th>Return</th>
             <th>Description</th>
         </tr>
     </thead>
@@ -64,6 +65,9 @@ Search all objects in the image.
                 <code>
                     pix.findAll(&lt;Object&gt; options)
                 </code>
+            </td>
+            <td>
+                Array
             </td>
             <td>
                 Detects objects by given options.
@@ -120,6 +124,35 @@ Search all objects in the image.
             <td>false</td>
             <td>Removes all small objects after image analysis. If "false" then noise clearing is disabled, else if number is setted then all objects that contains less than specified number of pixels will be removed.</td>
         </tr>       
+    </tbody>
+</table>
+
+### find
+
+Starts searching from start point and returns object that belongs to it. This method should be useful for example if you want to highlight building under the mouse cursor.
+
+<table>
+    <thead>
+        <tr>
+            <th>Function</th>
+            <th>Return</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <code>
+                    pix.find(&lt;Object&gt; options)
+                </code>
+            </td>
+            <td>
+                Array
+            </td>
+            <td>
+                Returns points of the object that belongs to the startPoint.
+            </td>
+        </tr>
     </tbody>
 </table>
 
