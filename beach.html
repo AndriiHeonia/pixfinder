@@ -48,8 +48,7 @@
 
         <h3>What area of dry shore?</h3>
         <br>
-        <video id="video" controls><source src="./videos/demos/beach.mp4" type="video/mp4" />
-        </video>
+        <video id="video" src="./videos/demos/beach.mp4" controls autoplay></video>
         <p>Pixfinder thinks that area of the dry shore on <b id="time"></b> second is <b id="area"></b> pixels.</p>
         <p>Press "Pause" to make new snapshot and recalculate area.</p>
         <p class="clear"></p>
@@ -99,10 +98,11 @@
                 }
 
                 video.addEventListener('pause', redraw, false);
-                video.addEventListener('canplay', function() {
-                    video.play();
+                if (video.readyState > 1) {
                     redraw();
-                }, false);
+                } else {
+                    video.addEventListener('canplay', redraw, false);
+                }
             }
         </script>
 
