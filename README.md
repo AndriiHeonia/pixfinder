@@ -43,7 +43,7 @@ To solve this problem we need to write several lines of code and pixfinder will 
     }
 
 Result:
-<img src="https://raw.githubusercontent.com/AndreyGeonya/pixfinder/bfs/readme-imgs/planes-result.jpg" />
+<img src="https://raw.githubusercontent.com/AndreyGeonya/pixfinder/bfs/readme-imgs/planes-result.png" />
 
 ## API
 
