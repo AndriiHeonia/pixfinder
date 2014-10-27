@@ -2,6 +2,7 @@ Pixfinder is a JavaScript library for object detection.
 
 ## Table of Contents
 
+- [Demos](#demos)
 - [How it works](#how-it-works)
 - [API](#api)
     - [findAll](#findall)
@@ -10,6 +11,12 @@ Pixfinder is a JavaScript library for object detection.
     - [Point](#point)
 - [Development](#development)
 - [Changelog](#changelog)
+
+## Demos
+
+See live demos here:
+- <a href="http://andreygeonya.github.io/pixfinder/planes" target="_blank">Airplanes counter</a>;
+- <a href="http://localhost/pixfinder/beach.html" target="_blank">Dry coast area calculation</a>.
 
 ## How it works
 
