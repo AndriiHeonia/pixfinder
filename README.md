@@ -4,7 +4,7 @@ Pixfinder is a JavaScript library for object detection.
 
 - [How it works](#how-it-works)
 - [API](#api)
-    - [findAll](#findAll)
+    - [findAll](#findall)
     - [find](#find)
 - [Development](#development)
 - [Changelog](#changelog)
@@ -62,9 +62,7 @@ Search all objects in image.
     <tbody>
         <tr>
             <td>
-                <code>
-                    pix.findAll(&lt;Object&gt; options)
-                </code>
+                <code>pix.findAll(&lt;Object&gt; options)</code>
             </td>
             <td>
                 Array
@@ -142,9 +140,7 @@ Starts searching from start point and returns object that belongs to it. This me
     <tbody>
         <tr>
             <td>
-                <code>
-                    pix.find(&lt;Object&gt; options)
-                </code>
+                <code>pix.find(&lt;Object&gt; options)</code>
             </td>
             <td>
                 Array
