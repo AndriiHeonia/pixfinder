@@ -173,16 +173,16 @@ Starts searching from the start point and returns one object that belongs to thi
             <td>Loaded image or canvas element which has to be analyzed.</td>
         </tr>
         <tr>
-            <td>startPoint</td>
-            <td>Point</td>
-            <td></td>
-            <td>Start point.</td>
-        </tr>    
-        <tr>
             <td>colors</td>
             <td>Array</td>
             <td></td>
             <td>Colors of the objects that should be found.</td>
+        </tr>
+        <tr>
+            <td>startPoint</td>
+            <td>Point</td>
+            <td></td>
+            <td>Start point.</td>
         </tr>
         <tr>
             <td>tolerance</td>
