@@ -15,6 +15,11 @@
 
         <script src="./javascripts/pixfinder.min.js"></script>
 
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+        <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+        <script src="./javascripts/demos/osm-bborders.js"></script>
+        <script src="./javascripts/demos/html2canvas.js"></script>
+
         <title>Pixfinder by AndreyGeonya</title>
     </head>
 
@@ -30,34 +35,21 @@
     <div id="content-wrapper">
         <div class="inner clearfix">
         <section id="main-content">
-            <h3>How many planes in the airport?</h3>
-            <p>Pixfinder analyzed this image and thinks that there are <b id="count"></b> planes!</p>
-
-            <img id="img" width="500" height="374" src="images/demos/planes/planes.jpg" crossOrigin="Anonymous" />
-            <canvas id="canv" width="500" height="374" style="border:1px solid #d3d3d3; pointer-events: none;"></canvas>
-
+            <h3>OSM buildings hovering</h3>
+            <p>Just move your mouse over the houses:</p>
+            <div style="width: 700px; height: 350px; cursor: default;" id="map"></div>
             <script>
             window.onload = function() {
-                var img = document.getElementById('img');
-                pix.util.dom.onload(img, function() {
-                    var planes = pix.findAll({
-                        img: img,
-                        distance: 5,
-                        colors: ['eff1f0'],
-                        clearNoise: 50
-                    });
-                    document.getElementById('count').innerHTML = planes.length;
-                    planes.forEach(draw);
+                var map = L.map('map', {
+                    bBorders: true,
+                    fadeAnimation: false,
+                    inertia: false,
+                    minZoom: 16
+                }).setView([51.505, -0.1], 17);
+                var tileLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 });
-                function draw(plane) {
-                    var ctx = document.getElementById("canv").getContext("2d");
-                    ctx.beginPath();
-                    plane.forEach(function(point) {
-                        ctx.arc(point.x, point.y, 1, 0, 2 * Math.PI);
-                    });
-                    ctx.stroke();
-                    ctx.closePath();
-                }
+                tileLayer.addTo(map);
             }
             </script>
         </section>
