@@ -66,7 +66,7 @@ DG.BBorders = DG.Handler.extend({
                 if (_this._canv !== null) {
                     _this._processMousemove(e);
                 }
-            }, 5);
+            }, 10);
         });
 
         this._map.on('movestart', function(e) {
