@@ -35,7 +35,7 @@ DG.BBorders = DG.Handler.extend({
                     'd3d1c1', 'b8b4a6', 'edd595', 'e8d090', 'fde3a6',
                     'c9bfa3', 'ecd5a3', 'f1d69a', 'fedf98', 'c6c9c7',
                     'd3d3d3', 'd3def1', 'cedbef', 'e9e7d7', 'd3d0c1',
-                    'f1d58c', 'c6c0b2', 'e1e0cf'
+                    'f1d58c', 'c6c0b2', 'e1e0cf', 'ccc7b9'
                 ]
             });
 
@@ -63,10 +63,15 @@ DG.BBorders = DG.Handler.extend({
         this._map.on('mousemove', function(e) {
             clearTimeout(timeoutId);
             timeoutId = setTimeout(function() {
-                _this._processMousemove(e);
+                if (_this._canv !== null) {
+                    _this._processMousemove(e);
+                }
             }, 5);
         });
 
+        this._map.on('movestart', function(e) {
+            _this._canv = null;
+        })
         this._map.on('zoomend moveend', function(e) {
             _this._updateCanvas(_this._map.getContainer());
         });
