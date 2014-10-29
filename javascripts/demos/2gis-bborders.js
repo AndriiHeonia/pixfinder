@@ -71,7 +71,7 @@ DG.BBorders = DG.Handler.extend({
 
         this._map.on('movestart', function(e) {
             _this._canv = null;
-        })
+        });
         this._map.on('zoomend moveend', function(e) {
             _this._updateCanvas(_this._map.getContainer());
         });

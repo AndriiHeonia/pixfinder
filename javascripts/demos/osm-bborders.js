@@ -63,7 +63,7 @@ L.BBorders = L.Handler.extend({
             clearTimeout(timeoutId);
             timeoutId = setTimeout(function() {
                 _this._processMousemove(e);
-            }, 5);
+            }, 10);
         });
 
         this._map.on('layeradd', function(layer) {
@@ -71,7 +71,7 @@ L.BBorders = L.Handler.extend({
                 layer.layer.once('load', function() {
                     _this._updateCanvas(layer.target._container);
                 });
-                _this._map.on('viewreset dragend moveend zoomend', function() {
+                _this._map.on('moveend zoomend', function() {
                     _this._updateCanvas(layer.target._container);
                 });
             }
