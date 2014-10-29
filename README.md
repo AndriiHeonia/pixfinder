@@ -17,8 +17,8 @@ Pixfinder is a JavaScript library for object detection.
 See live demos here:
 - <a href="http://andreygeonya.github.io/pixfinder/planes" target="_blank">Airplanes counter</a>;
 - <a href="http://andreygeonya.github.io/pixfinder/beach" target="_blank">Dry coast area calculation</a>;
-- <a href="http://andreygeonya.github.io/pixfinder/osm-map" target="_blank">OSM map buildings hovering</a>;
-- <a href="http://andreygeonya.github.io/pixfinder/2gis-map" target="_blank">2GIS map buildings hovering</a>.
+- <a href="http://andreygeonya.github.io/pixfinder/osm-map" target="_blank">OSM map buildings hovering (better to see at Google Chrome)</a>;
+- <a href="http://andreygeonya.github.io/pixfinder/2gis-map" target="_blank">2GIS map buildings hovering (better to see at Google Chrome)</a>.
 
 ## How it works
 
@@ -265,7 +265,7 @@ Contains information about point.
 * write more demos;
 * improve performance;
 * make concavity param optional;
-* fix distance. Now distance is bbox instead of radius and you can't set 1px dist.
+* check and ensure that behaviour with distance 1px is correct;
 * write tests.
 
 ## Development
