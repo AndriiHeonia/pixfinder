@@ -13,11 +13,9 @@
         <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
 
-        <script src="./javascripts/pixfinder.min.js"></script>
+        <script src="./javascripts/pixfinder.js"></script>
 
-        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
-        <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
-        <script src="./javascripts/demos/osm-bborders.js"></script>
+        <script src="http://maps.api.2gis.ru/2.0/loader.js?pkg=full" data-id="dgLoader"></script>
         <script src="./javascripts/demos/html2canvas.js"></script>
 
         <title>Pixfinder by AndreyGeonya</title>
@@ -35,21 +33,23 @@
     <div id="content-wrapper">
         <div class="inner clearfix">
         <section id="main-content">
-            <h3>OSM buildings hovering</h3>
+            <h3>2GIS buildings hovering</h3>
             <p>Just move your mouse over the houses. It works without any server requests and metadata.</p>
-            <div style="width: 700px; height: 350px; cursor: default;" id="map"></div>
+            <div style="width: 700px; height: 350px;" id="map"></div>
             <script>
             window.onload = function() {
-                var map = L.map('map', {
-                    bBorders: true,
-                    fadeAnimation: false,
-                    inertia: false,
-                    minZoom: 16
-                }).setView([51.505, -0.1], 17);
-                var tileLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                DG.then(function() {
+                    return DG.plugin('./javascripts/demos/2gis-bborders.js');
+                }).then(function() {
+                    window.myMap = DG.map('map', {
+                        bBorders: true,
+                        fadeAnimation: false,
+                        inertia: false,
+                        center: [25.096364685312682, 55.173736810684204],
+                        zoom: 17,
+                        minZoom: 16
+                    });
                 });
-                tileLayer.addTo(map);
             }
             </script>
         </section>

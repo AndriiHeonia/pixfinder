@@ -1278,7 +1278,7 @@ function find(options) {
     points = points.map(function(pt) {
         return [pt.x, pt.y];
     });
-    points = hull(points, 10);
+    points = hull(points, 6);
     points = points.map(function(pt) {
         return {x: pt[0], y: pt[1]};
     });
