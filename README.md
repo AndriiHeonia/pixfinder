@@ -265,6 +265,7 @@ Contains information about point.
 * write more demos;
 * improve performance;
 * make concavity param optional;
+* think about configurable color comparison function;
 * check and ensure that behaviour with distance 1px is correct;
 * write tests.
 
