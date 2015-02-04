@@ -15,9 +15,9 @@ Pixfinder is a JavaScript library for object detection.
 ## Demos
 
 See live demos here:
-- <a href="http://andreygeonya.github.io/pixfinder/planes" target="_blank">Airplanes counter</a>;
-- <a href="http://andreygeonya.github.io/pixfinder/beach" target="_blank">Dry coast area calculation</a>;
-- <a href="http://andreygeonya.github.io/pixfinder/2gis-map" target="_blank">2GIS map buildings hovering (better to see via Google Chrome)</a>.
+- <a href="http://andriiheonia.github.io/pixfinder/planes" target="_blank">Airplanes counter</a>;
+- <a href="http://andriiheonia.github.io/pixfinder/beach" target="_blank">Dry coast area calculation</a>;
+- <a href="http://andriiheonia.github.io/pixfinder/2gis-map" target="_blank">2GIS map buildings hovering (better to see via Google Chrome)</a>.
 
 ## How it works
 
@@ -25,7 +25,7 @@ Pixfinder analyzes image and extracts coordinates of each object. Objects should
 
 For example we have aerial shot of planes and want to know how many planes at the airport right now:
 
-<img src="https://raw.githubusercontent.com/AndreyGeonya/pixfinder/master/readme-imgs/planes.jpg" />
+<img src="https://raw.githubusercontent.com/AndriiHeonia/pixfinder/master/readme-imgs/planes.jpg" />
 
 To solve this problem we need to write several lines of code and pixfinder will find all planes in the image. So, let's find all planes and draw them all on canvas:
 
@@ -53,7 +53,7 @@ To solve this problem we need to write several lines of code and pixfinder will 
     }
 
 Result:
-<img src="https://raw.githubusercontent.com/AndreyGeonya/pixfinder/master/readme-imgs/planes-result.png" />
+<img src="https://raw.githubusercontent.com/AndriiHeonia/pixfinder/master/readme-imgs/planes-result.png" />
 
 ## API
 
@@ -275,6 +275,9 @@ Contains information about point.
     npm gulp        # build and watch for the src changes
 
 ## Changelog
+
+### 0.2.3 &mdash; 04.02.2015
+* Minor package.json fixes
 
 ### 0.2.2 &mdash; 04.02.2015
 * Minor package.json fixes
