@@ -2,3 +2,5 @@ error.log
 node_modules
 pixfinder.sublime-project
 pixfinder.sublime-workspace
+debug
+npm-debug.log
