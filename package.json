@@ -2,7 +2,7 @@
     "name": "pixfinder",
     "version": "0.2.1",
     "description": "Javascript library for extracting objects from images",
-    "homepage": "https://github.com/AndreyGeonya/pixfinder",
+    "homepage": "https://github.com/AndriiHeonia/pixfinder",
     "keywords": [
         "blob-detection",
         "feature-detection",
@@ -12,10 +12,10 @@
         "algorithm",
         "math"
     ],
-    "author": "Andrey Geonya",
+    "author": "Andrii Heonia",
     "repository": {
         "type": "git",
-        "url": "git://github.com/AndreyGeonya/pixfinder.git"
+        "url": "git://github.com/AndriiHeonia/pixfinder.git"
     },
     "main": "./src/pixfinder.js",
     "dependencies": {
