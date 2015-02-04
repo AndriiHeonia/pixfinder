@@ -276,6 +276,9 @@ Contains information about point.
 
 ## Changelog
 
+### 0.2.2 &mdash; 04.02.2015
+* Minor package.json fixes
+
 ### 0.2.1 &mdash; 27.10.2014
 * Readme fixes
 
