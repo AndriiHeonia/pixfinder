@@ -1,6 +1,6 @@
 {
     "name": "pixfinder",
-    "version": "0.2.3",
+    "version": "0.2.4",
     "description": "Javascript library for extracting objects from images",
     "homepage": "https://github.com/AndriiHeonia/pixfinder",
     "keywords": [
@@ -21,7 +21,7 @@
     "dependencies": {
         "rbush": "~1.3.4",
         "img-bfs": "~0.1.1",
-        "hull.js": "0.2.1",
+        "hull.js": "0.2.4",
         "disjoint-set": "1.1.6"
     },
     "devDependencies": {

@@ -1,4 +1,4 @@
-Pixfinder is a JavaScript library for object detection.
+Pixfinder is an experimental JavaScript library for object detection.
 
 ## Table of Contents
 
@@ -271,10 +271,13 @@ Contains information about point.
 ## Development
 
     npm install     # install dependencies
-    npm gulp build  # check the code with JSHint, run tests and build dist
-    npm gulp        # build and watch for the src changes
+    gulp build      # check the code with JSHint, run tests and build dist
+    gulp            # build and watch for the src changes
 
 ## Changelog
+
+### 0.2.4 &mdash; 30.03.2015
+* Minor package.json and copyright fixes
 
 ### 0.2.3 &mdash; 04.02.2015
 * Minor package.json fixes

@@ -1,6 +1,6 @@
 !function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.pix=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 /**
- * (c) 2014, Andrey Geonya
+ * (c) 2014-2015, Andrii Heonia
  * https://github.com/dstructjs/disjoint-set
  */
 
@@ -209,15 +209,37 @@ Grid.CELL_SIZE = 10;
 module.exports = grid;
 },{}],3:[function(_dereq_,module,exports){
 /*
- (c) 2014, Andrey Geonya
+ (c) 2014-2015, Andrii Heonia
  Hull.js, a JavaScript library for concave hull generation by set of points.
- https://github.com/AndreyGeonya/hull
+ https://github.com/AndriiHeonia/hull
 */
 
 'use strict';
 
 var intersect = _dereq_('./intersect.js');
 var grid = _dereq_('./grid.js');
+
+function _formatToXy(pointset, format) {
+    if (format === undefined) {
+        return pointset;
+    }
+    return pointset.map(function(pt) {
+        /*jslint evil: true */
+        var _getXY = new Function('pt', 'return [pt' + format[0] + ',' + 'pt' + format[1] + '];');
+        return _getXY(pt);
+    });
+}
+
+function _xyToFormat(pointset, format) {
+    if (format === undefined) {
+        return pointset;
+    }
+    return pointset.map(function(pt) {
+        /*jslint evil: true */
+        var _getObj = new Function('pt', 'var o = {}; o' + format[0] + '= pt[0]; o' + format[1] + '= pt[1]; return o;');
+        return _getObj(pt);
+    });
+}
 
 function _sortByX(pointset) {
     return pointset.sort(function(a, b) {
@@ -381,7 +403,7 @@ function _concave(convex, maxSqEdgeLen, maxSearchBBoxSize, grid) {
     return convex;
 }
 
-function hull(pointset, concavity) {
+function hull(pointset, concavity, format) {
     var lower, upper, convex,
         innerPoints,
         maxSearchBBoxSize,
@@ -390,7 +412,8 @@ function hull(pointset, concavity) {
     if (pointset.length < 4) {
         return pointset;
     }
-    pointset = _sortByX(pointset);
+
+    pointset = _sortByX(_formatToXy(pointset, format));
     upper = _upperTangent(pointset);
     lower = _lowerTangent(pointset);
     convex = lower.concat(upper);
@@ -401,7 +424,7 @@ function hull(pointset, concavity) {
         return convex.indexOf(pt) < 0;
     });
  
-    return _concave(convex, Math.pow(maxEdgeLen, 2), maxSearchBBoxSize, grid(innerPoints));
+    return _xyToFormat(_concave(convex, Math.pow(maxEdgeLen, 2), maxSearchBBoxSize, grid(innerPoints)), format);
 }
 
 var MAX_CONCAVE_ANGLE_COS = Math.cos(90 / (180 / Math.PI)); // angle = 90 deg
@@ -1220,9 +1243,9 @@ else window.rbush = rbush;
 
 },{}],7:[function(_dereq_,module,exports){
 /*
- (c) 2014, Andrey Geonya
+ (c) 2014-2015, Andrii Heonia
  Pixfinder, a JavaScript library for image analysis and object detection.
- https://github.com/AndreyGeonya/pixfinder
+ https://github.com/AndriiHeonia/pixfinder
 */
 
 'use strict';
