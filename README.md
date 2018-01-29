@@ -20,13 +20,13 @@ See live demos here:
 
 ## How it works
 
-Pixfinder analyzes image and extracts coordinates of each object. Objects should be detected by several criteria, the most important of which is the color.
+Pixfinder analyzes image (in a quite naive way) and extracts coordinates of each object. It detects objects by several criterias, the most important criteria is color.
 
-For example we have aerial shot of planes and want to know how many planes at the airport right now:
+For example we have an aerial shot of planes and we want to know how many planes at the airport right now:
 
 <img src="https://raw.githubusercontent.com/AndriiHeonia/pixfinder/master/readme-imgs/planes.jpg" />
 
-To solve this problem we need to write several lines of code and pixfinder will find all planes in the image. So, let's find all planes and draw them all on canvas:
+To solve this problem we need to write several lines of code and Pixfinder will find all planes on the image. So let's find all planes and draw them all on the canvas:
 
     var img = document.getElementById('img');
 
@@ -58,7 +58,7 @@ Result:
 
 ### findAll
 
-Search all objects in image.
+Search all objects on the image.
 
 <table>
     <thead>
@@ -99,7 +99,7 @@ Search all objects in image.
             <td>img</td>
             <td>HTMLImageElement | HTMLCanvasElement</td>
             <td></td>
-            <td>Loaded image or canvas element which has to be analyzed.</td>
+            <td>Loaded image or canvas element that has to be analyzed.</td>
         </tr>
         <tr>
             <td>colors</td>
