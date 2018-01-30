@@ -77,7 +77,7 @@ Search all objects on the image.
                 Array
             </td>
             <td>
-                Detects objects by given options.
+                Detects objects by the given options.
             </td>
         </tr>
     </tbody>
@@ -105,31 +105,31 @@ Search all objects on the image.
             <td>colors</td>
             <td>Array</td>
             <td></td>
-            <td>Colors of the objects that should be found.</td>
+            <td>Colors of objects to find.</td>
         </tr>
         <tr>
             <td>tolerance</td>
             <td>Number</td>
             <td>50</td>
-            <td>Permissible variation of the color (number of shades). Helps to detect objects not only by strict colors (<code>colors</code> option), but by their shades too.</td>
+            <td>Color variation (number of shades). Helps to detect objects not only by strict colors (<code>colors</code> option), but by their shades too.</td>
         </tr>
         <tr>
             <td>accuracy</td>
             <td>Number</td>
             <td>2</td>
-            <td>If accuracy = 1 then Pixfinder analyzes each pixel of the image, if accuracy = 2 then each 2nd pixel, etc. Large number for better performance and worse quality and vice versa. Number should be positive integer.</td>
+            <td>If accuracy = 1 then Pixfinder analyzes each pixel of the image, if accuracy = 2 then each 2nd pixel, and so on. Large number for better performance and worse quality and vice versa. The number should be a positive integer.</td>
         </tr>
         <tr>
             <td>distance</td>
             <td>Number</td>
             <td>10</td>
-            <td>Distance between objects (in pixels). During image analysis Pixfinder detects all pixels according to specified colors and then splits them to several objects by distance. If distance between two pixels lesser then this option then pixels belong to the same object.</td>
+            <td>Distance between objects (in pixels). During the image analysis Pixfinder detects all pixels according to specified colors and then splits them into several objects by distance. If distance between two pixels is shorter than this option then pixels belong to the same object.</td>
         </tr>
         <tr>
             <td>clearNoise</td>
             <td>Boolean | Number</td>
             <td>false</td>
-            <td>Removes all small objects after image analysis. If <code>false</code> then noise clearing is disabled, else if number is setted then all objects that contains less than specified number of pixels will be removed.</td>
+            <td>Removes all small objects after the image analysis. If <code>false</code> then noise clearing is disabled. If number is set then all objects that contain less than specified number of pixels will be removed.</td>
         </tr>       
     </tbody>
 </table>
@@ -155,7 +155,7 @@ Starts searching from the start point and returns one object that belongs to thi
                 Array
             </td>
             <td>
-                Returns points of the object that belongs to the startPoint.
+                Returns points of the object which belongs to the startPoint.
             </td>
         </tr>
     </tbody>
@@ -177,13 +177,13 @@ Starts searching from the start point and returns one object that belongs to thi
             <td>img</td>
             <td>HTMLImageElement | HTMLCanvasElement</td>
             <td></td>
-            <td>Loaded image or canvas element which has to be analyzed.</td>
+            <td>Loaded image or canvas element that has to be analyzed.</td>
         </tr>
         <tr>
             <td>colors</td>
             <td>Array</td>
             <td></td>
-            <td>Colors of the objects that should be found.</td>
+            <td>Colors of objects to find.</td>
         </tr>
         <tr>
             <td>startPoint</td>
@@ -195,13 +195,13 @@ Starts searching from the start point and returns one object that belongs to thi
             <td>tolerance</td>
             <td>Number</td>
             <td>50</td>
-            <td>Permissible variation of the color (number of shades). Helps to detect objects not only by strict colors (<code>colors</code> option), but by their shades too.</td>
+            <td>Color variation (number of shades). Helps to detect objects not only by strict colors (<code>colors</code> option), but by their shades too.</td>
         </tr>
         <tr>
             <td>distance</td>
             <td>Number</td>
             <td>10</td>
-            <td>Distance between objects (in pixels). If distance between two pixels lesser then this option then Pixfinder thinks that pixels belong to the same object.</td>
+            <td>Distance between objects (in pixels). If distance between two pixels is shorter than this option then Pixfinder decides that pixels belong to the same object.</td>
         </tr>
     </tbody>
 </table>
@@ -222,12 +222,12 @@ Various DOM utility functions.
         <tr>
             <td>onload(&lt;HTMLImageElement&gt; img, &lt;Function&gt; func)</code></td>
             <td></td>
-            <td>Calls <code>func</code> function when <code>img</code> image has been loaded.</td>
+            <td>Calls <code>func</code> function when <code>img</code> image is loaded.</td>
         </tr>
         <tr>
             <td>loaded(&lt;HTMLImageElement&gt; img)</code></td>
             <td>Boolean</td>
-            <td>Checks or <code>img</code> image has been loaded.</td>
+            <td>Checks whether <code>img</code> image has been loaded.</td>
         </tr>
     </tbody>
 </table>
