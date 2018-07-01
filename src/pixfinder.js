@@ -1,5 +1,5 @@
 /*
- (c) 2014-2015, Andrii Heonia
+ (c) 2014-2018, Andrii Heonia
  Pixfinder, a JavaScript library for image analysis and object detection.
  https://github.com/AndriiHeonia/pixfinder
 */
@@ -30,8 +30,7 @@ function find(options) {
             imgCols[colPos + 2],
             imgCols[colPos + 3]
         ],
-        tree = rbush(9, ['.x', '.y', '.x', '.y']),
-        points = [];
+        tree = rbush(9, ['.x', '.y', '.x', '.y']);
 
     if (!_pointInObject(ptCol, opt)) { return []; }
 
@@ -41,10 +40,12 @@ function find(options) {
             if (_pointInObject(e.pixel.color, opt)) {
                 tree.insert(pt);
             } else {
-                var bbox = [
-                    pt.x - opt.distance, pt.y - opt.distance,
-                    pt.x + opt.distance, pt.y + opt.distance
-                ];
+                var bbox = {
+                    minX: pt.x - opt.distance,
+                    minY: pt.y - opt.distance,
+                    maxX: pt.x + opt.distance,
+                    maxY: pt.y + opt.distance
+                };
                 if (tree.search(bbox).length === 0) {
                     e.skip();
                 }
@@ -52,19 +53,10 @@ function find(options) {
         }
     });
 
-    points = tree.all();
-    // TODO: support pt.x, pt.y format in hull.js and remove map
-    points = points.map(function(pt) {
-        return [pt.x, pt.y];
-    });
-    points = hull(points, 10);
-    points = points.map(function(pt) {
-        return {x: pt[0], y: pt[1]};
-    });
-
-    return points;
+    return hull(tree.all(), opt.concavity, ['.x', '.y']);
 }
 
+// (Object) -> Array
 function findAll(options) {
     var opt = _default(options),
         canv = util.canvas.wrap(opt.img),
@@ -79,18 +71,9 @@ function findAll(options) {
     objects = _splitByDist(objectPts, opt.distance);
     objects = opt.clearNoise ? _clearNoise(objects, opt.clearNoise) : objects;
 
-    objects.forEach(function(points, idx) {
-        // TODO: support pt.x, pt.y format in hull.js and remove map
-        points = points.map(function(pt) {
-            return [pt.x, pt.y];
-        });
-        points = hull(points, 10);
-        objects[idx] = points.map(function(pt) {
-            return {x: pt[0], y: pt[1]};
-        });
+    return objects.map(function(points) {
+        return hull(points, opt.concavity, ['.x', '.y']);
     });
-
-    return objects;
 }
 
 // (Object) -> Object
@@ -102,6 +85,7 @@ function _default(options) {
     opt.tolerance = opt.tolerance || 50;
     opt.colors = opt.colors.map(util.canvas.hex2Rgb);
     opt.clearNoise = opt.clearNoise || false;
+    opt.concavity = opt.concavity || 10;
 
     return opt;
 }
@@ -153,10 +137,12 @@ function _splitByDist(points, dist) {
 
     tree.load(points);
     points.forEach(function(pt){
-        var bbox = [
-            pt.x - dist, pt.y - dist,
-            pt.x + dist, pt.y + dist
-        ];
+        var bbox = {
+            minX: pt.x - dist,
+            minY: pt.y - dist,
+            maxX: pt.x + dist,
+            maxY: pt.y + dist
+        };
         var neighbours = tree.search(bbox);
         set.add(pt);
         neighbours.forEach(function(nPt) {

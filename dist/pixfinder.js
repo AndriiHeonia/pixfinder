@@ -1,6 +1,6 @@
 !function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.pix=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 /**
- * (c) 2014-2015, Andrii Heonia
+ * (c) 2014, Andrey Geonya
  * https://github.com/dstructjs/disjoint-set
  */
 
@@ -131,134 +131,8 @@ if (typeof define === 'function' && define.amd) {
 
 })();
 },{}],2:[function(_dereq_,module,exports){
-function Grid(points) {
-    var _cells = [];
-
-    points.forEach(function(point) {
-        var cellXY = this.point2CellXY(point),
-            x = cellXY[0],
-            y = cellXY[1];
-        if (_cells[x] === undefined) {
-            _cells[x] = [];
-        }
-        if (_cells[x][y] === undefined) {
-            _cells[x][y] = [];
-        }
-        _cells[x][y].push(point);
-    }, this);
-
-    this.cellPoints = function(x, y) { // (Number, Number) -> Array
-        return (_cells[x] !== undefined && _cells[x][y] !== undefined) ? _cells[x][y] : [];
-    };
-
-    this.removePoint = function(point) { // (Array) -> Array
-        var cellXY = this.point2CellXY(point),
-            cell = _cells[cellXY[0]][cellXY[1]],
-            pointIdxInCell;
-        
-        for (var i = 0; i < cell.length; i++) {
-            if (cell[i][0] === point[0] && cell[i][1] === point[1]) {
-                pointIdxInCell = i;
-                break;
-            }
-        }
-
-        cell.splice(pointIdxInCell, 1);
-
-        return cell;
-    };
-}
-
-Grid.prototype = {
-    point2CellXY: function(point) { // (Array) -> Array
-        var x = parseInt(point[0] / Grid.CELL_SIZE),
-            y = parseInt(point[1] / Grid.CELL_SIZE);
-        return [x, y];
-    },
-
-    rangePoints: function(bbox) { // (Array) -> Array
-        var tlCellXY = this.point2CellXY([bbox[0], bbox[1]]),
-            brCellXY = this.point2CellXY([bbox[2], bbox[3]]),
-            points = [];
-
-        for (var x = tlCellXY[0]; x <= brCellXY[0]; x++) {
-            for (var y = tlCellXY[1]; y <= brCellXY[1]; y++) {
-                points = points.concat(this.cellPoints(x, y));
-            }
-        }
-
-        return points;
-    },
-
-    addBorder2Bbox: function(bbox, border) { // (Array, Number) -> Array
-        return [
-            bbox[0] - (border * Grid.CELL_SIZE),
-            bbox[1] - (border * Grid.CELL_SIZE),
-            bbox[2] + (border * Grid.CELL_SIZE),
-            bbox[3] + (border * Grid.CELL_SIZE)
-        ];
-    }
-};
-
-function grid(points) {
-    return new Grid(points);
-}
-
-Grid.CELL_SIZE = 10;
-
-module.exports = grid;
-},{}],3:[function(_dereq_,module,exports){
-/*
- (c) 2014-2015, Andrii Heonia
- Hull.js, a JavaScript library for concave hull generation by set of points.
- https://github.com/AndriiHeonia/hull
-*/
-
-'use strict';
-
-var intersect = _dereq_('./intersect.js');
-var grid = _dereq_('./grid.js');
-
-function _formatToXy(pointset, format) {
-    if (format === undefined) {
-        return pointset;
-    }
-    return pointset.map(function(pt) {
-        /*jslint evil: true */
-        var _getXY = new Function('pt', 'return [pt' + format[0] + ',' + 'pt' + format[1] + '];');
-        return _getXY(pt);
-    });
-}
-
-function _xyToFormat(pointset, format) {
-    if (format === undefined) {
-        return pointset;
-    }
-    return pointset.map(function(pt) {
-        /*jslint evil: true */
-        var _getObj = new Function('pt', 'var o = {}; o' + format[0] + '= pt[0]; o' + format[1] + '= pt[1]; return o;');
-        return _getObj(pt);
-    });
-}
-
-function _sortByX(pointset) {
-    return pointset.sort(function(a, b) {
-        if (a[0] == b[0]) {
-            return a[1] - b[1];                           
-        } else {                                                    
-            return a[0] - b[0];                                                           
-        }
-    });
-}
-
-function _getMaxY(pointset) {
-    var maxY = -Infinity;
-    for (var i = pointset.length - 1; i >= 0; i--) {
-        if (pointset[i][1] > maxY) {
-            maxY = pointset[i][1];
-        }
-    }
-    return maxY;
+function _cross(o, a, b) {
+    return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
 }
 
 function _upperTangent(pointset) {
@@ -286,8 +160,149 @@ function _lowerTangent(pointset) {
     return upper;
 }
 
-function _cross(o, a, b) {
-    return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]); 
+// pointset has to be sorted by X
+function convex(pointset) {
+    var convex,
+        upper = _upperTangent(pointset),
+        lower = _lowerTangent(pointset);
+    convex = lower.concat(upper);
+    convex.push(pointset[0]);  
+    return convex;  
+}
+
+module.exports = convex;
+
+},{}],3:[function(_dereq_,module,exports){
+module.exports = {
+
+    toXy: function(pointset, format) {
+        if (format === undefined) {
+            return pointset.slice();
+        }
+        return pointset.map(function(pt) {
+            /*jslint evil: true */
+            var _getXY = new Function('pt', 'return [pt' + format[0] + ',' + 'pt' + format[1] + '];');
+            return _getXY(pt);
+        });
+    },
+
+    fromXy: function(pointset, format) {
+        if (format === undefined) {
+            return pointset.slice();
+        }
+        return pointset.map(function(pt) {
+            /*jslint evil: true */
+            var _getObj = new Function('pt', 'var o = {}; o' + format[0] + '= pt[0]; o' + format[1] + '= pt[1]; return o;');
+            return _getObj(pt);
+        });
+    }
+
+}
+},{}],4:[function(_dereq_,module,exports){
+function Grid(points, cellSize) {
+    this._cells = [];
+    this._cellSize = cellSize;
+
+    points.forEach(function(point) {
+        var cellXY = this.point2CellXY(point),
+            x = cellXY[0],
+            y = cellXY[1];
+        if (this._cells[x] === undefined) {
+            this._cells[x] = [];
+        }
+        if (this._cells[x][y] === undefined) {
+            this._cells[x][y] = [];
+        }
+        this._cells[x][y].push(point);
+    }, this);
+}
+
+Grid.prototype = {
+    cellPoints: function(x, y) { // (Number, Number) -> Array
+        return (this._cells[x] !== undefined && this._cells[x][y] !== undefined) ? this._cells[x][y] : [];
+    },
+
+    rangePoints: function(bbox) { // (Array) -> Array
+        var tlCellXY = this.point2CellXY([bbox[0], bbox[1]]),
+            brCellXY = this.point2CellXY([bbox[2], bbox[3]]),
+            points = [];
+
+        for (var x = tlCellXY[0]; x <= brCellXY[0]; x++) {
+            for (var y = tlCellXY[1]; y <= brCellXY[1]; y++) {
+                points = points.concat(this.cellPoints(x, y));
+            }
+        }
+
+        return points;
+    },
+
+    removePoint: function(point) { // (Array) -> Array
+        var cellXY = this.point2CellXY(point),
+            cell = this._cells[cellXY[0]][cellXY[1]],
+            pointIdxInCell;
+        
+        for (var i = 0; i < cell.length; i++) {
+            if (cell[i][0] === point[0] && cell[i][1] === point[1]) {
+                pointIdxInCell = i;
+                break;
+            }
+        }
+
+        cell.splice(pointIdxInCell, 1);
+
+        return cell;
+    },
+
+    point2CellXY: function(point) { // (Array) -> Array
+        var x = parseInt(point[0] / this._cellSize),
+            y = parseInt(point[1] / this._cellSize);
+        return [x, y];
+    },
+
+    extendBbox: function(bbox, scaleFactor) { // (Array, Number) -> Array
+        return [
+            bbox[0] - (scaleFactor * this._cellSize),
+            bbox[1] - (scaleFactor * this._cellSize),
+            bbox[2] + (scaleFactor * this._cellSize),
+            bbox[3] + (scaleFactor * this._cellSize)
+        ];
+    }
+};
+
+function grid(points, cellSize) {
+    return new Grid(points, cellSize);
+}
+
+module.exports = grid;
+},{}],5:[function(_dereq_,module,exports){
+/*
+ (c) 2014-2016, Andrii Heonia
+ Hull.js, a JavaScript library for concave hull generation by set of points.
+ https://github.com/AndriiHeonia/hull
+*/
+
+'use strict';
+
+var intersect = _dereq_('./intersect.js');
+var grid = _dereq_('./grid.js');
+var formatUtil = _dereq_('./format.js');
+var convexHull = _dereq_('./convex.js');
+
+function _filterDuplicates(pointset) {
+    return pointset.filter(function(el, idx, arr) {
+        var prevEl = arr[idx - 1];
+        return idx === 0 || !(prevEl[0] === el[0] && prevEl[1] === el[1]);
+    });
+}
+
+function _sortByX(pointset) {
+    return pointset.sort(function(a, b) {
+        if (a[0] == b[0]) {
+            return a[1] - b[1];
+        } else {
+            return a[0] - b[0];
+        }
+    });
 }
 
 function _sqLength(a, b) {
@@ -318,28 +333,39 @@ function _intersect(segment, pointset) {
     return false;
 }
 
-function _bBoxAround(edge, boxSize) {
-    var minX, maxX, minY, maxY;
+function _occupiedArea(pointset) {
+    var minX = Infinity,
+        minY = Infinity,
+        maxX = -Infinity,
+        maxY = -Infinity;
 
-    if (edge[0][0] < edge[1][0]) {
-        minX = edge[0][0] - boxSize;
-        maxX = edge[1][0] + boxSize;
-    } else {
-        minX = edge[1][0] - boxSize;
-        maxX = edge[0][0] + boxSize;
-    }
-
-    if (edge[0][1] < edge[1][1]) {
-        minY = edge[0][1] - boxSize;
-        maxY = edge[1][1] + boxSize;
-    } else {
-        minY = edge[1][1] - boxSize;
-        maxY = edge[0][1] + boxSize;
+    for (var i = pointset.length - 1; i >= 0; i--) {
+        if (pointset[i][0] < minX) {
+            minX = pointset[i][0];
+        }
+        if (pointset[i][1] < minY) {
+            minY = pointset[i][1];
+        }
+        if (pointset[i][0] > maxX) {
+            maxX = pointset[i][0];
+        }
+        if (pointset[i][1] > maxY) {
+            maxY = pointset[i][1];
+        }
     }
 
     return [
-        minX, minY, // tl
-        maxX, maxY  // br
+        maxX - minX, // width
+        maxY - minY  // height
+    ];
+}
+
+function _bBoxAround(edge) {
+    return [
+        Math.min(edge[0][0], edge[1][0]), // left
+        Math.min(edge[0][1], edge[1][1]), // top
+        Math.max(edge[0][0], edge[1][0]), // right
+        Math.max(edge[0][1], edge[1][1])  // bottom
     ];
 }
 
@@ -366,28 +392,37 @@ function _midPoint(edge, innerPoints, convex) {
     return point;
 }
 
-function _concave(convex, maxSqEdgeLen, maxSearchBBoxSize, grid) {
+function _concave(convex, maxSqEdgeLen, maxSearchArea, grid, edgeSkipList) {
     var edge,
-        border,
-        bBoxSize,
+        keyInSkipList,
+        scaleFactor,
         midPoint,
-        bBoxAround,    
+        bBoxAround,
+        bBoxWidth,
+        bBoxHeight,
         midPointInserted = false;
 
     for (var i = 0; i < convex.length - 1; i++) {
         edge = [convex[i], convex[i + 1]];
+        keyInSkipList = edge[0].join() + ',' + edge[1].join();
 
-        if (_sqLength(edge[0], edge[1]) < maxSqEdgeLen) { continue; }
+        if (_sqLength(edge[0], edge[1]) < maxSqEdgeLen ||
+            edgeSkipList[keyInSkipList] === true) { continue; }
 
-        border = 0;
-        bBoxSize = MIN_SEARCH_BBOX_SIZE;
-        bBoxAround = _bBoxAround(edge, bBoxSize);
+        scaleFactor = 0;
+        bBoxAround = _bBoxAround(edge);
         do {
-            bBoxAround = grid.addBorder2Bbox(bBoxAround, border);
-            bBoxSize = bBoxAround[2] - bBoxAround[0];
+            bBoxAround = grid.extendBbox(bBoxAround, scaleFactor);
+            bBoxWidth = bBoxAround[2] - bBoxAround[0];
+            bBoxHeight = bBoxAround[3] - bBoxAround[1];
+
             midPoint = _midPoint(edge, grid.rangePoints(bBoxAround), convex);            
-            border++;
-        }  while (midPoint === null && maxSearchBBoxSize > bBoxSize);
+            scaleFactor++;
+        }  while (midPoint === null && (maxSearchArea[0] > bBoxWidth || maxSearchArea[1] > bBoxHeight));
+
+        if (bBoxWidth >= maxSearchArea[0] && bBoxHeight >= maxSearchArea[1]) {
+            edgeSkipList[keyInSkipList] = true;
+        }
 
         if (midPoint !== null) {
             convex.splice(i + 1, 0, midPoint);
@@ -397,42 +432,53 @@ function _concave(convex, maxSqEdgeLen, maxSearchBBoxSize, grid) {
     }
 
     if (midPointInserted) {
-        return _concave(convex, maxSqEdgeLen, maxSearchBBoxSize, grid);
+        return _concave(convex, maxSqEdgeLen, maxSearchArea, grid, edgeSkipList);
     }
 
     return convex;
 }
 
 function hull(pointset, concavity, format) {
-    var lower, upper, convex,
+    var convex,
+        concave,
         innerPoints,
-        maxSearchBBoxSize,
+        occupiedArea,
+        maxSearchArea,
+        cellSize,
+        points,
         maxEdgeLen = concavity || 20;
 
     if (pointset.length < 4) {
-        return pointset;
+        return pointset.slice();
     }
 
-    pointset = _sortByX(_formatToXy(pointset, format));
-    upper = _upperTangent(pointset);
-    lower = _lowerTangent(pointset);
-    convex = lower.concat(upper);
-    convex.push(pointset[0]);
+    points = _filterDuplicates(_sortByX(formatUtil.toXy(pointset, format)));
 
-    maxSearchBBoxSize = Math.max(pointset[pointset.length - 1][0], _getMaxY(convex)) * MAX_SEARCH_BBOX_SIZE_PERCENT;
-    innerPoints = pointset.filter(function(pt) {
+    occupiedArea = _occupiedArea(points);
+    maxSearchArea = [
+        occupiedArea[0] * MAX_SEARCH_BBOX_SIZE_PERCENT,
+        occupiedArea[1] * MAX_SEARCH_BBOX_SIZE_PERCENT
+    ];
+
+    convex = convexHull(points);
+    innerPoints = points.filter(function(pt) {
         return convex.indexOf(pt) < 0;
     });
+
+    cellSize = Math.ceil(1 / (points.length / (occupiedArea[0] * occupiedArea[1])));
+
+    concave = _concave(
+        convex, Math.pow(maxEdgeLen, 2),
+        maxSearchArea, grid(innerPoints, cellSize), {});
  
-    return _xyToFormat(_concave(convex, Math.pow(maxEdgeLen, 2), maxSearchBBoxSize, grid(innerPoints)), format);
+    return formatUtil.fromXy(concave, format);
 }
 
 var MAX_CONCAVE_ANGLE_COS = Math.cos(90 / (180 / Math.PI)); // angle = 90 deg
-var MIN_SEARCH_BBOX_SIZE = 5;
-var MAX_SEARCH_BBOX_SIZE_PERCENT = 0.8;
+var MAX_SEARCH_BBOX_SIZE_PERCENT = 0.6;
 
 module.exports = hull;
-},{"./grid.js":2,"./intersect.js":4}],4:[function(_dereq_,module,exports){
+},{"./convex.js":2,"./format.js":3,"./grid.js":4,"./intersect.js":6}],6:[function(_dereq_,module,exports){
 function ccw(x1, y1, x2, y2, x3, y3) {           
     var cw = ((y3 - y1) * (x2 - x1)) - ((y2 - y1) * (x3 - x1));
     return cw > 0 ? true : cw < 0 ? false : true; // colinear
@@ -443,11 +489,12 @@ function intersect(seg1, seg2) {
       x2 = seg1[1][0], y2 = seg1[1][1],
       x3 = seg2[0][0], y3 = seg2[0][1],
       x4 = seg2[1][0], y4 = seg2[1][1];
+
     return ccw(x1, y1, x3, y3, x4, y4) !== ccw(x2, y2, x3, y3, x4, y4) && ccw(x1, y1, x2, y2, x3, y3) !== ccw(x1, y1, x2, y2, x4, y4);
 }
 
 module.exports = intersect;
-},{}],5:[function(_dereq_,module,exports){
+},{}],7:[function(_dereq_,module,exports){
 (function() {
 
 // (HTMLImageElement | HTMLCanvasElement, Coord | Array, Object, Array)
@@ -652,18 +699,80 @@ if (typeof module !== 'undefined') module.exports = bfs;
 else window.bfs = bfs;
 
 })();
-},{}],6:[function(_dereq_,module,exports){
-/*
- (c) 2013, Vladimir Agafonkin
- RBush, a JavaScript library for high-performance 2D spatial indexing of points and rectangles.
- https://github.com/mourner/rbush
-*/
+},{}],8:[function(_dereq_,module,exports){
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global.quickselect = factory());
+}(this, (function () { 'use strict';
 
-(function () { 'use strict';
+function quickselect(arr, k, left, right, compare) {
+    quickselectStep(arr, k, left || 0, right || (arr.length - 1), compare || defaultCompare);
+}
+
+function quickselectStep(arr, k, left, right, compare) {
+
+    while (right > left) {
+        if (right - left > 600) {
+            var n = right - left + 1;
+            var m = k - left + 1;
+            var z = Math.log(n);
+            var s = 0.5 * Math.exp(2 * z / 3);
+            var sd = 0.5 * Math.sqrt(z * s * (n - s) / n) * (m - n / 2 < 0 ? -1 : 1);
+            var newLeft = Math.max(left, Math.floor(k - m * s / n + sd));
+            var newRight = Math.min(right, Math.floor(k + (n - m) * s / n + sd));
+            quickselectStep(arr, k, newLeft, newRight, compare);
+        }
+
+        var t = arr[k];
+        var i = left;
+        var j = right;
+
+        swap(arr, left, k);
+        if (compare(arr[right], t) > 0) swap(arr, left, right);
+
+        while (i < j) {
+            swap(arr, i, j);
+            i++;
+            j--;
+            while (compare(arr[i], t) < 0) i++;
+            while (compare(arr[j], t) > 0) j--;
+        }
+
+        if (compare(arr[left], t) === 0) swap(arr, left, j);
+        else {
+            j++;
+            swap(arr, j, right);
+        }
+
+        if (j <= k) left = j + 1;
+        if (k <= j) right = j - 1;
+    }
+}
+
+function swap(arr, i, j) {
+    var tmp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = tmp;
+}
+
+function defaultCompare(a, b) {
+    return a < b ? -1 : a > b ? 1 : 0;
+}
+
+return quickselect;
+
+})));
+
+},{}],9:[function(_dereq_,module,exports){
+'use strict';
+
+module.exports = rbush;
+module.exports.default = rbush;
+
+var quickselect = _dereq_('quickselect');
 
 function rbush(maxEntries, format) {
-
-    // jshint newcap: false, validthis: true
     if (!(this instanceof rbush)) return new rbush(maxEntries, format);
 
     // max entries in a node is 9 by default; min node fill is 40% for best performance
@@ -689,7 +798,7 @@ rbush.prototype = {
             result = [],
             toBBox = this.toBBox;
 
-        if (!intersects(bbox, node.bbox)) return result;
+        if (!intersects(bbox, node)) return result;
 
         var nodesToSearch = [],
             i, len, child, childBBox;
@@ -698,7 +807,7 @@ rbush.prototype = {
             for (i = 0, len = node.children.length; i < len; i++) {
 
                 child = node.children[i];
-                childBBox = node.leaf ? toBBox(child) : child.bbox;
+                childBBox = node.leaf ? toBBox(child) : child;
 
                 if (intersects(bbox, childBBox)) {
                     if (node.leaf) result.push(child);
@@ -712,6 +821,33 @@ rbush.prototype = {
         return result;
     },
 
+    collides: function (bbox) {
+
+        var node = this.data,
+            toBBox = this.toBBox;
+
+        if (!intersects(bbox, node)) return false;
+
+        var nodesToSearch = [],
+            i, len, child, childBBox;
+
+        while (node) {
+            for (i = 0, len = node.children.length; i < len; i++) {
+
+                child = node.children[i];
+                childBBox = node.leaf ? toBBox(child) : child;
+
+                if (intersects(bbox, childBBox)) {
+                    if (node.leaf || contains(bbox, childBBox)) return true;
+                    nodesToSearch.push(child);
+                }
+            }
+            node = nodesToSearch.pop();
+        }
+
+        return false;
+    },
+
     load: function (data) {
         if (!(data && data.length)) return this;
 
@@ -722,7 +858,7 @@ rbush.prototype = {
             return this;
         }
 
-        // recursively build the tree with the given data from stratch using OMT algorithm
+        // recursively build the tree with the given data from scratch using OMT algorithm
         var node = this._build(data.slice(), 0, data.length - 1, 0);
 
         if (!this.data.children.length) {
@@ -754,16 +890,11 @@ rbush.prototype = {
     },
 
     clear: function () {
-        this.data = {
-            children: [],
-            height: 1,
-            bbox: empty(),
-            leaf: true
-        };
+        this.data = createNode([]);
         return this;
     },
 
-    remove: function (item) {
+    remove: function (item, equalsFn) {
         if (!item) return this;
 
         var node = this.data,
@@ -783,7 +914,7 @@ rbush.prototype = {
             }
 
             if (node.leaf) { // check current node
-                index = node.children.indexOf(item);
+                index = findItem(item, node.children, equalsFn);
 
                 if (index !== -1) {
                     // item found, remove the item and condense tree upwards
@@ -794,7 +925,7 @@ rbush.prototype = {
                 }
             }
 
-            if (!goingUp && !node.leaf && contains(node.bbox, bbox)) { // go down
+            if (!goingUp && !node.leaf && contains(node, bbox)) { // go down
                 path.push(node);
                 indexes.push(i);
                 i = 0;
@@ -814,8 +945,8 @@ rbush.prototype = {
 
     toBBox: function (item) { return item; },
 
-    compareMinX: function (a, b) { return a[0] - b[0]; },
-    compareMinY: function (a, b) { return a[1] - b[1]; },
+    compareMinX: compareNodeMinX,
+    compareMinY: compareNodeMinY,
 
     toJSON: function () { return this.data; },
 
@@ -843,12 +974,7 @@ rbush.prototype = {
 
         if (N <= M) {
             // reached leaf level; return leaf
-            node = {
-                children: items.slice(left, right + 1),
-                height: 1,
-                bbox: null,
-                leaf: true
-            };
+            node = createNode(items.slice(left, right + 1));
             calcBBox(node, this.toBBox);
             return node;
         }
@@ -861,13 +987,9 @@ rbush.prototype = {
             M = Math.ceil(N / Math.pow(M, height - 1));
         }
 
-        // TODO eliminate recursion?
-
-        node = {
-            children: [],
-            height: height,
-            bbox: null
-        };
+        node = createNode([]);
+        node.leaf = false;
+        node.height = height;
 
         // split the items into M mostly square tiles
 
@@ -910,8 +1032,8 @@ rbush.prototype = {
 
             for (i = 0, len = node.children.length; i < len; i++) {
                 child = node.children[i];
-                area = bboxArea(child.bbox);
-                enlargement = enlargedArea(bbox, child.bbox) - area;
+                area = bboxArea(child);
+                enlargement = enlargedArea(bbox, child) - area;
 
                 // choose entry with the least area enlargement
                 if (enlargement < minEnlargement) {
@@ -928,7 +1050,7 @@ rbush.prototype = {
                 }
             }
 
-            node = targetNode;
+            node = targetNode || node.children[0];
         }
 
         return node;
@@ -937,7 +1059,7 @@ rbush.prototype = {
     _insert: function (item, level, isNode) {
 
         var toBBox = this.toBBox,
-            bbox = isNode ? item.bbox : toBBox(item),
+            bbox = isNode ? item : toBBox(item),
             insertPath = [];
 
         // find the best node for accommodating the item, saving all nodes along the path too
@@ -945,7 +1067,7 @@ rbush.prototype = {
 
         // put the item into the node
         node.children.push(item);
-        extend(node.bbox, bbox);
+        extend(node, bbox);
 
         // split on node overflow; propagate upwards if necessary
         while (level >= 0) {
@@ -968,12 +1090,11 @@ rbush.prototype = {
 
         this._chooseSplitAxis(node, m, M);
 
-        var newNode = {
-            children: node.children.splice(this._chooseSplitIndex(node, m, M)),
-            height: node.height
-        };
+        var splitIndex = this._chooseSplitIndex(node, m, M);
 
-        if (node.leaf) newNode.leaf = true;
+        var newNode = createNode(node.children.splice(splitIndex, node.children.length - splitIndex));
+        newNode.height = node.height;
+        newNode.leaf = node.leaf;
 
         calcBBox(node, this.toBBox);
         calcBBox(newNode, this.toBBox);
@@ -984,10 +1105,9 @@ rbush.prototype = {
 
     _splitRoot: function (node, newNode) {
         // split root node
-        this.data = {
-            children: [node, newNode],
-            height: node.height + 1
-        };
+        this.data = createNode([node, newNode]);
+        this.data.height = node.height + 1;
+        this.data.leaf = false;
         calcBBox(this.data, this.toBBox);
     },
 
@@ -1049,13 +1169,13 @@ rbush.prototype = {
 
         for (i = m; i < M - m; i++) {
             child = node.children[i];
-            extend(leftBBox, node.leaf ? toBBox(child) : child.bbox);
+            extend(leftBBox, node.leaf ? toBBox(child) : child);
             margin += bboxMargin(leftBBox);
         }
 
         for (i = M - m - 1; i >= m; i--) {
             child = node.children[i];
-            extend(rightBBox, node.leaf ? toBBox(child) : child.bbox);
+            extend(rightBBox, node.leaf ? toBBox(child) : child);
             margin += bboxMargin(rightBBox);
         }
 
@@ -1065,7 +1185,7 @@ rbush.prototype = {
     _adjustParentBBoxes: function (bbox, path, level) {
         // adjust bboxes along the given tree path
         for (var i = level; i >= 0; i--) {
-            extend(path[i].bbox, bbox);
+            extend(path[i], bbox);
         }
     },
 
@@ -1090,78 +1210,102 @@ rbush.prototype = {
         // because the algorithms are very sensitive to sorting functions performance,
         // so they should be dead simple and without inner calls
 
-        // jshint evil: true
-
         var compareArr = ['return a', ' - b', ';'];
 
         this.compareMinX = new Function('a', 'b', compareArr.join(format[0]));
         this.compareMinY = new Function('a', 'b', compareArr.join(format[1]));
 
-        this.toBBox = new Function('a', 'return [a' + format.join(', a') + '];');
+        this.toBBox = new Function('a',
+            'return {minX: a' + format[0] +
+            ', minY: a' + format[1] +
+            ', maxX: a' + format[2] +
+            ', maxY: a' + format[3] + '};');
     }
 };
 
+function findItem(item, items, equalsFn) {
+    if (!equalsFn) return items.indexOf(item);
+
+    for (var i = 0; i < items.length; i++) {
+        if (equalsFn(item, items[i])) return i;
+    }
+    return -1;
+}
 
 // calculate node's bbox from bboxes of its children
 function calcBBox(node, toBBox) {
-    node.bbox = distBBox(node, 0, node.children.length, toBBox);
+    distBBox(node, 0, node.children.length, toBBox, node);
 }
 
 // min bounding rectangle of node children from k to p-1
-function distBBox(node, k, p, toBBox) {
-    var bbox = empty();
+function distBBox(node, k, p, toBBox, destNode) {
+    if (!destNode) destNode = createNode(null);
+    destNode.minX = Infinity;
+    destNode.minY = Infinity;
+    destNode.maxX = -Infinity;
+    destNode.maxY = -Infinity;
 
     for (var i = k, child; i < p; i++) {
         child = node.children[i];
-        extend(bbox, node.leaf ? toBBox(child) : child.bbox);
+        extend(destNode, node.leaf ? toBBox(child) : child);
     }
 
-    return bbox;
+    return destNode;
 }
 
-function empty() { return [Infinity, Infinity, -Infinity, -Infinity]; }
-
 function extend(a, b) {
-    a[0] = Math.min(a[0], b[0]);
-    a[1] = Math.min(a[1], b[1]);
-    a[2] = Math.max(a[2], b[2]);
-    a[3] = Math.max(a[3], b[3]);
+    a.minX = Math.min(a.minX, b.minX);
+    a.minY = Math.min(a.minY, b.minY);
+    a.maxX = Math.max(a.maxX, b.maxX);
+    a.maxY = Math.max(a.maxY, b.maxY);
     return a;
 }
 
-function compareNodeMinX(a, b) { return a.bbox[0] - b.bbox[0]; }
-function compareNodeMinY(a, b) { return a.bbox[1] - b.bbox[1]; }
+function compareNodeMinX(a, b) { return a.minX - b.minX; }
+function compareNodeMinY(a, b) { return a.minY - b.minY; }
 
-function bboxArea(a)   { return (a[2] - a[0]) * (a[3] - a[1]); }
-function bboxMargin(a) { return (a[2] - a[0]) + (a[3] - a[1]); }
+function bboxArea(a)   { return (a.maxX - a.minX) * (a.maxY - a.minY); }
+function bboxMargin(a) { return (a.maxX - a.minX) + (a.maxY - a.minY); }
 
 function enlargedArea(a, b) {
-    return (Math.max(b[2], a[2]) - Math.min(b[0], a[0])) *
-           (Math.max(b[3], a[3]) - Math.min(b[1], a[1]));
+    return (Math.max(b.maxX, a.maxX) - Math.min(b.minX, a.minX)) *
+           (Math.max(b.maxY, a.maxY) - Math.min(b.minY, a.minY));
 }
 
-function intersectionArea (a, b) {
-    var minX = Math.max(a[0], b[0]),
-        minY = Math.max(a[1], b[1]),
-        maxX = Math.min(a[2], b[2]),
-        maxY = Math.min(a[3], b[3]);
+function intersectionArea(a, b) {
+    var minX = Math.max(a.minX, b.minX),
+        minY = Math.max(a.minY, b.minY),
+        maxX = Math.min(a.maxX, b.maxX),
+        maxY = Math.min(a.maxY, b.maxY);
 
     return Math.max(0, maxX - minX) *
            Math.max(0, maxY - minY);
 }
 
 function contains(a, b) {
-    return a[0] <= b[0] &&
-           a[1] <= b[1] &&
-           b[2] <= a[2] &&
-           b[3] <= a[3];
+    return a.minX <= b.minX &&
+           a.minY <= b.minY &&
+           b.maxX <= a.maxX &&
+           b.maxY <= a.maxY;
 }
 
-function intersects (a, b) {
-    return b[0] <= a[2] &&
-           b[1] <= a[3] &&
-           b[2] >= a[0] &&
-           b[3] >= a[1];
+function intersects(a, b) {
+    return b.minX <= a.maxX &&
+           b.minY <= a.maxY &&
+           b.maxX >= a.minX &&
+           b.maxY >= a.minY;
+}
+
+function createNode(children) {
+    return {
+        children: children,
+        height: 1,
+        leaf: true,
+        minX: Infinity,
+        minY: Infinity,
+        maxX: -Infinity,
+        maxY: -Infinity
+    };
 }
 
 // sort an array so that items come in groups of n unsorted items, with groups sorted between each other;
@@ -1178,72 +1322,15 @@ function multiSelect(arr, left, right, n, compare) {
         if (right - left <= n) continue;
 
         mid = left + Math.ceil((right - left) / n / 2) * n;
-        select(arr, left, right, mid, compare);
+        quickselect(arr, mid, left, right, compare);
 
         stack.push(left, mid, mid, right);
     }
 }
 
-// sort array between left and right (inclusive) so that the smallest k elements come first (unordered)
-function select(arr, left, right, k, compare) {
-    var n, i, z, s, sd, newLeft, newRight, t, j;
-
-    while (right > left) {
-        if (right - left > 600) {
-            n = right - left + 1;
-            i = k - left + 1;
-            z = Math.log(n);
-            s = 0.5 * Math.exp(2 * z / 3);
-            sd = 0.5 * Math.sqrt(z * s * (n - s) / n) * (i - n / 2 < 0 ? -1 : 1);
-            newLeft = Math.max(left, Math.floor(k - i * s / n + sd));
-            newRight = Math.min(right, Math.floor(k + (n - i) * s / n + sd));
-            select(arr, newLeft, newRight, k, compare);
-        }
-
-        t = arr[k];
-        i = left;
-        j = right;
-
-        swap(arr, left, k);
-        if (compare(arr[right], t) > 0) swap(arr, left, right);
-
-        while (i < j) {
-            swap(arr, i, j);
-            i++;
-            j--;
-            while (compare(arr[i], t) < 0) i++;
-            while (compare(arr[j], t) > 0) j--;
-        }
-
-        if (compare(arr[left], t) === 0) swap(arr, left, j);
-        else {
-            j++;
-            swap(arr, j, right);
-        }
-
-        if (j <= k) left = j + 1;
-        if (k <= j) right = j - 1;
-    }
-}
-
-function swap(arr, i, j) {
-    var tmp = arr[i];
-    arr[i] = arr[j];
-    arr[j] = tmp;
-}
-
-
-// export as AMD/CommonJS module or global variable
-if (typeof define === 'function' && define.amd) define(function() { return rbush; });
-else if (typeof module !== 'undefined') module.exports = rbush;
-else if (typeof self !== 'undefined') self.rbush = rbush;
-else window.rbush = rbush;
-
-})();
-
-},{}],7:[function(_dereq_,module,exports){
+},{"quickselect":8}],10:[function(_dereq_,module,exports){
 /*
- (c) 2014-2015, Andrii Heonia
+ (c) 2014-2018, Andrii Heonia
  Pixfinder, a JavaScript library for image analysis and object detection.
  https://github.com/AndriiHeonia/pixfinder
 */
@@ -1274,8 +1361,7 @@ function find(options) {
             imgCols[colPos + 2],
             imgCols[colPos + 3]
         ],
-        tree = rbush(9, ['.x', '.y', '.x', '.y']),
-        points = [];
+        tree = rbush(9, ['.x', '.y', '.x', '.y']);
 
     if (!_pointInObject(ptCol, opt)) { return []; }
 
@@ -1285,10 +1371,12 @@ function find(options) {
             if (_pointInObject(e.pixel.color, opt)) {
                 tree.insert(pt);
             } else {
-                var bbox = [
-                    pt.x - opt.distance, pt.y - opt.distance,
-                    pt.x + opt.distance, pt.y + opt.distance
-                ];
+                var bbox = {
+                    minX: pt.x - opt.distance,
+                    minY: pt.y - opt.distance,
+                    maxX: pt.x + opt.distance,
+                    maxY: pt.y + opt.distance
+                };
                 if (tree.search(bbox).length === 0) {
                     e.skip();
                 }
@@ -1296,19 +1384,10 @@ function find(options) {
         }
     });
 
-    points = tree.all();
-    // TODO: support pt.x, pt.y format in hull.js and remove map
-    points = points.map(function(pt) {
-        return [pt.x, pt.y];
-    });
-    points = hull(points, 10);
-    points = points.map(function(pt) {
-        return {x: pt[0], y: pt[1]};
-    });
-
-    return points;
+    return hull(tree.all(), opt.concavity, ['.x', '.y']);
 }
 
+// (Object) -> Array
 function findAll(options) {
     var opt = _default(options),
         canv = util.canvas.wrap(opt.img),
@@ -1323,18 +1402,9 @@ function findAll(options) {
     objects = _splitByDist(objectPts, opt.distance);
     objects = opt.clearNoise ? _clearNoise(objects, opt.clearNoise) : objects;
 
-    objects.forEach(function(points, idx) {
-        // TODO: support pt.x, pt.y format in hull.js and remove map
-        points = points.map(function(pt) {
-            return [pt.x, pt.y];
-        });
-        points = hull(points, 10);
-        objects[idx] = points.map(function(pt) {
-            return {x: pt[0], y: pt[1]};
-        });
+    return objects.map(function(points) {
+        return hull(points, opt.concavity, ['.x', '.y']);
     });
-
-    return objects;
 }
 
 // (Object) -> Object
@@ -1346,6 +1416,7 @@ function _default(options) {
     opt.tolerance = opt.tolerance || 50;
     opt.colors = opt.colors.map(util.canvas.hex2Rgb);
     opt.clearNoise = opt.clearNoise || false;
+    opt.concavity = opt.concavity || 10;
 
     return opt;
 }
@@ -1397,10 +1468,12 @@ function _splitByDist(points, dist) {
 
     tree.load(points);
     points.forEach(function(pt){
-        var bbox = [
-            pt.x - dist, pt.y - dist,
-            pt.x + dist, pt.y + dist
-        ];
+        var bbox = {
+            minX: pt.x - dist,
+            minY: pt.y - dist,
+            maxX: pt.x + dist,
+            maxY: pt.y + dist
+        };
         var neighbours = tree.search(bbox);
         set.add(pt);
         neighbours.forEach(function(nPt) {
@@ -1424,7 +1497,7 @@ function _clearNoise(objects, noise) {
 exports.find = find;
 exports.findAll = findAll;
 exports.util = util;
-},{"./util/canvas":8,"./util/dom":9,"./util/math":10,"disjoint-set":1,"hull.js":3,"img-bfs":5,"rbush":6}],8:[function(_dereq_,module,exports){
+},{"./util/canvas":11,"./util/dom":12,"./util/math":13,"disjoint-set":1,"hull.js":5,"img-bfs":7,"rbush":9}],11:[function(_dereq_,module,exports){
 'use strict';
 
 // (HTMLImageElement | HTMLCanvasElement) -> HTMLCanvasElement
@@ -1591,7 +1664,7 @@ exports.rgb2Hex = rgb2Hex;
 exports.similarColors = similarColors;
 exports.colorInColors = colorInColors;
 exports.colorInAllColors = colorInAllColors;
-},{}],9:[function(_dereq_,module,exports){
+},{}],12:[function(_dereq_,module,exports){
 'use strict';
 
 // (HTMLImageElement) -> Boolean
@@ -1610,7 +1683,7 @@ function onload(img, func) {
 
 exports.loaded = loaded;
 exports.onload = onload;
-},{}],10:[function(_dereq_,module,exports){
+},{}],13:[function(_dereq_,module,exports){
 'use strict';
 
 // (Point, Point) -> Number
@@ -1619,6 +1692,6 @@ function sqDist(pt1, pt2) {
 }
 
 exports.sqDist = sqDist;
-},{}]},{},[7])
-(7)
+},{}]},{},[10])
+(10)
 });

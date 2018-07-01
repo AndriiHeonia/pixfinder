@@ -130,7 +130,13 @@ Search all objects on the image.
             <td>Boolean | Number</td>
             <td>false</td>
             <td>Removes all small objects after the image analysis. If <code>false</code> then noise clearing is disabled. If number is set then all objects that contain less than specified number of pixels will be removed.</td>
-        </tr>       
+        </tr>
+        <tr>
+            <td>concavity</td>
+            <td>Number</td>
+            <td>10</td>
+            <td>Determines the concavity of object edges. Internally Pixfinder uses <a href="https://github.com/AndriiHeonia/hull" target="_blank">hull.js</a> library to build object boundary. Please see hull.js documentation for more information about this parameter.</td>
+        </tr>
     </tbody>
 </table>
 
@@ -202,6 +208,12 @@ Starts searching from the start point and returns one object that belongs to thi
             <td>Number</td>
             <td>10</td>
             <td>Distance between objects (in pixels). If distance between two pixels is shorter than this option then Pixfinder decides that pixels belong to the same object.</td>
+        </tr>
+        <tr>
+            <td>concavity</td>
+            <td>Number</td>
+            <td>10</td>
+            <td>Determines the concavity of object edges. Internally Pixfinder uses <a href="https://github.com/AndriiHeonia/hull" target="_blank">hull.js</a> library to build object boundary. Please see hull.js documentation for more information about this parameter.</td>
         </tr>
     </tbody>
 </table>
@@ -275,21 +287,25 @@ Contains information about point.
 
 ## Changelog
 
+### 0.2.5 &mdash; 01.07.2018
+* Update dependencies;
+* Introduce `concavity` parameter.
+
 ### 0.2.4 &mdash; 30.03.2015
-* Minor package.json and copyright fixes
+* Minor package.json and copyright fixes.
 
 ### 0.2.3 &mdash; 04.02.2015
-* Minor package.json fixes
+* Minor package.json fixes.
 
 ### 0.2.2 &mdash; 04.02.2015
-* Minor package.json fixes
+* Minor package.json fixes.
 
 ### 0.2.1 &mdash; 27.10.2014
-* Readme fixes
+* Readme fixes.
 
 ### 0.2.0 &mdash; 27.10.2014
-* API changes without backward compatibility
+* API changes without backward compatibility.
 
 ### 0.1.0 &mdash; 16.05.2014
 
-* First Pixfinder release (unstable alpha version)
+* First Pixfinder release (unstable alpha version).

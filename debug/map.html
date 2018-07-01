@@ -42,10 +42,10 @@
                         ctx.lineTo(obj[j].x, obj[j].y);
                     }
                     ctx.closePath();
-                    ctx.fillStyle = "rgba(178,178,178,0.3)";
+                    ctx.fillStyle = "rgba(178,178,178,0.5)";
                     ctx.fill();
                     ctx.lineWidth = 1;
-                    ctx.strokeStyle = "rgba(49,51,51,0.3)";
+                    ctx.strokeStyle = "rgba(49,51,51,0.5)";
                     ctx.stroke();
                 }
                 canv.addEventListener('click', findAndDrawObj, false);
@@ -66,7 +66,7 @@
                             r = parseInt(Math.random()*255),
                             g = parseInt(Math.random()*255),
                             b = parseInt(Math.random()*255);
-                        
+
                         ctx.beginPath();
                         ctx.moveTo(obj[0].x, obj[0].y);
                         for (var j = 0; j < obj.length; j++) {
@@ -83,7 +83,7 @@
                 if (pix.util.dom.loaded(img)) {
                     findAndDrawObjs();
                 } else {
-                    img.addEventListener('load', findAndDrawObjs, false); 
+                    img.addEventListener('load', findAndDrawObjs, false);
                 }
             }
         </script>
