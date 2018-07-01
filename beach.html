@@ -71,7 +71,7 @@
                     areaEl = document.getElementById('area'),
                     timeEl = document.getElementById('time'),
                     ctx = canv.getContext('2d');
-                
+
                 function redraw() {
                     ctx.drawImage(video, 0, 0, canv.width, canv.height);
                     var dryShore = pix.find({
@@ -79,7 +79,8 @@
                         distance: 10,
                         tolerance: 25,
                         startPoint: {x: 10, y: 350},
-                        colors: ['dab68c', 'c89160']
+                        colors: ['dab68c', 'c89160'],
+                        concavity: 50
                     });
                     areaEl.innerHTML = area(dryShore);
                     timeEl.innerHTML = Math.round(video.currentTime);
