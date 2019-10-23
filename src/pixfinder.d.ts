@@ -81,8 +81,8 @@ export interface FindOptions {
 /** Starts searching from the start point and returns one object that belongs to this point. 
   * This method should be useful for example if you want to highlight object under the mouse cursor.
   */
-export function find (options: Partial<FindOptions>): Point[];
+export function find (options: FindOptions): Point[];
 
 /** Search all objects on the image.
   */ 
-export function findAll (options: Partial<FindAllOptions>): Point[][];
+export function findAll (options: FindAllOptions): Point[][];
