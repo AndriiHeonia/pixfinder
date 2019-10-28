@@ -287,6 +287,9 @@ Contains information about point.
 
 ## Changelog
 
+### 0.2.6 &mdash; 28.10.2019
+* Introduce pixfinder.d.ts
+
 ### 0.2.5 &mdash; 01.07.2018
 * Update dependencies;
 * Introduce `concavity` parameter.

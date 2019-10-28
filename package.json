@@ -1,6 +1,6 @@
 {
     "name": "pixfinder",
-    "version": "0.2.5",
+    "version": "0.2.6",
     "description": "Javascript library for extracting objects from images",
     "homepage": "https://github.com/AndriiHeonia/pixfinder",
     "keywords": [
