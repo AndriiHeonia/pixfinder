@@ -1,4 +1,4 @@
-This project demonstrates how <a href="https://github.com/AndriiHeonia/hull" target="_blank">hull.js</a>, <a href="https://github.com/AndriiHeonia/img-bfs">img-bfs</a> and <a href="https://github.com/AndriiHeonia/disjoint-set">disjoint-set</a> libraries can be used.
+This project demonstrates how [hull.js](https://github.com/AndriiHeonia/hull), [img-bfs](https://github.com/AndriiHeonia/img-bfs) and [disjoint-set](https://github.com/AndriiHeonia/disjoint-set) libraries can be used.
 
 Pixfinder detects objects in the image. It was developed for the demo purpose only, it's not meant to be used in production.
 
@@ -17,8 +17,8 @@ Pixfinder detects objects in the image. It was developed for the demo purpose on
 ## Demos
 
 See live demos here:
-- <a href="http://andriiheonia.github.io/pixfinder/planes" target="_blank">Airplanes counter</a>;
-- <a href="http://andriiheonia.github.io/pixfinder/beach" target="_blank">Dry coast area calculation</a>.
+- [Airplanes counter](http://andriiheonia.github.io/pixfinder/planes)
+- [Dry coast area calculation](http://andriiheonia.github.io/pixfinder/beach)
 
 ## How it works
 
