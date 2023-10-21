@@ -1,4 +1,6 @@
-Pixfinder is an experimental JavaScript library for object detection.
+This project demonstrates how <a href="https://github.com/AndriiHeonia/hull" target="_blank">hull.js</a>, <a href="https://github.com/AndriiHeonia/img-bfs">img-bfs</a> and <a href="https://github.com/AndriiHeonia/disjoint-set">disjoint-set</a> libraries can be used.
+
+Pixfinder detects objects in the image. It was developed for the demo purpose only, it's not meant to be used in production.
 
 ## Table of Contents
 
@@ -286,6 +288,9 @@ Contains information about point.
     gulp            # build and watch for the src changes
 
 ## Changelog
+
+### 0.2.7 &mdash; 21.10.2023
+* Update readme
 
 ### 0.2.6 &mdash; 28.10.2019
 * Introduce pixfinder.d.ts
